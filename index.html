@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Keaton Van Patten — Full-Stack & AI Engineer</title>
+<meta name="description" content="Full-stack software engineer building LLM-powered tools, agent systems, and desktop AI platforms." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0a0d;
+    --bg-soft: #101016;
+    --surface: #14141c;
+    --surface-2: #191923;
+    --border: #25252f;
+    --border-soft: #1d1d26;
+    --text: #ededf2;
+    --muted: #9595a3;
+    --faint: #63636f;
+    --accent: #f5a524;
+    --accent-soft: rgba(245, 165, 36, 0.12);
+    --accent-line: rgba(245, 165, 36, 0.28);
+    --violet: #8b7bf0;
+    --radius: 14px;
+    --maxw: 1080px;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: "Space Grotesk", system-ui, sans-serif;
+    --sans: "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(900px 500px at 78% -8%, rgba(245,165,36,0.10), transparent 60%),
+      radial-gradient(700px 500px at 8% 5%, rgba(139,123,240,0.08), transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+  a { color: inherit; text-decoration: none; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(10,10,13,0.72);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { font-family: var(--display); font-weight: 700; font-size: 1.02rem; letter-spacing: -0.01em; }
+  .brand span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 26px; }
+  .nav-links a { font-size: 0.9rem; color: var(--muted); transition: color .18s; }
+  .nav-links a:hover { color: var(--text); }
+  .btn-resume {
+    font-family: var(--mono); font-size: 0.8rem; color: var(--accent) !important;
+    border: 1px solid var(--accent-line); padding: 7px 14px; border-radius: 8px;
+    transition: background .18s, border-color .18s;
+  }
+  .btn-resume:hover { background: var(--accent-soft); border-color: var(--accent); }
+  @media (max-width: 680px){ .nav-links a.hide-sm { display:none; } }
+
+  /* HERO */
+  header.hero { padding: 92px 0 70px; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 22px;
+    display: inline-flex; align-items: center; gap: 9px;
+  }
+  .eyebrow::before { content:""; width: 26px; height: 1px; background: var(--accent-line); }
+  h1 {
+    font-family: var(--display); font-weight: 700;
+    font-size: clamp(2.5rem, 6vw, 4.1rem); line-height: 1.04;
+    letter-spacing: -0.025em; margin-bottom: 22px;
+  }
+  h1 .grad { color: var(--accent); }
+  .lede { font-size: clamp(1.05rem, 2vw, 1.22rem); color: var(--muted); max-width: 640px; margin-bottom: 34px; }
+  .lede strong { color: var(--text); font-weight: 600; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 46px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 0.92rem; font-weight: 500; padding: 12px 20px; border-radius: 10px;
+    transition: transform .15s, background .18s, border-color .18s;
+  }
+  .btn-primary { background: var(--accent); color: #1a1206; font-weight: 600; }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-ghost { border: 1px solid var(--border); color: var(--text); background: var(--surface); }
+  .btn-ghost:hover { border-color: var(--faint); transform: translateY(-2px); }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 14px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: 12px; padding: 14px 18px; min-width: 130px;
+  }
+  .stat .n { font-family: var(--display); font-weight: 700; font-size: 1.5rem; color: var(--text); }
+  .stat .n b { color: var(--accent); }
+  .stat .l { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+  /* SECTION */
+  section { padding: 60px 0; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 34px; }
+  .sec-num { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); }
+  .sec-title { font-family: var(--display); font-weight: 600; font-size: 1.7rem; letter-spacing: -0.02em; }
+  .sec-line { flex: 1; height: 1px; background: var(--border-soft); align-self: center; }
+
+  /* PROJECTS */
+  .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .card {
+    background: linear-gradient(180deg, var(--surface), var(--bg-soft));
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 26px; position: relative; overflow: hidden;
+    transition: transform .2s, border-color .2s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--accent-line); }
+  .card.flagship { grid-column: 1 / -1; }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 6px; }
+  .card h3 { font-family: var(--display); font-weight: 600; font-size: 1.32rem; letter-spacing: -0.015em; }
+  .flagship h3 { font-size: 1.62rem; }
+  .tag-flag {
+    font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--accent); border: 1px solid var(--accent-line); border-radius: 999px;
+    padding: 4px 11px; white-space: nowrap; background: var(--accent-soft);
+  }
+  .card .role { font-family: var(--mono); font-size: 0.8rem; color: var(--faint); margin-bottom: 16px; }
+  .card .desc { color: var(--muted); font-size: 0.96rem; margin-bottom: 18px; }
+  .card .desc b { color: var(--text); font-weight: 600; }
+  .feat { list-style: none; display: grid; gap: 9px; margin-bottom: 20px; }
+  .flagship .feat { grid-template-columns: 1fr 1fr; gap: 9px 28px; }
+  @media (max-width: 720px){ .flagship .feat { grid-template-columns: 1fr; } }
+  .feat li { font-size: 0.9rem; color: var(--muted); padding-left: 20px; position: relative; }
+  .feat li::before { content: "▹"; position: absolute; left: 0; color: var(--accent); font-size: 0.85rem; }
+  .feat li b { color: var(--text); font-weight: 600; }
+  .stack { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip {
+    font-family: var(--mono); font-size: 0.74rem; color: var(--muted);
+    background: var(--surface-2); border: 1px solid var(--border-soft);
+    border-radius: 6px; padding: 4px 9px;
+  }
+  .media-slot {
+    margin-top: 20px; border: 1px dashed var(--border); border-radius: 10px;
+    background: repeating-linear-gradient(135deg, transparent, transparent 10px, rgba(255,255,255,0.012) 10px, rgba(255,255,255,0.012) 20px);
+    min-height: 64px; display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.78rem; color: var(--faint); gap: 8px;
+  }
+
+  /* SKILLS */
+  .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 720px){ .skills-grid { grid-template-columns: 1fr; } }
+  .skill-block { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 12px; padding: 20px 22px; }
+  .skill-block h4 { font-family: var(--mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 14px; }
+  .skill-block .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+
+  /* EXPERIENCE / ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 30px; }
+  @media (max-width: 760px){ .about-grid { grid-template-columns: 1fr; } }
+  .about p { color: var(--muted); margin-bottom: 16px; }
+  .about p b { color: var(--text); }
+  .xp { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 12px; padding: 22px; }
+  .xp-item { padding: 14px 0; border-bottom: 1px solid var(--border-soft); }
+  .xp-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .xp-item:first-child { padding-top: 0; }
+  .xp-role { font-weight: 600; font-size: 0.97rem; }
+  .xp-co { font-size: 0.86rem; color: var(--muted); }
+  .xp-date { font-family: var(--mono); font-size: 0.76rem; color: var(--faint); margin-top: 3px; }
+
+  /* CONTACT */
+  .contact { text-align: center; padding: 80px 0 40px; }
+  .contact h2 { font-family: var(--display); font-weight: 700; font-size: clamp(1.9rem, 4vw, 2.7rem); letter-spacing: -0.02em; margin-bottom: 16px; }
+  .contact p { color: var(--muted); max-width: 480px; margin: 0 auto 30px; }
+  .links-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+  .link-pill {
+    display: inline-flex; align-items: center; gap: 9px; font-size: 0.92rem;
+    border: 1px solid var(--border); background: var(--surface); border-radius: 10px;
+    padding: 12px 20px; transition: border-color .18s, transform .15s, background .18s;
+  }
+  .link-pill:hover { border-color: var(--accent-line); background: var(--accent-soft); transform: translateY(-2px); }
+  .link-pill svg { width: 17px; height: 17px; }
+
+  footer { border-top: 1px solid var(--border-soft); padding: 26px 0; }
+  .foot-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .foot-inner span { font-family: var(--mono); font-size: 0.78rem; color: var(--faint); }
+
+  /* reveal */
+  .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+  .js .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce){ .js .reveal { opacity:1; transform:none; } html{scroll-behavior:auto;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">Keaton<span>.</span>VanPatten</a>
+    <div class="nav-links">
+      <a class="hide-sm" href="#work">Work</a>
+      <a class="hide-sm" href="#skills">Skills</a>
+      <a class="hide-sm" href="#contact">Contact</a>
+      <a class="btn-resume" href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap" id="top">
+  <div class="eyebrow">Full-Stack &amp; AI Engineer</div>
+  <h1>I build <span class="grad">AI-powered tools</span><br/>that actually ship.</h1>
+  <p class="lede">
+    Self-taught software engineer focused on <strong>LLM orchestration, agent systems, and desktop AI platforms</strong>.
+    I built and deployed a 200+ endpoint AI companion platform solo — backend, frontend, infrastructure, and the model routing that powers it.
+  </p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#work">View my work →</a>
+    <a class="btn btn-ghost" href="mailto:keatonvp123@gmail.com">Get in touch</a>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="n"><b>200+</b></div><div class="l">API endpoints, built solo</div></div>
+    <div class="stat"><div class="n"><b>4+</b></div><div class="l">LLM providers routed</div></div>
+    <div class="stat"><div class="n">3-tier</div><div class="l">model dispatch system</div></div>
+    <div class="stat"><div class="n">Full</div><div class="l">stack → infra → AI</div></div>
+  </div>
+</header>
+
+<section id="work" class="wrap">
+  <div class="sec-head reveal">
+    <span class="sec-num">01</span>
+    <span class="sec-title">Selected Work</span>
+    <span class="sec-line"></span>
+  </div>
+
+  <div class="projects">
+
+    <article class="card flagship reveal">
+      <div class="card-top">
+        <h3>Companion Hub</h3>
+        <span class="tag-flag">Flagship</span>
+      </div>
+      <div class="role">AI companion desktop platform · solo build · 2025–present</div>
+      <p class="desc">
+        A full-stack <b>AI companion desktop app</b> with 200+ API endpoints — built end to end.
+        FastAPI backend, Svelte 5 frontend, wrapped in Electron and shipped to Android.
+      </p>
+      <ul class="feat">
+        <li><b>Tiered multi-model router</b> across Claude, DeepSeek, Ollama &amp; OpenRouter — dispatches by task complexity and cost, with automatic local fallback.</li>
+        <li><b>Agent orchestration</b> — rule-based dispatch classifier, DeepSeek planning engine, and a background plan executor with phase tracking.</li>
+        <li><b>Real-time token streaming (SSE)</b> across chat, narrative &amp; meeting modes with live token-by-token rendering.</li>
+        <li><b>Tool-execution engine</b> — parses LLM output into file / git / shell actions with path-safety and destructive-command blocking.</li>
+        <li><b>Voice I/O</b> — Whisper / OpenAI / Deepgram STT and ElevenLabs TTS behind a pluggable provider interface.</li>
+        <li><b>Local image generation</b> — Stable Diffusion via DirectML on AMD GPU with VRAM-aware GPU locking.</li>
+      </ul>
+      <div class="stack">
+        <span class="chip">Python 3.12</span><span class="chip">FastAPI</span><span class="chip">Svelte 5</span>
+        <span class="chip">Electron 35</span><span class="chip">PostgreSQL</span><span class="chip">Ollama</span>
+        <span class="chip">DeepSeek</span><span class="chip">Capacitor</span><span class="chip">Tailscale</span>
+      </div>
+    </article>
+
+    <article class="card reveal">
+      <div class="card-top"><h3>OpenClaw AI Gateway</h3></div>
+      <div class="role">Multi-provider AI infrastructure · 2025–present</div>
+      <p class="desc">Deployed and ran <b>three isolated gateway instances</b> for production AI workflows, each with its own workspace and agent config.</p>
+      <ul class="feat">
+        <li><b>Model routing</b> across DeepSeek, Anthropic (OAuth), Ollama, HuggingFace, Venice AI &amp; OpenRouter.</li>
+        <li><b>Vector memory</b> with LanceDB + nomic-embed for persistent agent context.</li>
+        <li><b>Auto-restart lifecycle</b> and scoped execution-approval tokens over a local socket.</li>
+      </ul>
+      <div class="stack">
+        <span class="chip">Node.js</span><span class="chip">WebSocket</span><span class="chip">OAuth 2.0</span>
+        <span class="chip">LanceDB</span><span class="chip">SQLite</span>
+      </div>
+    </article>
+
+    <article class="card reveal">
+      <div class="card-top"><h3>Tiered Model Router</h3></div>
+      <div class="role">Production cost/capability dispatch system</div>
+      <p class="desc">A routing layer that <b>maximizes capability while minimizing spend</b> — the core that makes running agents affordable.</p>
+      <ul class="feat">
+        <li><b>3-tier routing:</b> local Ollama (free) → DeepSeek (cheap cloud) → Claude (premium, capped).</li>
+        <li><b>Smart dispatch classifier</b> with 7 rule sets and tiered confidence scoring.</li>
+        <li><b>Fallback chains</b> + per-project token counting and cost governance.</li>
+      </ul>
+      <div class="stack">
+        <span class="chip">Python</span><span class="chip">LLM routing</span><span class="chip">Cost modeling</span>
+      </div>
+    </article>
+
+    <article class="card reveal">
+      <div class="card-top"><h3>WorkTeams</h3></div>
+      <div class="role">Self-hosted Teams alternative · Electron + Graph · 2026</div>
+      <p class="desc">A <b>Microsoft Teams-style desktop app</b> for a Windows Server 2016 environment — installs from USB and runs locally with no internet connection required.</p>
+      <ul class="feat">
+        <li><b>Real-time chat</b> over socket.io, plus calls, video &amp; a shared calendar.</li>
+        <li><b>Microsoft Graph + MSAL</b> identity — pulls directory profiles, chats &amp; meetings from the org.</li>
+        <li><b>Admin panel</b> + Squirrel installer for one-click on-prem deployment.</li>
+      </ul>
+      <div class="stack">
+        <span class="chip">React 18</span><span class="chip">Electron 33</span><span class="chip">TypeScript</span>
+        <span class="chip">socket.io</span><span class="chip">MSAL</span><span class="chip">Microsoft Graph</span>
+      </div>
+    </article>
+
+    <article class="card reveal">
+      <div class="card-top"><h3>Mortgage Workflow Automation</h3></div>
+      <div class="role">Internal tools · Van Patten Mortgage Group · 2024–present</div>
+      <p class="desc">Custom <b>AI tools that automate real business workflows</b> at a mortgage firm — used daily.</p>
+      <ul class="feat">
+        <li><b>AI email triage</b> via Microsoft Graph (MSAL OAuth) — categorization, priority scoring, reply drafts.</li>
+        <li><b>Email-to-task extraction</b> with an AI review &amp; suggestion pipeline.</li>
+        <li><b>AI project trackers</b> with automated code review and task triage.</li>
+      </ul>
+      <div class="stack">
+        <span class="chip">Microsoft Graph</span><span class="chip">MSAL OAuth</span><span class="chip">Python</span><span class="chip">Automation</span>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section id="skills" class="wrap">
+  <div class="sec-head reveal">
+    <span class="sec-num">02</span>
+    <span class="sec-title">Toolbox</span>
+    <span class="sec-line"></span>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-block reveal">
+      <h4>Languages</h4>
+      <div class="chips">
+        <span class="chip">Python</span><span class="chip">JavaScript</span><span class="chip">TypeScript</span>
+        <span class="chip">SQL</span><span class="chip">HTML/CSS</span><span class="chip">PowerShell</span>
+      </div>
+    </div>
+    <div class="skill-block reveal">
+      <h4>Backend &amp; Infra</h4>
+      <div class="chips">
+        <span class="chip">FastAPI</span><span class="chip">REST APIs</span><span class="chip">WebSockets / SSE</span>
+        <span class="chip">OAuth / JWT</span><span class="chip">PostgreSQL</span><span class="chip">Microsoft Graph</span>
+        <span class="chip">Docker</span><span class="chip">Tailscale</span>
+      </div>
+    </div>
+    <div class="skill-block reveal">
+      <h4>Frontend &amp; Desktop</h4>
+      <div class="chips">
+        <span class="chip">Svelte 5</span><span class="chip">Vite</span><span class="chip">Tailwind</span>
+        <span class="chip">Electron</span><span class="chip">Capacitor</span><span class="chip">PWA</span>
+      </div>
+    </div>
+    <div class="skill-block reveal">
+      <h4>AI / ML</h4>
+      <div class="chips">
+        <span class="chip">LLM integration</span><span class="chip">Model routing</span><span class="chip">Agent orchestration</span>
+        <span class="chip">RAG / embeddings</span><span class="chip">Whisper STT</span><span class="chip">ElevenLabs TTS</span>
+        <span class="chip">Stable Diffusion</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="wrap">
+  <div class="sec-head reveal">
+    <span class="sec-num">03</span>
+    <span class="sec-title">About</span>
+    <span class="sec-line"></span>
+  </div>
+  <div class="about-grid">
+    <div class="about reveal">
+      <p>I'm a <b>self-taught full-stack engineer</b> who got here by building. I started in IT and systems support, taught myself to code, and now ship production AI software end to end — from the FastAPI routes to the Svelte UI to the model-routing layer that keeps it affordable.</p>
+      <p>I work with LLMs, agents, and orchestration every day, with the same tools real teams use: Claude Code, DeepSeek, Ollama. I'm looking for a role where I can <b>build custom AI tools and internal platforms</b> for real business problems.</p>
+    </div>
+    <div class="xp reveal">
+      <div class="xp-item">
+        <div class="xp-role">Systems Manager &amp; Software Developer</div>
+        <div class="xp-co">HRBC Inc. / Van Patten Mortgage Group</div>
+        <div class="xp-date">Sept 2020 – Present · Rancho Cordova, CA</div>
+      </div>
+      <div class="xp-item">
+        <div class="xp-role">Utility Technician</div>
+        <div class="xp-co">MP NexLevel</div>
+        <div class="xp-date">2018 – 2020</div>
+      </div>
+      <div class="xp-item">
+        <div class="xp-role">Certifications</div>
+        <div class="xp-co">Google IT Support · Google Computer Networking</div>
+        <div class="xp-date">+ self-taught full-stack &amp; AI engineering</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="wrap contact">
+  <h2 class="reveal">Let's build something.</h2>
+  <p class="reveal">Open to full-stack, AI, and platform engineering roles — remote or Sacramento-area.</p>
+  <div class="links-row reveal">
+    <a class="link-pill" href="mailto:keatonvp123@gmail.com">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      keatonvp123@gmail.com
+    </a>
+    <a class="link-pill" href="https://github.com/Peacho97" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.5 2.87 8.32 6.84 9.67.5.1.68-.22.68-.49l-.01-1.7c-2.78.62-3.37-1.21-3.37-1.21-.46-1.18-1.11-1.49-1.11-1.49-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.36 1.11 2.94.85.09-.66.35-1.11.63-1.37-2.22-.26-4.55-1.14-4.55-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9l-.01 2.82c0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"/></svg>
+      github.com/Peacho97
+    </a>
+    <a class="link-pill" href="https://www.linkedin.com/in/keaton-van-patten-227640272" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 18.34V9.94H5.67v8.4h2.67zM7 8.76a1.55 1.55 0 1 0 0-3.1 1.55 1.55 0 0 0 0 3.1zm11.34 9.58v-4.6c0-2.46-1.31-3.6-3.06-3.6-1.41 0-2.04.78-2.39 1.32v-1.13h-2.67c.04.75 0 8.4 0 8.4h2.67v-4.69c0-.24.02-.48.09-.65.19-.48.63-.98 1.36-.98.96 0 1.34.73 1.34 1.8v4.52h2.66z"/></svg>
+      LinkedIn
+    </a>
+    <a class="link-pill" href="Keaton-Van-Patten-Resume.pdf">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 3h9l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M12 11v6m0 0-2.5-2.5M12 17l2.5-2.5"/></svg>
+      Résumé (PDF)
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span>© <span id="yr"></span> Keaton Van Patten</span>
+    <span>Built from scratch — not a template.</span>
+  </div>
+</footer>
+
+<script>
+  document.documentElement.classList.add('js');
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
