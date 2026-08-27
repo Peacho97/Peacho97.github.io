@@ -2,440 +2,884 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Keaton Van Patten — Full-Stack & AI Engineer</title>
-<meta name="description" content="Full-stack software engineer building LLM-powered tools, agent systems, and desktop AI platforms." />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keaton Van Patten — Forward Deployed / Applied AI Engineer</title>
+<meta name="description" content="Keaton Van Patten builds production AI systems solo, end to end — a clinic scheduler, a retrieval engine for coding agents, a self-healing incident desk, and the cost governance underneath them." />
+<meta name="theme-color" content="#08191d" />
+<meta property="og:title" content="Keaton Van Patten — Forward Deployed / Applied AI Engineer" />
+<meta property="og:description" content="Production AI systems, built solo and end to end — a clinic scheduler, a retrieval engine for coding agents, a self-healing incident desk." />
+<meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
 <style>
-  :root {
-    --bg: #0a0a0d;
-    --bg-soft: #101016;
-    --surface: #14141c;
-    --surface-2: #191923;
-    --border: #25252f;
-    --border-soft: #1d1d26;
-    --text: #ededf2;
-    --muted: #9595a3;
-    --faint: #63636f;
-    --accent: #f5a524;
-    --accent-soft: rgba(245, 165, 36, 0.12);
-    --accent-line: rgba(245, 165, 36, 0.28);
-    --violet: #8b7bf0;
-    --radius: 14px;
-    --maxw: 1080px;
-    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --display: "Space Grotesk", system-ui, sans-serif;
-    --sans: "Inter", system-ui, -apple-system, sans-serif;
-  }
+/* ============================================================
+   TOKENS
+   Palette: deep petrol ground, brass for figures, coral for the
+   corrections section, mint for the source tags.
+   ============================================================ */
+:root{
+  --ink:        #08191d;
+  --ink-2:      #0b2128;
+  --panel:      #0e2a32;
+  --panel-2:    #113440;
+  --rule:       #1c4450;
+  --rule-soft:  #143540;
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(900px 500px at 78% -8%, rgba(245,165,36,0.10), transparent 60%),
-      radial-gradient(700px 500px at 8% 5%, rgba(139,123,240,0.08), transparent 55%);
-    pointer-events: none;
-    z-index: 0;
-  }
-  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
-  a { color: inherit; text-decoration: none; }
+  --paper:      #e9f2f0;
+  --paper-2:    #b6ccca;
+  --paper-3:    #7d9a9b;
 
-  /* NAV */
-  nav {
-    position: sticky; top: 0; z-index: 50;
-    backdrop-filter: blur(12px);
-    background: rgba(10,10,13,0.72);
-    border-bottom: 1px solid var(--border-soft);
-  }
-  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .brand { font-family: var(--display); font-weight: 700; font-size: 1.02rem; letter-spacing: -0.01em; }
-  .brand span { color: var(--accent); }
-  .nav-links { display: flex; align-items: center; gap: 26px; }
-  .nav-links a { font-size: 0.9rem; color: var(--muted); transition: color .18s; }
-  .nav-links a:hover { color: var(--text); }
-  .btn-resume {
-    font-family: var(--mono); font-size: 0.8rem; color: var(--accent) !important;
-    border: 1px solid var(--accent-line); padding: 7px 14px; border-radius: 8px;
-    transition: background .18s, border-color .18s;
-  }
-  .btn-resume:hover { background: var(--accent-soft); border-color: var(--accent); }
-  @media (max-width: 680px){ .nav-links a.hide-sm { display:none; } }
+  --brass:      #e6a53c;
+  --brass-dim:  rgba(230,165,60,.14);
+  --brass-line: rgba(230,165,60,.34);
+  --coral:      #ec7357;
+  --coral-dim:  rgba(236,115,87,.13);
+  --mint:       #6fd0ae;
 
-  /* HERO */
-  header.hero { padding: 92px 0 70px; }
-  .eyebrow {
-    font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em;
-    color: var(--accent); text-transform: uppercase; margin-bottom: 22px;
-    display: inline-flex; align-items: center; gap: 9px;
-  }
-  .eyebrow::before { content:""; width: 26px; height: 1px; background: var(--accent-line); }
-  h1 {
-    font-family: var(--display); font-weight: 700;
-    font-size: clamp(2.5rem, 6vw, 4.1rem); line-height: 1.04;
-    letter-spacing: -0.025em; margin-bottom: 22px;
-  }
-  h1 .grad { color: var(--accent); }
-  .lede { font-size: clamp(1.05rem, 2vw, 1.22rem); color: var(--muted); max-width: 640px; margin-bottom: 34px; }
-  .lede strong { color: var(--text); font-weight: 600; }
-  .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 46px; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 9px;
-    font-size: 0.92rem; font-weight: 500; padding: 12px 20px; border-radius: 10px;
-    transition: transform .15s, background .18s, border-color .18s;
-  }
-  .btn-primary { background: var(--accent); color: #1a1206; font-weight: 600; }
-  .btn-primary:hover { transform: translateY(-2px); }
-  .btn-ghost { border: 1px solid var(--border); color: var(--text); background: var(--surface); }
-  .btn-ghost:hover { border-color: var(--faint); transform: translateY(-2px); }
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:    "Public Sans", system-ui, -apple-system, sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  .stats { display: flex; flex-wrap: wrap; gap: 14px; }
-  .stat {
-    background: var(--surface); border: 1px solid var(--border-soft);
-    border-radius: 12px; padding: 14px 18px; min-width: 130px;
-  }
-  .stat .n { font-family: var(--display); font-weight: 700; font-size: 1.5rem; color: var(--text); }
-  .stat .n b { color: var(--accent); }
-  .stat .l { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  --gutter: clamp(1.15rem, 4.5vw, 5.5rem);
+  --maxw:   1520px;
+  --prose:  68ch;
+  --block:  clamp(3.75rem, 8vw, 7.5rem);
+  --r:      3px;
+}
 
-  /* SECTION */
-  section { padding: 60px 0; }
-  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 34px; }
-  .sec-num { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); }
-  .sec-title { font-family: var(--display); font-weight: 600; font-size: 1.7rem; letter-spacing: -0.02em; }
-  .sec-line { flex: 1; height: 1px; background: var(--border-soft); align-self: center; }
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--body);
+  font-size:clamp(1rem, .96rem + .18vw, 1.075rem);
+  line-height:1.62;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img,svg{ max-width:100%; }
+a{ color:inherit; text-decoration:none; }
+:focus-visible{ outline:2px solid var(--brass); outline-offset:3px; border-radius:2px; }
 
-  /* PROJECTS */
-  .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-  .card {
-    background: linear-gradient(180deg, var(--surface), var(--bg-soft));
-    border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 26px; position: relative; overflow: hidden;
-    transition: transform .2s, border-color .2s;
-  }
-  .card:hover { transform: translateY(-4px); border-color: var(--accent-line); }
-  .card.flagship { grid-column: 1 / -1; }
-  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 6px; }
-  .card h3 { font-family: var(--display); font-weight: 600; font-size: 1.32rem; letter-spacing: -0.015em; }
-  .flagship h3 { font-size: 1.62rem; }
-  .tag-flag {
-    font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
-    color: var(--accent); border: 1px solid var(--accent-line); border-radius: 999px;
-    padding: 4px 11px; white-space: nowrap; background: var(--accent-soft);
-  }
-  .card .role { font-family: var(--mono); font-size: 0.8rem; color: var(--faint); margin-bottom: 16px; }
-  .card .desc { color: var(--muted); font-size: 0.96rem; margin-bottom: 18px; }
-  .card .desc b { color: var(--text); font-weight: 600; }
-  .feat { list-style: none; display: grid; gap: 9px; margin-bottom: 20px; }
-  .flagship .feat { grid-template-columns: 1fr 1fr; gap: 9px 28px; }
-  @media (max-width: 720px){ .flagship .feat { grid-template-columns: 1fr; } }
-  .feat li { font-size: 0.9rem; color: var(--muted); padding-left: 20px; position: relative; }
-  .feat li::before { content: "▹"; position: absolute; left: 0; color: var(--accent); font-size: 0.85rem; }
-  .feat li b { color: var(--text); font-weight: 600; }
-  .stack { display: flex; flex-wrap: wrap; gap: 7px; }
-  .chip {
-    font-family: var(--mono); font-size: 0.74rem; color: var(--muted);
-    background: var(--surface-2); border: 1px solid var(--border-soft);
-    border-radius: 6px; padding: 4px 9px;
-  }
-  .media-slot {
-    margin-top: 20px; border: 1px dashed var(--border); border-radius: 10px;
-    background: repeating-linear-gradient(135deg, transparent, transparent 10px, rgba(255,255,255,0.012) 10px, rgba(255,255,255,0.012) 20px);
-    min-height: 64px; display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono); font-size: 0.78rem; color: var(--faint); gap: 8px;
-  }
+/* graph-paper ground */
+body::before{
+  content:"";
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.026) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.026) 1px, transparent 1px);
+  background-size:clamp(38px, 5vw, 64px) clamp(38px, 5vw, 64px);
+  mask-image:radial-gradient(120% 90% at 50% 0%, #000 25%, transparent 85%);
+}
 
-  /* SKILLS */
-  .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  @media (max-width: 720px){ .skills-grid { grid-template-columns: 1fr; } }
-  .skill-block { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 12px; padding: 20px 22px; }
-  .skill-block h4 { font-family: var(--mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 14px; }
-  .skill-block .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+/* ---------- fluid shell: full-bleed band + centered inner ---------- */
+.band{ position:relative; z-index:1; width:100%; }
+.band--alt{ background:var(--ink-2); border-block:1px solid var(--rule-soft); }
+.pad{ padding-inline:var(--gutter); }
+.inner{ width:100%; max-width:var(--maxw); margin-inline:auto; }
+.prose{ max-width:var(--prose); }
 
-  /* EXPERIENCE / ABOUT */
-  .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 30px; }
-  @media (max-width: 760px){ .about-grid { grid-template-columns: 1fr; } }
-  .about p { color: var(--muted); margin-bottom: 16px; }
-  .about p b { color: var(--text); }
-  .xp { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 12px; padding: 22px; }
-  .xp-item { padding: 14px 0; border-bottom: 1px solid var(--border-soft); }
-  .xp-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .xp-item:first-child { padding-top: 0; }
-  .xp-role { font-weight: 600; font-size: 0.97rem; }
-  .xp-co { font-size: 0.86rem; color: var(--muted); }
-  .xp-date { font-family: var(--mono); font-size: 0.76rem; color: var(--faint); margin-top: 3px; }
+/* ============================================================ MASTHEAD */
+.masthead{
+  position:sticky; top:0; z-index:60;
+  background:rgba(8,25,29,.82);
+  backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid var(--rule-soft);
+}
+.masthead-in{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1.25rem; min-height:60px; flex-wrap:wrap;
+}
+.sig{ font-family:var(--display); font-weight:800; font-size:1.02rem; letter-spacing:-.02em; }
+.sig i{ font-style:normal; color:var(--brass); }
+.mast-nav{ display:flex; align-items:center; gap:clamp(.85rem, 2vw, 1.75rem); flex-wrap:wrap; }
+.mast-nav a{
+  font-family:var(--mono); font-size:.775rem; letter-spacing:.03em;
+  color:var(--paper-3); transition:color .18s;
+}
+.mast-nav a:hover{ color:var(--paper); }
+.mast-cta{
+  color:var(--brass) !important; border:1px solid var(--brass-line);
+  padding:.4rem .75rem; border-radius:var(--r);
+}
+.mast-cta:hover{ background:var(--brass-dim); }
+@media (max-width:600px){ .mast-hide{ display:none; } }
 
-  /* CONTACT */
-  .contact { text-align: center; padding: 80px 0 40px; }
-  .contact h2 { font-family: var(--display); font-weight: 700; font-size: clamp(1.9rem, 4vw, 2.7rem); letter-spacing: -0.02em; margin-bottom: 16px; }
-  .contact p { color: var(--muted); max-width: 480px; margin: 0 auto 30px; }
-  .links-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
-  .link-pill {
-    display: inline-flex; align-items: center; gap: 9px; font-size: 0.92rem;
-    border: 1px solid var(--border); background: var(--surface); border-radius: 10px;
-    padding: 12px 20px; transition: border-color .18s, transform .15s, background .18s;
-  }
-  .link-pill:hover { border-color: var(--accent-line); background: var(--accent-soft); transform: translateY(-2px); }
-  .link-pill svg { width: 17px; height: 17px; }
+/* ============================================================ HERO */
+.hero{ padding-block:clamp(3rem, 7vw, 6.5rem) clamp(3rem, 6vw, 5.5rem); }
+.hero-grid{
+  display:grid; gap:clamp(2rem, 4vw, 4.5rem);
+  grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  align-items:start;
+}
+@media (max-width:960px){ .hero-grid{ grid-template-columns:1fr; } }
 
-  footer { border-top: 1px solid var(--border-soft); padding: 26px 0; }
-  .foot-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-  .foot-inner span { font-family: var(--mono); font-size: 0.78rem; color: var(--faint); }
+.eyebrow{
+  font-family:var(--mono); font-size:.75rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--brass);
+  display:flex; align-items:center; gap:.7rem; margin-bottom:1.4rem;
+}
+.eyebrow::after{ content:""; flex:1; height:1px; background:var(--brass-line); max-width:9rem; }
 
-  /* reveal */
-  .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
-  .js .reveal.in { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce){ .js .reveal { opacity:1; transform:none; } html{scroll-behavior:auto;} }
+h1{
+  font-family:var(--display); font-weight:800;
+  font-size:clamp(2.35rem, 6.2vw, 4.6rem);
+  line-height:1.02; letter-spacing:-.035em;
+  text-wrap:balance;
+}
+h1 em{ font-style:normal; color:var(--brass); }
+h1 .against{ color:var(--paper-2); display:block; font-size:.5em; line-height:1.14; letter-spacing:-.02em; margin-top:.55rem; font-weight:700; }
+.hero-lede{ color:var(--paper-2); margin-top:1.6rem; font-size:clamp(1.02rem,.98rem + .3vw,1.2rem); max-width:56ch; }
+.hero-lede b{ color:var(--paper); font-weight:600; }
+
+.actions{ display:flex; flex-wrap:wrap; gap:.7rem; margin-top:2rem; }
+.act{
+  display:inline-flex; align-items:center; gap:.55rem;
+  font-family:var(--mono); font-size:.83rem; letter-spacing:.01em;
+  padding:.72rem 1.1rem; border-radius:var(--r); border:1px solid var(--rule);
+  transition:transform .16s ease, background .18s, border-color .18s;
+}
+.act:hover{ transform:translateY(-2px); }
+.act--solid{ background:var(--brass); color:#22160a; border-color:var(--brass); font-weight:600; }
+.act--solid:hover{ background:#f2b95a; border-color:#f2b95a; }
+.act--ghost{ background:var(--panel); color:var(--paper); }
+.act--ghost:hover{ border-color:var(--brass-line); background:var(--panel-2); }
+
+/* ---------- the ledger ---------- */
+.ledger{
+  border:1px solid var(--rule); border-radius:var(--r);
+  background:linear-gradient(180deg, var(--panel), var(--ink-2));
+  overflow:hidden;
+}
+.ledger-head{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  padding:.7rem 1rem; border-bottom:1px solid var(--rule);
+  background:rgba(255,255,255,.02);
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--paper-3);
+}
+.ledger-head b{ color:var(--brass); font-weight:500; }
+.row{
+  display:grid; gap:.35rem 1rem;
+  grid-template-columns:minmax(6.5rem,auto) minmax(0,1fr) auto;
+  align-items:baseline;
+  padding:.85rem 1rem;
+  border-bottom:1px solid var(--rule-soft);
+}
+.row:last-child{ border-bottom:none; }
+.row:hover{ background:rgba(230,165,60,.035); }
+.fig{
+  font-family:var(--mono); font-weight:600; font-variant-numeric:tabular-nums;
+  font-size:clamp(1.1rem,1rem + .5vw,1.45rem); color:var(--brass); letter-spacing:-.02em;
+  white-space:nowrap;
+}
+.lab{ color:var(--paper-2); font-size:.925rem; line-height:1.45; }
+.src{
+  font-family:var(--mono); font-size:.64rem; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--mint); border:1px solid rgba(111,208,174,.28); border-radius:999px;
+  padding:.14rem .5rem; white-space:nowrap; align-self:center;
+}
+@media (max-width:520px){
+  .row{ grid-template-columns:minmax(0,1fr) auto; }
+  .fig{ grid-column:1 / -1; }
+}
+
+/* ============================================================ SECTION HEADS */
+.sec{ padding-block:var(--block); }
+.sec-head{ margin-bottom:clamp(2rem,3.5vw,3.25rem); }
+.kicker{
+  font-family:var(--mono); font-size:.71rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--brass); display:block; margin-bottom:.75rem;
+}
+.kicker--coral{ color:var(--coral); }
+h2{
+  font-family:var(--display); font-weight:700;
+  font-size:clamp(1.75rem,1.3rem + 2vw,2.9rem); line-height:1.06; letter-spacing:-.03em;
+  text-wrap:balance;
+}
+.sec-sub{ color:var(--paper-3); margin-top:.9rem; max-width:62ch; }
+.sec-sub b{ color:var(--paper-2); font-weight:500; }
+
+/* ============================================================ FIELD REPORT */
+.beats{
+  display:grid; gap:clamp(1rem,2vw,1.6rem);
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+  counter-reset:beat;
+  margin-bottom:clamp(1.5rem,3vw,2.4rem);
+}
+.beat{
+  border-top:2px solid var(--rule);
+  padding-top:1.1rem; position:relative;
+  transition:border-color .25s;
+}
+.beat:hover{ border-top-color:var(--brass); }
+.beat::before{
+  counter-increment:beat; content:counter(beat,decimal-leading-zero);
+  font-family:var(--mono); font-size:.72rem; color:var(--brass); letter-spacing:.1em;
+  display:block; margin-bottom:.5rem;
+}
+.beat h3{
+  font-family:var(--display); font-weight:700; font-size:1.12rem;
+  letter-spacing:-.015em; margin-bottom:.5rem;
+}
+.beat p{ color:var(--paper-3); font-size:.925rem; }
+.beat p + p{ margin-top:.6rem; }
+.beat b{ color:var(--paper-2); font-weight:600; }
+
+.audit{
+  border-left:2px solid var(--coral);
+  background:var(--coral-dim);
+  padding:clamp(1.1rem,2.2vw,1.6rem) clamp(1.1rem,2.5vw,1.8rem);
+  border-radius:0 var(--r) var(--r) 0;
+  max-width:var(--prose);
+}
+.audit h3{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--coral); margin-bottom:.7rem;
+}
+.audit p{ color:var(--paper-2); font-size:.94rem; }
+.audit p + p{ margin-top:.7rem; }
+.audit b{ color:var(--paper); font-weight:600; }
+
+/* ============================================================ SYSTEMS */
+.systems{
+  display:grid; gap:clamp(1rem,1.8vw,1.5rem);
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+}
+.sys{
+  background:linear-gradient(180deg, var(--panel), var(--ink-2));
+  border:1px solid var(--rule-soft); border-radius:var(--r);
+  padding:clamp(1.35rem,2.4vw,2rem);
+  display:flex; flex-direction:column; gap:1rem;
+  transition:border-color .22s, transform .22s;
+}
+.sys:hover{ border-color:var(--brass-line); transform:translateY(-3px); }
+.sys--wide{ grid-column:1 / -1; }
+@media (min-width:1180px){
+  .sys--wide{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:clamp(1.5rem,3vw,3rem); align-items:start; }
+  .sys--wide .sys-body{ display:contents; }
+}
+.sys-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+.sys h3{
+  font-family:var(--display); font-weight:700; letter-spacing:-.02em;
+  font-size:clamp(1.2rem,1.05rem + .5vw,1.55rem); line-height:1.15;
+}
+.sys-kind{
+  font-family:var(--mono); font-size:.64rem; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--paper-3); border:1px solid var(--rule); border-radius:999px; padding:.2rem .6rem;
+  white-space:nowrap;
+}
+.sys-kind--live{ color:var(--mint); border-color:rgba(111,208,174,.3); }
+.sys-lede{ color:var(--paper-2); font-size:.95rem; margin-top:.55rem; }
+.sys-lede b{ color:var(--paper); font-weight:600; }
+
+.facts{ list-style:none; display:grid; gap:.6rem; }
+.facts li{ position:relative; padding-left:1.1rem; font-size:.9rem; color:var(--paper-3); line-height:1.55; }
+.facts li::before{
+  content:""; position:absolute; left:0; top:.62em;
+  width:5px; height:5px; background:var(--brass); border-radius:1px;
+}
+.facts li b{ color:var(--paper-2); font-weight:600; }
+.facts li .num{ font-family:var(--mono); font-weight:600; color:var(--brass); font-variant-numeric:tabular-nums; }
+
+.caveat{
+  font-family:var(--mono); font-size:.72rem; line-height:1.5; color:var(--paper-3);
+  border-top:1px dashed var(--rule); padding-top:.75rem;
+}
+.caveat b{ color:var(--coral); font-weight:500; letter-spacing:.08em; text-transform:uppercase; font-size:.66rem; }
+
+.tags{ display:flex; flex-wrap:wrap; gap:.35rem; margin-top:auto; }
+.tag{
+  font-family:var(--mono); font-size:.7rem; color:var(--paper-3);
+  background:rgba(255,255,255,.03); border:1px solid var(--rule-soft);
+  border-radius:2px; padding:.22rem .5rem;
+}
+
+/* ============================================================ CORRECTIONS */
+.corrections{
+  display:grid; grid-template-columns:1fr;
+  border:1px solid var(--rule); border-radius:var(--r); overflow:hidden;
+  background:linear-gradient(180deg, rgba(236,115,87,.05), transparent 40%);
+}
+@media (min-width:1080px){
+  .corrections{ grid-template-columns:1fr 1fr; }
+  .cor:nth-child(odd){ border-right:1px solid var(--rule-soft); }
+  .cor:last-child{ grid-column:1 / -1; border-right:none; }
+  .cor:nth-last-child(2):nth-child(odd){ border-bottom:none; }
+}
+.cor{
+  display:grid; gap:.35rem 1.25rem;
+  grid-template-columns:minmax(7rem,auto) minmax(0,1fr);
+  padding:clamp(1rem,2vw,1.35rem) clamp(1rem,2.2vw,1.6rem);
+  border-bottom:1px solid var(--rule-soft);
+  align-items:baseline;
+}
+.cor:last-child{ border-bottom:none; }
+.cor-fig{
+  font-family:var(--mono); font-weight:600; font-variant-numeric:tabular-nums;
+  color:var(--coral); font-size:clamp(1rem,.95rem + .35vw,1.22rem); letter-spacing:-.02em;
+}
+.cor-txt{ color:var(--paper-3); font-size:.93rem; }
+.cor-txt b{ color:var(--paper-2); font-weight:600; }
+@media (max-width:640px){ .cor{ grid-template-columns:1fr; } }
+
+/* ============================================================ METHOD */
+.rules{
+  display:grid; gap:clamp(1rem,2vw,1.75rem);
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
+.rule{ border-top:1px solid var(--rule); padding-top:1.15rem; }
+.rule h3{
+  font-family:var(--display); font-weight:700; font-size:1.05rem;
+  letter-spacing:-.015em; margin-bottom:.55rem;
+}
+.rule p{ color:var(--paper-3); font-size:.9rem; }
+.rule code{ font-family:var(--mono); font-size:.86em; color:var(--paper-2); background:rgba(255,255,255,.045); border-radius:2px; padding:.05em .3em; }
+
+/* ============================================================ TOOLBOX + BACKGROUND */
+.split{
+  display:grid; gap:clamp(2rem,4vw,4rem);
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  align-items:start;
+}
+.kit{ display:grid; gap:1.25rem; }
+.kit-row h4{
+  font-family:var(--mono); font-size:.69rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--brass); margin-bottom:.6rem;
+}
+.kit-row .tags{ margin-top:0; }
+
+.timeline{ display:grid; gap:1.35rem; }
+.job{ border-left:1px solid var(--rule); padding-left:1.15rem; position:relative; }
+.job::before{
+  content:""; position:absolute; left:-4px; top:.55em;
+  width:7px; height:7px; background:var(--brass); border-radius:50%;
+}
+.job-role{ font-weight:600; font-size:1rem; }
+.job-org{ color:var(--paper-3); font-size:.9rem; }
+.job-when{ font-family:var(--mono); font-size:.72rem; color:var(--paper-3); letter-spacing:.06em; margin-top:.2rem; }
+.job p{ color:var(--paper-3); font-size:.9rem; margin-top:.5rem; }
+.job p b{ color:var(--paper-2); font-weight:600; }
+
+/* ============================================================ CONTACT */
+.contact{ padding-block:clamp(3.5rem,7vw,6.5rem); }
+.contact-grid{
+  display:grid; gap:clamp(1.5rem,3vw,3rem);
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  align-items:end;
+}
+.contact h2{ font-size:clamp(1.9rem,1.3rem + 2.6vw,3.4rem); }
+.contact p{ color:var(--paper-3); margin-top:1rem; max-width:44ch; }
+.links{ display:flex; flex-direction:column; gap:.6rem; }
+.link{
+  display:flex; align-items:center; gap:.8rem; justify-content:space-between;
+  border:1px solid var(--rule); border-radius:var(--r);
+  padding:.85rem 1.1rem; background:var(--panel);
+  font-family:var(--mono); font-size:.85rem;
+  transition:border-color .18s, background .18s, transform .16s;
+}
+.link:hover{ border-color:var(--brass-line); background:var(--panel-2); transform:translateX(3px); }
+.link span:last-child{ color:var(--brass); }
+
+footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
+.foot{
+  display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;
+  font-family:var(--mono); font-size:.72rem; color:var(--paper-3); letter-spacing:.04em;
+}
+
+/* ============================================================ MOTION */
+.js .rev{ opacity:0; transform:translateY(14px); transition:opacity .55s ease, transform .55s ease; }
+.js .rev.on{ opacity:1; transform:none; }
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  .js .rev{ opacity:1; transform:none; transition:none; }
+  .act:hover,.sys:hover,.link:hover{ transform:none; }
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="wrap nav-inner">
-    <a class="brand" href="#top">Keaton<span>.</span>VanPatten</a>
-    <div class="nav-links">
-      <a class="hide-sm" href="#work">Work</a>
-      <a class="hide-sm" href="#skills">Skills</a>
-      <a class="hide-sm" href="#contact">Contact</a>
-      <a class="btn-resume" href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
-    </div>
-  </div>
-</nav>
-
-<header class="hero wrap" id="top">
-  <div class="eyebrow">Full-Stack &amp; AI Engineer</div>
-  <h1>I build <span class="grad">AI-powered tools</span><br/>that actually ship.</h1>
-  <p class="lede">
-    Self-taught software engineer focused on <strong>LLM orchestration, agent systems, and desktop AI platforms</strong>.
-    I built and deployed a 200+ endpoint AI companion platform solo — backend, frontend, infrastructure, and the model routing that powers it.
-  </p>
-  <div class="cta-row">
-    <a class="btn btn-primary" href="#work">View my work →</a>
-    <a class="btn btn-ghost" href="mailto:keatonvp123@gmail.com">Get in touch</a>
-  </div>
-  <div class="stats">
-    <div class="stat"><div class="n"><b>200+</b></div><div class="l">API endpoints, built solo</div></div>
-    <div class="stat"><div class="n"><b>4+</b></div><div class="l">LLM providers routed</div></div>
-    <div class="stat"><div class="n">3-tier</div><div class="l">model dispatch system</div></div>
-    <div class="stat"><div class="n">Full</div><div class="l">stack → infra → AI</div></div>
-  </div>
+<header class="masthead">
+  <div class="pad"><div class="inner masthead-in">
+    <a class="sig" href="#top">Keaton Van Patten<i>.</i></a>
+    <nav class="mast-nav" aria-label="Sections">
+      <a class="mast-hide" href="#field">Field report</a>
+      <a class="mast-hide" href="#systems">Systems</a>
+      <a class="mast-hide" href="#corrections">Corrections</a>
+      <a class="mast-hide" href="#method">Method</a>
+      <a class="mast-cta" href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
+    </nav>
+  </div></div>
 </header>
 
-<section id="work" class="wrap">
-  <div class="sec-head reveal">
-    <span class="sec-num">01</span>
-    <span class="sec-title">Selected Work</span>
-    <span class="sec-line"></span>
-  </div>
+<main id="top">
 
-  <div class="projects">
-
-    <article class="card flagship reveal">
-      <div class="card-top">
-        <h3>Companion Hub</h3>
-        <span class="tag-flag">Flagship</span>
-      </div>
-      <div class="role">AI companion desktop platform · solo build · 2025–present</div>
-      <p class="desc">
-        A full-stack <b>AI companion desktop app</b> with 200+ API endpoints — built end to end.
-        FastAPI backend, Svelte 5 frontend, wrapped in Electron and shipped to Android.
+<!-- ============================ HERO ============================ -->
+<section class="band hero pad">
+  <div class="inner hero-grid">
+    <div>
+      <p class="eyebrow">Forward Deployed &middot; Applied AI &middot; Solutions Engineering</p>
+      <h1>
+        I build production <em>AI systems</em>, solo, end to end.
+        <span class="against">Backend, frontend, and the infrastructure underneath.</span>
+      </h1>
+      <p class="hero-lede">
+        A scheduler that replaced a pediatric clinic's paper process. A retrieval engine that
+        answers coding agents over an entire machine. An incident desk that
+        <b>resolves 72.9% of its own outages in 55 seconds</b>. I design them, ship them, run
+        them, and fix them when they break.
       </p>
-      <ul class="feat">
-        <li><b>Tiered multi-model router</b> across Claude, DeepSeek, Ollama &amp; OpenRouter — dispatches by task complexity and cost, with automatic local fallback.</li>
-        <li><b>Agent orchestration</b> — rule-based dispatch classifier, DeepSeek planning engine, and a background plan executor with phase tracking.</li>
-        <li><b>Real-time token streaming (SSE)</b> across chat, narrative &amp; meeting modes with live token-by-token rendering.</li>
-        <li><b>Tool-execution engine</b> — parses LLM output into file / git / shell actions with path-safety and destructive-command blocking.</li>
-        <li><b>Voice I/O</b> — Whisper / OpenAI / Deepgram STT and ElevenLabs TTS behind a pluggable provider interface.</li>
-        <li><b>Local image generation</b> — Stable Diffusion via DirectML on AMD GPU with VRAM-aware GPU locking.</li>
-      </ul>
-      <div class="stack">
-        <span class="chip">Python 3.12</span><span class="chip">FastAPI</span><span class="chip">Svelte 5</span>
-        <span class="chip">Electron 35</span><span class="chip">PostgreSQL</span><span class="chip">Ollama</span>
-        <span class="chip">DeepSeek</span><span class="chip">Capacitor</span><span class="chip">Tailscale</span>
-      </div>
-    </article>
-
-    <article class="card reveal">
-      <div class="card-top"><h3>OpenClaw AI Gateway</h3></div>
-      <div class="role">Multi-provider AI infrastructure · 2025–present</div>
-      <p class="desc">Deployed and ran <b>three isolated gateway instances</b> for production AI workflows, each with its own workspace and agent config.</p>
-      <ul class="feat">
-        <li><b>Model routing</b> across DeepSeek, Anthropic (OAuth), Ollama, HuggingFace, Venice AI &amp; OpenRouter.</li>
-        <li><b>Vector memory</b> with LanceDB + nomic-embed for persistent agent context.</li>
-        <li><b>Auto-restart lifecycle</b> and scoped execution-approval tokens over a local socket.</li>
-      </ul>
-      <div class="stack">
-        <span class="chip">Node.js</span><span class="chip">WebSocket</span><span class="chip">OAuth 2.0</span>
-        <span class="chip">LanceDB</span><span class="chip">SQLite</span>
-      </div>
-    </article>
-
-    <article class="card reveal">
-      <div class="card-top"><h3>Tiered Model Router</h3></div>
-      <div class="role">Production cost/capability dispatch system</div>
-      <p class="desc">A routing layer that <b>maximizes capability while minimizing spend</b> — the core that makes running agents affordable.</p>
-      <ul class="feat">
-        <li><b>3-tier routing:</b> local Ollama (free) → DeepSeek (cheap cloud) → Claude (premium, capped).</li>
-        <li><b>Smart dispatch classifier</b> with 7 rule sets and tiered confidence scoring.</li>
-        <li><b>Fallback chains</b> + per-project token counting and cost governance.</li>
-      </ul>
-      <div class="stack">
-        <span class="chip">Python</span><span class="chip">LLM routing</span><span class="chip">Cost modeling</span>
-      </div>
-    </article>
-
-    <article class="card reveal">
-      <div class="card-top"><h3>WorkTeams</h3></div>
-      <div class="role">Self-hosted Teams alternative · Electron + Graph · 2026</div>
-      <p class="desc">A <b>Microsoft Teams-style desktop app</b> for a Windows Server 2016 environment — installs from USB and runs locally with no internet connection required.</p>
-      <ul class="feat">
-        <li><b>Real-time chat</b> over socket.io, plus calls, video &amp; a shared calendar.</li>
-        <li><b>Microsoft Graph + MSAL</b> identity — pulls directory profiles, chats &amp; meetings from the org.</li>
-        <li><b>Admin panel</b> + Squirrel installer for one-click on-prem deployment.</li>
-      </ul>
-      <div class="stack">
-        <span class="chip">React 18</span><span class="chip">Electron 33</span><span class="chip">TypeScript</span>
-        <span class="chip">socket.io</span><span class="chip">MSAL</span><span class="chip">Microsoft Graph</span>
-      </div>
-    </article>
-
-    <article class="card reveal">
-      <div class="card-top"><h3>Mortgage Workflow Automation</h3></div>
-      <div class="role">Internal tools · Van Patten Mortgage Group · 2024–present</div>
-      <p class="desc">Custom <b>AI tools that automate real business workflows</b> at a mortgage firm — used daily.</p>
-      <ul class="feat">
-        <li><b>AI email triage</b> via Microsoft Graph (MSAL OAuth) — categorization, priority scoring, reply drafts.</li>
-        <li><b>Email-to-task extraction</b> with an AI review &amp; suggestion pipeline.</li>
-        <li><b>AI project trackers</b> with automated code review and task triage.</li>
-      </ul>
-      <div class="stack">
-        <span class="chip">Microsoft Graph</span><span class="chip">MSAL OAuth</span><span class="chip">Python</span><span class="chip">Automation</span>
-      </div>
-    </article>
-
-  </div>
-</section>
-
-<section id="skills" class="wrap">
-  <div class="sec-head reveal">
-    <span class="sec-num">02</span>
-    <span class="sec-title">Toolbox</span>
-    <span class="sec-line"></span>
-  </div>
-  <div class="skills-grid">
-    <div class="skill-block reveal">
-      <h4>Languages</h4>
-      <div class="chips">
-        <span class="chip">Python</span><span class="chip">JavaScript</span><span class="chip">TypeScript</span>
-        <span class="chip">SQL</span><span class="chip">HTML/CSS</span><span class="chip">PowerShell</span>
+      <div class="actions">
+        <a class="act act--solid" href="#systems">Read the systems →</a>
+        <a class="act act--ghost" href="mailto:keatonvp123@gmail.com">keatonvp123@gmail.com</a>
       </div>
     </div>
-    <div class="skill-block reveal">
-      <h4>Backend &amp; Infra</h4>
-      <div class="chips">
-        <span class="chip">FastAPI</span><span class="chip">REST APIs</span><span class="chip">WebSockets / SSE</span>
-        <span class="chip">OAuth / JWT</span><span class="chip">PostgreSQL</span><span class="chip">Microsoft Graph</span>
-        <span class="chip">Docker</span><span class="chip">Tailscale</span>
+
+    <div class="ledger rev">
+      <div class="ledger-head">
+        <span>Headline figures</span>
+        <b>eight systems · three in daily production</b>
       </div>
-    </div>
-    <div class="skill-block reveal">
-      <h4>Frontend &amp; Desktop</h4>
-      <div class="chips">
-        <span class="chip">Svelte 5</span><span class="chip">Vite</span><span class="chip">Tailwind</span>
-        <span class="chip">Electron</span><span class="chip">Capacitor</span><span class="chip">PWA</span>
-      </div>
-    </div>
-    <div class="skill-block reveal">
-      <h4>AI / ML</h4>
-      <div class="chips">
-        <span class="chip">LLM integration</span><span class="chip">Model routing</span><span class="chip">Agent orchestration</span>
-        <span class="chip">RAG / embeddings</span><span class="chip">Whisper STT</span><span class="chip">ElevenLabs TTS</span>
-        <span class="chip">Stable Diffusion</span>
-      </div>
+      <div class="row"><span class="fig">&lt; 48 h</span><span class="lab">from first commit to a production failover service, built during a live client outage</span><span class="src">mailer</span></div>
+      <div class="row"><span class="fig">86.4 → 100%</span><span class="lab">retrieval eval accuracy, gated in CI — a release under 90% does not ship</span><span class="src">librarian</span></div>
+      <div class="row"><span class="fig">−71%</span><span class="lab">cost per LLM call while call volume grew +51%, across 21 models and 8 providers</span><span class="src">cost ledger</span></div>
+      <div class="row"><span class="fig">612</span><span class="lab">infrastructure incidents in 53 days; 0.33% ever reached a human</span><span class="src">incident desk</span></div>
+      <div class="row"><span class="fig">122</span><span class="lab">agent tools behind a three-layer authorization gate that fails closed</span><span class="src">agent platform</span></div>
+      <div class="row"><span class="fig">2,948</span><span class="lab">test functions across 678 HTTP endpoints on the platform I run daily</span><span class="src">hub</span></div>
     </div>
   </div>
 </section>
 
-<section id="about" class="wrap">
-  <div class="sec-head reveal">
-    <span class="sec-num">03</span>
-    <span class="sec-title">About</span>
-    <span class="sec-line"></span>
-  </div>
-  <div class="about-grid">
-    <div class="about reveal">
-      <p>I'm a <b>self-taught full-stack engineer</b> who got here by building. I started in IT and systems support, taught myself to code, and now ship production AI software end to end — from the FastAPI routes to the Svelte UI to the model-routing layer that keeps it affordable.</p>
-      <p>I work with LLMs, agents, and orchestration every day, with the same tools real teams use: Claude Code, DeepSeek, Ollama. I'm looking for a role where I can <b>build custom AI tools and internal platforms</b> for real business problems.</p>
+<!-- ============================ FIELD REPORT ============================ -->
+<section class="band band--alt sec pad" id="field">
+  <div class="inner">
+    <div class="sec-head prose">
+      <span class="kicker">Field report — a live client engagement</span>
+      <h2>The app went down during clinic hours. Forty-eight hours later it couldn't take the schedule with it.</h2>
+      <p class="sec-sub">
+        The most useful thing I've built came out of the worst day of the project.
+      </p>
     </div>
-    <div class="xp reveal">
-      <div class="xp-item">
-        <div class="xp-role">Systems Manager &amp; Software Developer</div>
-        <div class="xp-co">HRBC Inc. / Van Patten Mortgage Group</div>
-        <div class="xp-date">Sept 2020 – Present · Rancho Cordova, CA</div>
+
+    <div class="beats">
+      <article class="beat rev">
+        <h3>The system</h3>
+        <p>A workload-based scheduling app for <b>a pediatric therapy clinic</b>, live in production since August 2026 and replacing a fully paper process.</p>
+        <p>~35,000 lines. 30 REST endpoints, 15 role-gated pages, <b>zero frameworks and zero npm dependencies</b> — PHP, SQLite, and a vanilla-JS progressive web app. 116 commits in 38 days, single author.</p>
+      </article>
+
+      <article class="beat rev">
+        <h3>In daily use</h3>
+        <p>573 audit rows in 18 days across 29 sessions, 14 in-app feedback notes from real staff, 16 nightly production backups, database growth 143&nbsp;KB → 938&nbsp;KB.</p>
+        <p>Underneath: an eight-component quarter-hour workload model with hard over-capacity blocking, a filter-and-rank substitute-therapist selector, and a conflict engine that behaves identically for saved and unsaved bookings.</p>
+      </article>
+
+      <article class="beat rev">
+        <h3>The outage</h3>
+        <p>Thirty minutes with the app unreachable, mid-day. Staff needed the day's schedule and had no second path to it. A scheduler that only exists on one host is a single point of failure for a working clinic.</p>
+      </article>
+
+      <article class="beat rev">
+        <h3>The response</h3>
+        <p>A zero-dependency Node service on a managed host, <b>first commit to production in under 48 hours</b>. It mails the schedule out on its own timer, so a host that is down no longer means a clinic that is blind.</p>
+        <p>Outbound only: no public IP, no inbound listener, nothing new to attack.</p>
+      </article>
+
+      <article class="beat rev">
+        <h3>The constraints</h3>
+        <p>Server-side data minimization — a whitelist projection, de-identified case codes, and clinical progress notes that never leave the host.</p>
+        <p>Hand-rolled SMTP client and spreadsheet writer, because the dependency budget was zero. <b>157 tests</b>, including both 2026 daylight-saving transitions.</p>
+      </article>
+
+      <article class="beat rev">
+        <h3>Staying in sync</h3>
+        <p>Reports render by executing the production app's own recurrence code inside a sandboxed VM, rather than reimplementing it. <b>The spreadsheet cannot disagree with the screen.</b></p>
+        <p>First real end-to-end send delivered. Recipient rollout is still pointed at a test address.</p>
+      </article>
+    </div>
+
+    <div class="audit rev">
+      <h3>What the audit found — and what I changed afterward</h3>
+      <p>
+        I commissioned a security audit of my own application before launch. It found
+        <b>two launch-blocking criticals</b>: an unauthenticated install-takeover path, and a
+        cross-role read exposure across 26 tables. Both were closed before go-live, alongside
+        Argon2id hashing, email one-time codes, CSRF validation before body parsing, a full audit
+        log, and strict CSP/HSTS.
+      </p>
+      <p>
+        Later, an unapproved CI push reached production. I removed auto-deploy entirely, revoked the
+        CI credential, and moved to <b>manually authorized releases with post-deploy health
+        assertions</b>. The interesting part of a process failure is what the process looks like after it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SYSTEMS ============================ -->
+<section class="band sec pad" id="systems">
+  <div class="inner">
+    <div class="sec-head prose">
+      <span class="kicker">Systems in production</span>
+      <h2>Eight systems I built — and what each one is today.</h2>
+      <p class="sec-sub">What each one does, how it's put together, and where it falls short.</p>
+    </div>
+
+    <div class="systems">
+
+      <!-- Librarian -->
+      <article class="sys sys--wide rev">
+        <div class="sys-body">
+          <div>
+            <div class="sys-top">
+              <h3>The Librarian — retrieval over an entire machine</h3>
+              <span class="sys-kind sys-kind--live">Running now</span>
+            </div>
+            <p class="sys-lede">
+              Grounded question-answering over everything on this workstation, served to AI coding
+              agents as an <b>8-tool MCP server</b>. Hybrid retrieval, graceful degradation, and an
+              eval harness that can block a release.
+            </p>
+            <div class="tags" style="margin-top:1rem">
+              <span class="tag">Python</span><span class="tag">SQLite FTS5</span><span class="tag">BM25</span>
+              <span class="tag">Dense vectors</span><span class="tag">RRF</span><span class="tag">MCP</span>
+              <span class="tag">CI evals</span>
+            </div>
+          </div>
+          <div style="display:grid;gap:1rem">
+            <ul class="facts">
+              <li>Corpus: <span class="num">3,190</span> files, <span class="num">14,534</span> code symbols, <span class="num">18,094</span> 768-dimension vectors, <span class="num">19,229</span> full-text documents.</li>
+              <li><b>Hybrid retrieval:</b> Okapi BM25 (k1=1.2, b=0.75) and a dense cosine arm fused by <b>reciprocal rank fusion</b> (k=60), then a custom rerank stage over heading-chunked prose.</li>
+              <li>Content-hash incremental embedding: <span class="num">21.8×</span> batch speedup, 324&nbsp;ms → 14.9&nbsp;ms per text. Degrades cleanly to full-text-only when the embedding arm is unavailable.</li>
+              <li><span class="num">613</span> live queries in 30 days, <span class="num">67%</span> machine-to-machine. Five-provider fallback chain; ~92% of answers served by the cheap primary.</li>
+              <li><b>CI-gated eval harness:</b> 22 graded questions, release blocked under 90%, and the deterministic subset must pass with <b>every LLM provider down</b>. Accuracy went <span class="num">86.4% → 100%</span>.</li>
+              <li>Admission control: a two-slot capacity line that returns <span class="num">{busy, position, ETA}</span> instead of queueing silently.</li>
+            </ul>
+            <p class="caveat"><b>Credit</b> — the BM25 and RRF constants were harvested from an Apache-2.0 project and are credited in the source. The integration, overlap gate, salience scoring, sensitivity filter, and cache fix are mine.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- IT desk -->
+      <article class="sys rev">
+        <div class="sys-top">
+          <h3>Incident desk — a deflection ladder</h3>
+          <span class="sys-kind sys-kind--live">Running now</span>
+        </div>
+        <p class="sys-lede">A self-healing monitor over <b>15 production backends</b> on a 15-second probe loop. The architecture is a cost ladder: cheap things try first, and a model is the last resort before a human.</p>
+        <ul class="facts">
+          <li>53 days: <span class="num">612</span> incidents, <span class="num">72.9%</span> auto-resolved, mean time to resolution <span class="num">55 seconds</span>, <span class="num">0.33%</span> escalated to a human.</li>
+          <li><span class="num">419,000</span> health probes retained (~60K/day) with per-service 24-hour uptime objectives.</li>
+          <li><b>Tier 1:</b> scripted restart playbooks, <span class="num">75.6%</span> first-line success. <b>Tier 2:</b> LLM triage — only <span class="num">3.3%</span> of tickets ever reach a paid model. <b>Tier 3:</b> a person. Triage diagnoses and never executes.</li>
+          <li>Safety rails: a config validator that rejects catch-all kill patterns, a four-restart-per-hour circuit breaker, and an independent kill-witness auditor. 7 MCP tools, 30 routes, 75 tests.</li>
+        </ul>
+        <p class="caveat"><b>Scope</b> — these are infrastructure incidents, not customer support tickets. The transferable part is the deflection architecture, not the domain.</p>
+        <div class="tags"><span class="tag">FastAPI</span><span class="tag">MCP</span><span class="tag">SLOs</span><span class="tag">Circuit breakers</span></div>
+      </article>
+
+      <!-- Cost governance -->
+      <article class="sys rev">
+        <div class="sys-top">
+          <h3>LLM cost governance</h3>
+          <span class="sys-kind">FinOps</span>
+        </div>
+        <p class="sys-lede">A USD-exact per-call ledger, built because I could not answer "what is this feature costing me?" from any vendor dashboard. Then a control plane on top of it.</p>
+        <ul class="facts">
+          <li>Ledger: <span class="num">2,129</span> calls over 61 days, <span class="num">21</span> models, <span class="num">8</span> providers, <span class="num">38</span> use-case surfaces, <span class="num">41M</span> tokens, <span class="num">64%</span> input-cache hit rate. <b>100% of rows carry both surface and cost.</b></li>
+          <li>Routing outcome: cost per call <span class="num">−71%</span> (from $0.048 to $0.014) while volume grew <span class="num">+51%</span>; premium-provider share fell <span class="num">52% → 19%</span>.</li>
+          <li>Self-hosted control plane on PostgreSQL 17 with <b>per-use-case virtual keys and hard 30-day budgets</b> — built because the provider offers no per-key limits.</li>
+          <li><b>Build vs. buy:</b> I audited a hosted tracing product and rejected it — roughly 40 call paths bypass any proxy, so the in-process ledger has coverage a gateway structurally cannot reach.</li>
+          <li>Degradation path: a raw-socket TCP probe (milliseconds, versus ~2s of retries on Windows) resolves gateway / direct / none. <span class="num">852</span> calls flowed uninterrupted through fallback.</li>
+        </ul>
+        <p class="caveat"><b>Scope</b> — the −71% is a routing-policy outcome over time, not a controlled A/B. The proxy itself fronts two models from one provider; the eight-provider breadth lives in the ledger.</p>
+        <div class="tags"><span class="tag">PostgreSQL 17</span><span class="tag">LiteLLM</span><span class="tag">Cost modeling</span><span class="tag">Budgets</span></div>
+      </article>
+
+      <!-- Agent platform -->
+      <article class="sys rev">
+        <div class="sys-top">
+          <h3>Agent platform — 122 tools, three-layer authorization</h3>
+          <span class="sys-kind sys-kind--live">Daily driver</span>
+        </div>
+        <p class="sys-lede">The desktop platform the rest of this page runs inside: <b>678 HTTP endpoints</b>, 202K lines of Python and 74K of Svelte, 2,948 test functions, 6 self-built MCP servers, 19 local services. Roughly three months of work.</p>
+        <ul class="facts">
+          <li><span class="num">122</span> agent tools (counted two independent ways) across filesystem, shell, calendar, health and messaging, on a vendor-neutral protocol that runs the same loop against local and hosted models.</li>
+          <li><b>Authorization in three layers:</b> a positive per-surface allowlist that fails closed, an engine-conditional denylist enforced at five chokepoints, and a credential-aware filesystem perimeter. 32 dedicated gate tests.</li>
+          <li>Five-zone token-budgeted prompt (32k context) with a <b>byte-identical static prefix</b> so caching actually hits, protected by golden-file regression tests.</li>
+          <li><span class="num">5.3×</span> prompt reduction for small-model surfaces — 7.4k to 1.4k tokens — via a curated catalog plus a scored tool-search escape hatch.</li>
+          <li>Manager orchestrator with a hierarchical delegate matrix and a budget governor; illegal plans are repaired rather than executed.</li>
+        </ul>
+        <p class="caveat"><b>Scope</b> — the orchestrator is designed and validated across 6 runs and 17 delegation events. It has not been run at scale.</p>
+        <div class="tags"><span class="tag">FastAPI</span><span class="tag">Svelte 5</span><span class="tag">Electron</span><span class="tag">MCP</span><span class="tag">SSE</span></div>
+      </article>
+
+      <!-- Local infra -->
+      <article class="sys rev">
+        <div class="sys-top">
+          <h3>Local dual-GPU infrastructure</h3>
+          <span class="sys-kind">Bare metal</span>
+        </div>
+        <p class="sys-lede">One RTX 2080 (8&nbsp;GB, CUDA) and one RX 9060 XT (16&nbsp;GB, ROCm) with 64&nbsp;GB of RAM, shared by a dozen processes that all want the whole card.</p>
+        <ul class="facts">
+          <li><b>GPU lease broker:</b> three priority classes with age promotion for a no-starvation bound, exclusive and byte-budgeted lease modes, <span class="num">33</span> automatic reclaims, and three-tier degradation from broker to file lock to unguarded. <span class="num">734</span> lines of concurrency tests; priority aging captured firing live.</li>
+          <li><b>Cross-process queue</b> with leader election and a monotonic fencing token: live-fire failover in <span class="num">73 seconds</span> over 363 samples, <span class="num">zero</span> concurrency violations, sustained at 83% of an 8&nbsp;GB card.</li>
+          <li>Video generation on ROCm under Windows at <span class="num">87%</span> VRAM; root-caused a 0xC0000005 access violation to memory-map materialization rather than guessing at flags.</li>
+          <li>Ran a <span class="num">744B</span>-parameter mixture-of-experts model (358&nbsp;GB, int4) on this desk and tuned it <span class="num">+86%</span>, 0.042 → 0.078 tokens/sec; ablation put the bottleneck at a 190:1 disk-to-matmul ratio.</li>
+        </ul>
+        <div class="tags"><span class="tag">CUDA</span><span class="tag">ROCm</span><span class="tag">Concurrency</span><span class="tag">Leader election</span><span class="tag">Profiling</span></div>
+      </article>
+
+      <!-- Security desk -->
+      <article class="sys rev">
+        <div class="sys-top">
+          <h3>Security review desk</h3>
+          <span class="sys-kind">Gate</span>
+        </div>
+        <p class="sys-lede">A cost-tiered review pipeline wired in as a <b>plan-approval gate</b>, so security review became mandatory rather than something I remembered to do.</p>
+        <ul class="facts">
+          <li><span class="num">110</span> consultations across 22 projects, <span class="num">165</span> specialist reviews, <span class="num">548</span> checklist items, <span class="num">1,202</span> audit events.</li>
+          <li>Cascade: free local triage closes <span class="num">20%</span> as not-needed at zero cost, then three parallel reviewers, then an aggregator.</li>
+          <li><b>The triage model was chosen adversarially:</b> zero unsafe misses and it resisted 6 of 6 prompt injections. A candidate model was rejected for obeying an injected "already reviewed" verdict.</li>
+        </ul>
+        <div class="tags"><span class="tag">Prompt injection testing</span><span class="tag">MCP</span><span class="tag">Policy gates</span></div>
+      </article>
+
+      <!-- Cockpit -->
+      <article class="sys rev">
+        <div class="sys-top">
+          <h3>Session cockpit — observability for AI coding runs</h3>
+          <span class="sys-kind">Internal tool</span>
+        </div>
+        <p class="sys-lede">A desktop cockpit supervising concurrent AI coding sessions: <b>227 routes</b>, 53K lines, <b>778 passing tests</b>, 9 agent runtimes, a month of daily use across 5 projects.</p>
+        <ul class="facts">
+          <li>A typed <span class="num">21</span>-event observability stream with monotonic sequence numbers and cursor replay that <b>reports gaps instead of hiding them</b>.</li>
+          <li>Write-time <b>rejection</b> — not scrubbing — of secret-shaped payloads, so a leak fails loudly at the boundary.</li>
+          <li>Per-session cost attribution by parsing append-only transcripts: byte-offset tails, partial-line safety, four token classes, subagent roll-up. Labeled "API-equivalent" in the UI because no money actually moved.</li>
+        </ul>
+        <div class="tags"><span class="tag">Electron</span><span class="tag">Svelte</span><span class="tag">FastAPI</span><span class="tag">Event streams</span></div>
+      </article>
+
+      <!-- CRM -->
+      <article class="sys rev">
+        <div class="sys-top">
+          <h3>Compliance-first CRM</h3>
+          <span class="sys-kind">Prototype</span>
+        </div>
+        <p class="sys-lede">A relationship CRM where the regulatory research came first and then decided the schema.</p>
+        <ul class="facts">
+          <li>Backend: <span class="num">21</span> endpoints, 9 tables, 10 passing tests, optimistic concurrency, and an explicit distinction between meaningful and automated contact.</li>
+          <li>The real artifact is <b>~660 lines of AI compliance research</b> — bot-disclosure law, consumer-protection and anti-spam rules, fair-housing and fair-employment constraints — resolved into architecture: human-in-the-loop send, never fine-tune on client data, provenance-linked transcription, rank but never filter, and regulated identifiers excluded from the schema entirely.</li>
+        </ul>
+        <p class="caveat"><b>Scope</b> — backend prototype only. The frontend is a mockup and has never called the API. Designed and prototyped, not shipped.</p>
+        <div class="tags"><span class="tag">FastAPI</span><span class="tag">SQLite</span><span class="tag">Compliance research</span></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CORRECTIONS ============================ -->
+<section class="band band--alt sec pad" id="corrections">
+  <div class="inner">
+    <div class="sec-head prose">
+      <span class="kicker kicker--coral">Things I got wrong</span>
+      <h2>What broke, and what I changed after.</h2>
+      <p class="sec-sub">I measure what I build, so the numbers sometimes come back against me. When that happens I write it down and change the design.</p>
+    </div>
+
+    <div class="corrections rev">
+      <div class="cor">
+        <span class="cor-fig">0.0</span>
+        <span class="cor-txt">I had been repeating a <b>"90% context savings"</b> figure for the retrieval layer. My own instrumentation measured zero. The instrumentation stayed; the claim did not.</span>
       </div>
-      <div class="xp-item">
-        <div class="xp-role">Utility Technician</div>
-        <div class="xp-co">MP NexLevel</div>
-        <div class="xp-date">2018 – 2020</div>
+      <div class="cor">
+        <span class="cor-fig">6 defects</span>
+        <span class="cor-txt">Found only by live-firing real services — and <b>every one of them had green tests beforehand</b>. Including a cache with a 0% hit rate, because its 2.0-second TTL sat under a 2.5-second poll. It read as correct in review. This is where my anti-drift test doctrine came from.</span>
       </div>
-      <div class="xp-item">
-        <div class="xp-role">Certifications</div>
-        <div class="xp-co">Google IT Support · Google Computer Networking</div>
-        <div class="xp-date">+ self-taught full-stack &amp; AI engineering</div>
+      <div class="cor">
+        <span class="cor-fig">3.3%, not 100%</span>
+        <span class="cor-txt">The incident desk's headline gets misread as "a model triaged 612 tickets." Only 21 of them ever reached a model. <b>The cheap ladder catching the other 591 is the actual win</b>, and inflating it would hide the design.</span>
+      </div>
+      <div class="cor">
+        <span class="cor-fig">4 features</span>
+        <span class="cor-txt">Type-clean, tested, and completely inert — nothing in production ever called them. That produced the rule I now apply before building anything: <b>name the production caller first, or it isn't built.</b></span>
+      </div>
+      <div class="cor">
+        <span class="cor-fig">Not built</span>
+        <span class="cor-txt">Hosted LLM tracing. I audited it, found ~40 call paths that bypass any proxy, and deliberately did not adopt it. <b>The rejection is the result</b>, and it's more useful than the integration would have been.</span>
+      </div>
+      <div class="cor">
+        <span class="cor-fig">Gate failed</span>
+        <span class="cor-txt">I pre-registered an adoption threshold for the 744B local model before running it, missed the threshold, and <b>changed the design instead of moving the goalpost.</b></span>
+      </div>
+      <div class="cor">
+        <span class="cor-fig">6 runs</span>
+        <span class="cor-txt">The manager orchestrator is validated, not proven. Six runs and seventeen delegation events is <b>a demo with evidence, not production scale</b> — it stays described that way until it earns otherwise.</span>
       </div>
     </div>
   </div>
 </section>
 
-<section id="contact" class="wrap contact">
-  <h2 class="reveal">Let's build something.</h2>
-  <p class="reveal">Open to full-stack, AI, and platform engineering roles — remote or Sacramento-area.</p>
-  <div class="links-row reveal">
-    <a class="link-pill" href="mailto:keatonvp123@gmail.com">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-      keatonvp123@gmail.com
-    </a>
-    <a class="link-pill" href="https://github.com/Peacho97" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.5 2.87 8.32 6.84 9.67.5.1.68-.22.68-.49l-.01-1.7c-2.78.62-3.37-1.21-3.37-1.21-.46-1.18-1.11-1.49-1.11-1.49-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.36 1.11 2.94.85.09-.66.35-1.11.63-1.37-2.22-.26-4.55-1.14-4.55-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9l-.01 2.82c0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"/></svg>
-      github.com/Peacho97
-    </a>
-    <a class="link-pill" href="https://www.linkedin.com/in/keaton-van-patten-227640272" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 18.34V9.94H5.67v8.4h2.67zM7 8.76a1.55 1.55 0 1 0 0-3.1 1.55 1.55 0 0 0 0 3.1zm11.34 9.58v-4.6c0-2.46-1.31-3.6-3.06-3.6-1.41 0-2.04.78-2.39 1.32v-1.13h-2.67c.04.75 0 8.4 0 8.4h2.67v-4.69c0-.24.02-.48.09-.65.19-.48.63-.98 1.36-.98.96 0 1.34.73 1.34 1.8v4.52h2.66z"/></svg>
-      LinkedIn
-    </a>
-    <a class="link-pill" href="Keaton-Van-Patten-Resume.pdf">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 3h9l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M12 11v6m0 0-2.5-2.5M12 17l2.5-2.5"/></svg>
-      Résumé (PDF)
-    </a>
+<!-- ============================ METHOD ============================ -->
+<section class="band sec pad" id="method">
+  <div class="inner">
+    <div class="sec-head prose">
+      <span class="kicker">How I work</span>
+      <h2>Four rules, each one earned by a defect that shipped.</h2>
+      <p class="sec-sub">Every one of them came out of something that passed review, passed tests, and was still wrong.</p>
+    </div>
+    <div class="rules">
+      <div class="rule rev">
+        <h3>Verify the effect, never the command</h3>
+        <p>An exit code of 0 proves nothing. Assert the observable end state instead: exactly one listener after the restart, the live payload actually carrying the new value, the pattern that both compiles and matches a real process. A kill command once reported success while matching nothing at all.</p>
+      </div>
+      <div class="rule rev">
+        <h3>Name the production caller first</h3>
+        <p>What calls this, in production, after the change lands? If there's no answer, the work is decoration. A thing with no caller is not built, however green its tests are.</p>
+      </div>
+      <div class="rule rev">
+        <h3>Field names are part of the contract</h3>
+        <p>A flag called <code>execution_enabled</code> meant "the code switch is on" and got read as "this app is armed to act." The name is what let the mistake hide for weeks. Names that can't be misread cost nothing extra to type.</p>
+      </div>
+      <div class="rule rev">
+        <h3>Derived state is answered by the code that acts</h3>
+        <p>"Is this armed?" was answered in five places once, and a dashboard confidently said no while the executor said yes. One function, everyone reads it. Cross-service tests run against real payloads or goldens captured from them — never hand-written fakes, which agree with you forever.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<footer>
-  <div class="wrap foot-inner">
-    <span>© <span id="yr"></span> Keaton Van Patten</span>
-    <span>Built from scratch — not a template.</span>
+<!-- ============================ TOOLBOX + BACKGROUND ============================ -->
+<section class="band band--alt sec pad" id="background">
+  <div class="inner split">
+    <div>
+      <div class="sec-head">
+        <span class="kicker">Toolbox</span>
+        <h2>What I reach for.</h2>
+      </div>
+      <div class="kit">
+        <div class="kit-row rev">
+          <h4>Languages</h4>
+          <div class="tags">
+            <span class="tag">Python</span><span class="tag">TypeScript</span><span class="tag">JavaScript</span>
+            <span class="tag">PHP</span><span class="tag">SQL</span><span class="tag">PowerShell</span><span class="tag">HTML/CSS</span>
+          </div>
+        </div>
+        <div class="kit-row rev">
+          <h4>Applied AI</h4>
+          <div class="tags">
+            <span class="tag">Agent tool-use loops</span><span class="tag">MCP servers</span><span class="tag">Hybrid RAG</span>
+            <span class="tag">BM25 + vectors + RRF</span><span class="tag">Eval harnesses</span><span class="tag">Prompt caching</span>
+            <span class="tag">Multi-provider routing</span><span class="tag">Cost governance</span><span class="tag">Prompt-injection testing</span>
+          </div>
+        </div>
+        <div class="kit-row rev">
+          <h4>Backend &amp; data</h4>
+          <div class="tags">
+            <span class="tag">FastAPI</span><span class="tag">PostgreSQL</span><span class="tag">SQLite / FTS5</span>
+            <span class="tag">REST</span><span class="tag">SSE / WebSockets</span><span class="tag">OAuth / JWT</span><span class="tag">Node</span>
+          </div>
+        </div>
+        <div class="kit-row rev">
+          <h4>Frontend &amp; desktop</h4>
+          <div class="tags">
+            <span class="tag">Svelte 5</span><span class="tag">React</span><span class="tag">Vite</span>
+            <span class="tag">Electron</span><span class="tag">Capacitor</span><span class="tag">Vanilla-JS PWAs</span>
+          </div>
+        </div>
+        <div class="kit-row rev">
+          <h4>Infrastructure</h4>
+          <div class="tags">
+            <span class="tag">Linux / Windows Server</span><span class="tag">Docker</span><span class="tag">Fly.io</span>
+            <span class="tag">Tailscale</span><span class="tag">CUDA</span><span class="tag">ROCm</span><span class="tag">CI gates</span>
+            <span class="tag">Microsoft Graph / MSAL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-head">
+        <span class="kicker">Background</span>
+        <h2>Five years as the only technical person in the room.</h2>
+        <p class="sec-sub">Most Forward Deployed roles screen on requirements discovery, problem decomposition, and stakeholder management. That has been the whole job, not a side effect of it.</p>
+      </div>
+      <div class="timeline">
+        <div class="job rev">
+          <div class="job-role">Systems Manager &amp; Software Developer</div>
+          <div class="job-org">A mortgage brokerage — sole engineer and IT owner</div>
+          <div class="job-when">Sept 2020 – Present</div>
+          <p>Design, build, deploy and maintain every internal tool solo, alongside Microsoft 365 and Windows Server administration, networking and security for the firm.</p>
+          <p>Built an internal operations hub with a <b>15-system registry that stores credential pointers, never secrets</b>, and a hand-rolled agentic tool-use loop — 8 typed tools, a 12-round-trip budget, mutation tracking — so a non-technical executive can operate it in plain English. The agentic backend is complete and demonstrated via API; the UI was never wired up.</p>
+        </div>
+        <div class="job rev">
+          <div class="job-role">Independent engagements</div>
+          <div class="job-org">Small care-side and services organizations</div>
+          <div class="job-when">2025 – Present</div>
+          <p>Production client work: requirements discovery with non-technical operators, build, security audit, launch, and the operational layer afterward. The clinic scheduler above is the reference engagement.</p>
+        </div>
+        <div class="job rev">
+          <div class="job-role">Utility Technician</div>
+          <div class="job-org">MP NexLevel</div>
+          <div class="job-when">2018 – 2020</div>
+        </div>
+        <div class="job rev">
+          <div class="job-role">Certifications</div>
+          <div class="job-org">Google IT Support &middot; Google Computer Networking</div>
+          <div class="job-when">Plus self-taught full-stack and applied AI engineering</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CONTACT ============================ -->
+<section class="band contact pad" id="contact">
+  <div class="inner contact-grid">
+    <div>
+      <span class="kicker">Available now</span>
+      <h2>Send me a hard problem and a real constraint.</h2>
+      <p>
+        Looking for Forward Deployed Engineer, Applied AI Engineer, or Solutions Engineer work —
+        remote, or Sacramento area. Happy to walk through any system on this page, including the
+        parts that didn't work.
+      </p>
+    </div>
+    <div class="links">
+      <a class="link" href="mailto:keatonvp123@gmail.com"><span>keatonvp123@gmail.com</span><span>→</span></a>
+      <a class="link" href="https://github.com/Peacho97" target="_blank" rel="noopener"><span>github.com/Peacho97</span><span>→</span></a>
+      <a class="link" href="https://www.linkedin.com/in/keaton-van-patten-227640272" target="_blank" rel="noopener"><span>LinkedIn</span><span>→</span></a>
+      <a class="link" href="Keaton-Van-Patten-Resume.pdf"><span>Résumé (PDF)</span><span>↓</span></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="band pad">
+  <div class="inner foot">
+    <span>© <span id="yr">2026</span> Keaton Van Patten</span>
+    <span>Hand-built. Last updated August 2026.</span>
   </div>
 </footer>
 
 <script>
   document.documentElement.classList.add('js');
   document.getElementById('yr').textContent = new Date().getFullYear();
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  var reveals = document.querySelectorAll('.rev');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('on'); });
+  }
 </script>
 </body>
 </html>
