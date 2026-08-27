@@ -390,6 +390,37 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
   font-family:var(--mono); font-size:.72rem; color:var(--paper-3); letter-spacing:.04em;
 }
 
+/* ============================================================ GRAPH SECTION */
+.graph-grid{
+  display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(1.5rem,3vw,3rem); align-items:start; margin-top:2.4rem;
+}
+@media (max-width:960px){ .graph-grid{ grid-template-columns:1fr; } }
+.graphfig{
+  border:1px solid var(--rule); background:var(--panel); border-radius:var(--r);
+  padding:1.1rem 1.1rem .8rem;
+}
+.graphfig svg{ display:block; width:100%; height:auto; }
+.graphfig figcaption{
+  font-family:var(--mono); font-size:.72rem; color:var(--paper-3);
+  letter-spacing:.03em; margin-top:.75rem; line-height:1.55;
+}
+.graphfig figcaption b{ color:var(--paper-2); font-weight:600; }
+.desk-list{ display:grid; gap:.65rem; margin-top:1.1rem; }
+.desk{
+  display:grid; grid-template-columns:auto 1fr; gap:.8rem; align-items:baseline;
+  border:1px solid var(--rule-soft); background:var(--ink-2); border-radius:var(--r);
+  padding:.7rem .9rem; font-size:.92rem;
+}
+.desk b{ font-family:var(--mono); font-size:.78rem; color:var(--mint); white-space:nowrap; }
+.desk span{ color:var(--paper-2); }
+.adopt{
+  border-left:3px solid var(--brass-line); background:var(--brass-dim);
+  padding:1rem 1.2rem; border-radius:var(--r); margin-top:1.4rem; font-size:.95rem;
+}
+.adopt + .adopt{ margin-top:.8rem; }
+.adopt em{ font-style:normal; font-family:var(--mono); font-size:.75rem; color:var(--brass); display:block; margin-bottom:.3rem; letter-spacing:.05em; }
+
 /* ============================================================ MOTION */
 .js .rev{ opacity:0; transform:translateY(14px); transition:opacity .55s ease, transform .55s ease; }
 .js .rev.on{ opacity:1; transform:none; }
@@ -408,6 +439,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     <nav class="mast-nav" aria-label="Sections">
       <a class="mast-hide" href="#field">Field report</a>
       <a class="mast-hide" href="#systems">Systems</a>
+      <a class="mast-hide" href="#graph">Graph</a>
       <a class="mast-hide" href="#corrections">Corrections</a>
       <a class="mast-hide" href="#method">Method</a>
       <a class="mast-cta" href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
@@ -593,6 +625,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
           <li>Self-hosted control plane on PostgreSQL 17 with <b>per-use-case virtual keys and hard 30-day budgets</b> — built because the provider offers no per-key limits.</li>
           <li><b>Build vs. buy:</b> I audited a hosted tracing product and rejected it — roughly 40 call paths bypass any proxy, so the in-process ledger has coverage a gateway structurally cannot reach.</li>
           <li>Degradation path: a raw-socket TCP probe (milliseconds, versus ~2s of retries on Windows) resolves gateway / direct / none. <span class="num">852</span> calls flowed uninterrupted through fallback.</li>
+          <li><b>Audited against the provider's own billing export</b> — which showed the ledger seeing <span class="num">8%</span> of real spend: subprocess-launched sessions bypassed it entirely. The meter moved to the process-spawn choke point the same day, with per-consumer surface tags. The gap was the lesson: <b>meter where the money leaves, not where it's convenient.</b></li>
         </ul>
         <p class="caveat"><b>Scope</b> — the −71% is a routing-policy outcome over time, not a controlled A/B. The proxy itself fronts two models from one provider; the eight-provider breadth lives in the ledger.</p>
         <div class="tags"><span class="tag">PostgreSQL 17</span><span class="tag">LiteLLM</span><span class="tag">Cost modeling</span><span class="tag">Budgets</span></div>
@@ -681,8 +714,163 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
   </div>
 </section>
 
+<!-- ============================ GRAPH ============================ -->
+<section class="band band--alt sec pad" id="graph">
+  <div class="inner">
+    <div class="sec-head prose">
+      <span class="kicker">The graph under it</span>
+      <h2>Every system above is a node. The edges are what I actually maintain.</h2>
+      <p class="sec-sub">
+        The AI estate on this machine is catalogued as a dependency graph — <span class="num">364</span>
+        entries, <span class="num">1,306</span> edges, rebuilt from source by the same scanner that feeds
+        the Librarian's index. It isn't documentation. Tools query it, over MCP, while they work.
+      </p>
+    </div>
+
+    <div class="graph-grid rev">
+      <div class="prose">
+        <p>
+          When a coding agent is about to change something, it asks the Librarian desk for the
+          <b>blast radius</b>: every entry that depends on the one being touched, resolved from the
+          live graph, not from anyone's memory of the architecture. The answer comes back labeled
+          <b>measured, read, or inferred</b> — a provenance tag on every claim, so a wrong answer is
+          cheap to correct and an unlabeled guess can't masquerade as a fact.
+        </p>
+        <p style="margin-top:1rem">
+          The figure on the right is one real query, drawn as shipped: the orchestrator's
+          <code style="font-family:var(--mono);font-size:.85em">advance()</code> step and the
+          <span class="num">23</span> edges that hold it — approval gates, a spend governor, an
+          autonomy guard, and the local models it schedules onto. The graph is how five separate
+          services stay honest about depending on each other.
+        </p>
+        <div class="desk-list">
+          <div class="desk"><b>librarian</b><span>8-tool MCP desk — retrieval, blast radius, and a two-way ASK line: when its answer is missing context, it asks the caller back.</span></div>
+          <div class="desk"><b>incident&nbsp;desk</b><span>7-tool MCP desk — tickets, supervised restarts, drained handoffs. Diagnoses; never executes.</span></div>
+          <div class="desk"><b>security&nbsp;desk</b><span>consultation protocol — plans touching auth, secrets, or third-party APIs get interviewed before code exists.</span></div>
+          <div class="desk"><b>session&nbsp;broker</b><span>bounded jobs with deadlines, budgets, and idempotency keys — how work gets handed to cheaper models safely.</span></div>
+        </div>
+      </div>
+
+      <figure class="graphfig">
+        <svg viewBox="0 0 900 560" role="img" aria-label="Blast-radius graph of the orchestrator's advance step: 23 edges to gates, governors, stores, and local models, answered over MCP by the librarian desk">
+          <!-- MCP query path -->
+          <g font-family="IBM Plex Mono, monospace" font-size="12">
+            <rect x="30" y="24" width="150" height="30" rx="3" fill="none" stroke="#e6a53c" stroke-opacity=".55"/>
+            <text x="105" y="43" text-anchor="middle" fill="#e6a53c">coding agent</text>
+            <rect x="270" y="24" width="170" height="30" rx="3" fill="none" stroke="#e6a53c" stroke-opacity=".55"/>
+            <text x="355" y="43" text-anchor="middle" fill="#e6a53c">librarian desk · MCP</text>
+            <rect x="530" y="24" width="140" height="30" rx="3" fill="none" stroke="#e6a53c" stroke-opacity=".55"/>
+            <text x="600" y="43" text-anchor="middle" fill="#e6a53c">live index</text>
+            <path d="M180 39 H270 M440 39 H530" stroke="#e6a53c" stroke-opacity=".55" stroke-dasharray="4 4"/>
+            <text x="700" y="43" fill="#7d9a9b">→ answer, labeled</text>
+            <path d="M600 54 V120" stroke="#e6a53c" stroke-opacity=".35" stroke-dasharray="4 4"/>
+          </g>
+          <!-- edges -->
+          <g stroke="#1c4450" stroke-width="1.4">
+            <path d="M450 320 L650 320"/><path d="M450 320 L622 400"/><path d="M450 320 L552 452"/>
+            <path d="M450 320 L450 472"/><path d="M450 320 L348 452"/><path d="M450 320 L278 400"/>
+            <path d="M450 320 L250 320"/><path d="M450 320 L278 240"/><path d="M450 320 L348 188"/>
+            <path d="M450 320 L450 168"/><path d="M450 320 L552 188"/><path d="M450 320 L622 240"/>
+          </g>
+          <!-- ring nodes -->
+          <g font-family="IBM Plex Mono, monospace" font-size="12" fill="#b6ccca">
+            <circle cx="650" cy="320" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="664" y="324">governor · spend</text>
+            <circle cx="622" cy="400" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="636" y="404">approval gate</text>
+            <circle cx="552" cy="452" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="566" y="456">autonomy guard</text>
+            <circle cx="450" cy="472" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="450" y="496" text-anchor="middle">scheduler</text>
+            <circle cx="348" cy="452" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="334" y="456" text-anchor="end">event bus</text>
+            <circle cx="278" cy="400" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="264" y="404" text-anchor="end">triage</text>
+            <circle cx="250" cy="320" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="236" y="324" text-anchor="end">runs store</text>
+            <circle cx="278" cy="240" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="264" y="244" text-anchor="end">path charts</text>
+            <circle cx="348" cy="188" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="334" y="192" text-anchor="end">worktree agent</text>
+            <circle cx="450" cy="168" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="450" y="152" text-anchor="middle">dispatch classify</text>
+            <circle cx="552" cy="188" r="6" fill="#0e2a32" stroke="#6fd0ae"/><text x="566" y="192" fill="#6fd0ae">qwen3-14b · local</text>
+            <circle cx="622" cy="240" r="6" fill="#0e2a32" stroke="#7d9a9b"/><text x="636" y="244">invoke pipeline</text>
+          </g>
+          <!-- center -->
+          <circle cx="450" cy="320" r="13" fill="#e6a53c"/>
+          <text x="450" y="352" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e6a53c" font-weight="600">orchestrator · advance()</text>
+        </svg>
+        <figcaption>
+          One <b>librarian_depends</b> answer, drawn to scale of nothing — every edge is real.
+          <b>12 of 23</b> edges shown; computed 2026-08-27 from the live catalog
+          (<b>364</b> entries, <b>1,306</b> edges). The local model is a first-class node:
+          the scheduler routes onto it before anything with a per-token price.
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="prose rev" style="margin-top:2.6rem">
+      <h3 style="font-family:var(--display);font-size:1.35rem;margin-bottom:.6rem">Adopt, harvest, or build — decided per tool, in writing</h3>
+      <p>
+        Each desk above had an open-source equivalent I evaluated first. The decision that matters
+        isn't "can I integrate it" — it's <b>what the base tool assumes about access</b>, and whether
+        those assumptions survive contact with a machine that holds client data.
+      </p>
+      <div class="adopt">
+        <em>HARVESTED — memory &amp; retrieval</em>
+        An Apache-2.0 agent-memory project does hybrid BM25 + vector recall well. I took its ranking
+        math — BM25 constants, reciprocal rank fusion, recency decay, salience scoring — with credit
+        in the source, and left the plugin itself unadopted. The base tool grants every connected
+        agent one shared memory pool; the desk version scopes access per caller, labels provenance,
+        and holds an admission queue. The math transferred. The trust model couldn't.
+      </div>
+      <div class="adopt">
+        <em>WATCHED — agent harness</em>
+        A popular open-source coding harness went on a watch list instead of into the stack, for one
+        measured reason: it executes tools without a permission gate. Re-evaluation is scheduled,
+        not vibes-based — it gets another look when sandboxing lands.
+      </div>
+      <div class="adopt">
+        <em>REJECTED — hosted tracing</em>
+        Audited, then deliberately not adopted: ~40 call paths bypassed any proxy, so the dashboard
+        would have reported a confident fraction of the truth. The per-call USD ledger above is what
+        got built instead — at the choke point where the money actually leaves.
+      </div>
+    </div>
+
+    <figure class="graphfig rev" style="margin-top:2.6rem">
+      <svg viewBox="0 0 900 240" role="img" aria-label="Cost-tiered provider chain: requests try local models first, then discounted API models, then frontier models, with real per-million-token rates">
+        <g font-family="IBM Plex Mono, monospace" font-size="12">
+          <rect x="20" y="95" width="120" height="50" rx="3" fill="#0e2a32" stroke="#1c4450"/>
+          <text x="80" y="116" text-anchor="middle" fill="#b6ccca">request</text>
+          <text x="80" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">any surface</text>
+          <path d="M140 120 H190" stroke="#7d9a9b"/>
+          <rect x="190" y="95" width="150" height="50" rx="3" fill="#0e2a32" stroke="#e6a53c" stroke-opacity=".6"/>
+          <text x="265" y="116" text-anchor="middle" fill="#e6a53c">provider chain</text>
+          <text x="265" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">cheapest rung first</text>
+          <path d="M340 120 H390" stroke="#7d9a9b"/>
+          <rect x="390" y="30" width="150" height="52" rx="3" fill="#0e2a32" stroke="#6fd0ae"/>
+          <text x="465" y="51" text-anchor="middle" fill="#6fd0ae">local · qwen3 / llama</text>
+          <text x="465" y="69" text-anchor="middle" fill="#6fd0ae" font-size="10">$0 / M tokens · own GPUs</text>
+          <rect x="390" y="94" width="150" height="52" rx="3" fill="#0e2a32" stroke="#7d9a9b"/>
+          <text x="465" y="115" text-anchor="middle" fill="#b6ccca">discount API · flash</text>
+          <text x="465" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">$0.22 / M in · off-peak</text>
+          <rect x="390" y="158" width="150" height="52" rx="3" fill="#0e2a32" stroke="#7d9a9b"/>
+          <text x="465" y="179" text-anchor="middle" fill="#b6ccca">discount API · pro</text>
+          <text x="465" y="197" text-anchor="middle" fill="#7d9a9b" font-size="10">$0.66 / M in · off-peak</text>
+          <path d="M540 56 H600 M540 120 H600 M540 184 H600" stroke="#7d9a9b" stroke-dasharray="4 4"/>
+          <rect x="600" y="94" width="150" height="52" rx="3" fill="#0e2a32" stroke="#ec7357" stroke-opacity=".7"/>
+          <text x="675" y="115" text-anchor="middle" fill="#ec7357">frontier · last resort</text>
+          <text x="675" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">reserved for judgment</text>
+          <path d="M750 120 H800" stroke="#7d9a9b"/>
+          <rect x="800" y="95" width="80" height="50" rx="3" fill="#0e2a32" stroke="#1c4450"/>
+          <text x="840" y="116" text-anchor="middle" fill="#b6ccca">ledger</text>
+          <text x="840" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">USD-exact</text>
+        </g>
+      </svg>
+      <figcaption>
+        The same chain every desk calls. In the Librarian's, <b>~92%</b> of answers never leave the
+        cheap primary. Every call — every rung — writes a surface-tagged usage row, so "what did
+        this feature cost this week" is a query, not an estimate. Rates shown are the real
+        off-peak per-million-token input prices from the ledger's own table.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
 <!-- ============================ CORRECTIONS ============================ -->
-<section class="band band--alt sec pad" id="corrections">
+<section class="band sec pad" id="corrections">
   <div class="inner">
     <div class="sec-head prose">
       <span class="kicker kicker--coral">Things I got wrong</span>
@@ -724,7 +912,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
 </section>
 
 <!-- ============================ METHOD ============================ -->
-<section class="band sec pad" id="method">
+<section class="band band--alt sec pad" id="method">
   <div class="inner">
     <div class="sec-head prose">
       <span class="kicker">How I work</span>
@@ -753,7 +941,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
 </section>
 
 <!-- ============================ TOOLBOX + BACKGROUND ============================ -->
-<section class="band band--alt sec pad" id="background">
+<section class="band sec pad" id="background">
   <div class="inner split">
     <div>
       <div class="sec-head">
