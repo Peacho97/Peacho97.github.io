@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Interface — Keaton Van Patten</title>
+<meta name="description" content="Five rules I build operator interfaces by, each one proven by a working demo rebuilt from the tool that taught it: a job queue, an event feed with a visible replay gap, a dependency constellation, a capacity meter that refuses, and per-section dev labels." />
+<meta name="theme-color" content="#08191d" />
+<meta property="og:title" content="Interface — Keaton Van Patten" />
+<meta property="og:description" content="Five rules for operator surfaces, each proven by a live demo rebuilt in vanilla JS from real shipped work." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   TOKENS — same sheet as index.html
+   ============================================================ */
+:root{
+  --ink:        #08191d;
+  --ink-2:      #0b2128;
+  --panel:      #0e2a32;
+  --panel-2:    #113440;
+  --rule:       #1c4450;
+  --rule-soft:  #143540;
+
+  --paper:      #e9f2f0;
+  --paper-2:    #b6ccca;
+  --paper-3:    #7d9a9b;
+
+  --brass:      #e6a53c;
+  --brass-dim:  rgba(230,165,60,.14);
+  --brass-line: rgba(230,165,60,.34);
+  --coral:      #ec7357;
+  --coral-dim:  rgba(236,115,87,.13);
+  --mint:       #6fd0ae;
+  --mint-line:  rgba(111,208,174,.32);
+  --plum:       #c39ae0;
+  --plum-line:  rgba(195,154,224,.32);
+
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:    "Public Sans", system-ui, -apple-system, sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --gutter: clamp(1.15rem, 4.5vw, 5.5rem);
+  --maxw:   1520px;
+  --prose:  68ch;
+  --block:  clamp(3.75rem, 8vw, 7.5rem);
+  --r:      3px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--body);
+  font-size:clamp(1rem, .96rem + .18vw, 1.075rem);
+  line-height:1.62;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img,svg{ max-width:100%; }
+a{ color:inherit; text-decoration:none; }
+:focus-visible{ outline:2px solid var(--brass); outline-offset:3px; border-radius:2px; }
+
+body::before{
+  content:"";
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.026) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.026) 1px, transparent 1px);
+  background-size:clamp(38px, 5vw, 64px) clamp(38px, 5vw, 64px);
+  mask-image:radial-gradient(120% 90% at 50% 0%, #000 25%, transparent 85%);
+}
+
+.band{ position:relative; z-index:1; width:100%; }
+.band--alt{ background:var(--ink-2); border-block:1px solid var(--rule-soft); }
+.pad{ padding-inline:var(--gutter); }
+.inner{ width:100%; max-width:var(--maxw); margin-inline:auto; }
+.prose{ max-width:var(--prose); }
+
+/* ============================================================ MASTHEAD */
+.masthead{
+  position:sticky; top:0; z-index:60;
+  background:rgba(8,25,29,.82);
+  backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid var(--rule-soft);
+}
+.masthead-in{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1.25rem; min-height:60px; flex-wrap:wrap;
+}
+.sig{ font-family:var(--display); font-weight:800; font-size:1.02rem; letter-spacing:-.02em; }
+.sig i{ font-style:normal; color:var(--brass); }
+.mast-nav{ display:flex; align-items:center; gap:clamp(.85rem, 2vw, 1.75rem); flex-wrap:wrap; }
+.mast-nav a{
+  font-family:var(--mono); font-size:.775rem; letter-spacing:.03em;
+  color:var(--paper-3); transition:color .18s;
+}
+.mast-nav a:hover{ color:var(--paper); }
+.mast-nav a[aria-current="page"]{ color:var(--paper); border-bottom:1px solid var(--brass-line); padding-bottom:2px; }
+.mast-cta{
+  color:var(--brass) !important; border:1px solid var(--brass-line);
+  padding:.4rem .75rem; border-radius:var(--r);
+}
+.mast-cta:hover{ background:var(--brass-dim); }
+@media (max-width:600px){ .mast-hide{ display:none; } }
+
+/* ============================================================ HERO */
+.hero{ padding-block:clamp(3rem, 7vw, 5.5rem) clamp(2.25rem, 5vw, 4rem); }
+.eyebrow{
+  font-family:var(--mono); font-size:.75rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--brass);
+  display:flex; align-items:center; gap:.7rem; margin-bottom:1.4rem;
+}
+.eyebrow::after{ content:""; flex:1; height:1px; background:var(--brass-line); max-width:9rem; }
+h1{
+  font-family:var(--display); font-weight:800;
+  font-size:clamp(2.2rem, 5.6vw, 4.1rem);
+  line-height:1.03; letter-spacing:-.035em; text-wrap:balance;
+}
+h1 em{ font-style:normal; color:var(--brass); }
+h1 .against{ color:var(--paper-2); display:block; font-size:.46em; line-height:1.16; letter-spacing:-.02em; margin-top:.6rem; font-weight:700; }
+.hero-lede{ color:var(--paper-2); margin-top:1.5rem; font-size:clamp(1.02rem,.98rem + .3vw,1.16rem); max-width:60ch; }
+.hero-lede b{ color:var(--paper); font-weight:600; }
+.hero-note{
+  font-family:var(--mono); font-size:.74rem; color:var(--paper-3); line-height:1.6;
+  margin-top:1.5rem; border-top:1px dashed var(--rule); padding-top:.9rem; max-width:62ch;
+}
+.hero-note b{ color:var(--mint); font-weight:500; }
+
+/* ============================================================ PRINCIPLE BLOCKS */
+.sec{ padding-block:var(--block); }
+.prin{
+  display:grid; gap:clamp(1.6rem, 3.2vw, 3.25rem);
+  grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  align-items:start;
+}
+@media (max-width:1020px){ .prin{ grid-template-columns:1fr; } }
+.kicker{
+  font-family:var(--mono); font-size:.71rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--brass); display:block; margin-bottom:.75rem;
+}
+h2{
+  font-family:var(--display); font-weight:700;
+  font-size:clamp(1.6rem,1.25rem + 1.7vw,2.55rem); line-height:1.07; letter-spacing:-.03em;
+  text-wrap:balance;
+}
+.prin-copy p{ color:var(--paper-2); margin-top:1rem; font-size:.965rem; }
+.prin-copy p b{ color:var(--paper); font-weight:600; }
+code{ font-family:var(--mono); font-size:.86em; color:var(--paper-2); background:rgba(255,255,255,.05); border-radius:2px; padding:.05em .3em; }
+
+.pcd{ display:grid; gap:.55rem; margin-top:1.5rem; border-top:1px solid var(--rule); padding-top:1.1rem; }
+.pcd div{ display:grid; grid-template-columns:6.2rem minmax(0,1fr); gap:.75rem; align-items:baseline; }
+.pcd dt, .pcd b{
+  font-family:var(--mono); font-size:.64rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--paper-3); font-weight:500;
+}
+.pcd dd{ color:var(--paper-2); font-size:.885rem; line-height:1.5; }
+.pcd dd em{ font-style:normal; color:var(--paper); }
+@media (max-width:460px){ .pcd div{ grid-template-columns:1fr; gap:.15rem; } }
+
+/* ============================================================ PANEL CHROME */
+.panel{
+  border:1px solid var(--rule); border-radius:var(--r);
+  background:linear-gradient(180deg, var(--panel), var(--ink-2));
+  overflow:hidden;
+}
+.panel-head{
+  display:flex; align-items:center; justify-content:space-between; gap:.75rem; flex-wrap:wrap;
+  padding:.6rem .85rem; border-bottom:1px solid var(--rule); background:rgba(255,255,255,.02);
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--paper-3);
+}
+.panel-head b{ color:var(--brass); font-weight:500; }
+.panel-body{ padding:clamp(.85rem,1.9vw,1.25rem); }
+.panel-foot{
+  border-top:1px dashed var(--rule); padding:.75rem .85rem;
+  font-family:var(--mono); font-size:.695rem; color:var(--paper-3); line-height:1.6;
+}
+.panel-foot b{ color:var(--paper-2); font-weight:500; }
+.ns{ color:var(--coral); font-family:var(--mono); font-size:.7rem; padding:.6rem .85rem; border-top:1px dashed rgba(236,115,87,.4); }
+
+.bar{ display:flex; flex-wrap:wrap; gap:.45rem; align-items:center; margin-bottom:.95rem; }
+.btn{
+  font-family:var(--mono); font-size:.745rem; letter-spacing:.01em;
+  padding:.5rem .8rem; min-height:38px;
+  border:1px solid var(--rule); border-radius:var(--r);
+  background:var(--panel-2); color:var(--paper); cursor:pointer;
+  transition:border-color .18s, background .18s, color .18s;
+}
+.btn:hover{ border-color:var(--brass-line); }
+.btn--go{ color:var(--brass); border-color:var(--brass-line); }
+.btn--go:hover{ background:var(--brass-dim); }
+.btn--sm{ min-height:34px; padding:.25rem .5rem; font-size:.68rem; }
+.btn[aria-pressed="true"]{ background:var(--brass-dim); border-color:var(--brass-line); color:var(--brass); }
+.btn[disabled]{ opacity:.42; cursor:not-allowed; }
+.spacer{ flex:1 1 auto; }
+
+.chip{
+  font-family:var(--mono); font-size:.645rem; letter-spacing:.11em; text-transform:uppercase;
+  border:1px solid var(--rule); border-radius:999px; padding:.2rem .55rem;
+  color:var(--paper-3); white-space:nowrap;
+}
+.chip--ok{ color:var(--mint); border-color:var(--mint-line); }
+.chip--warn{ color:var(--brass); border-color:var(--brass-line); }
+.chip--over{ color:var(--coral); border-color:rgba(236,115,87,.5); }
+
+.say{ font-family:var(--mono); font-size:.73rem; line-height:1.6; color:var(--paper-2); margin-top:.85rem; min-height:2.4em; }
+.say b{ color:var(--brass); font-weight:500; }
+.say--bad b{ color:var(--coral); }
+
+/* ---------------- DEMO 1 · queue ---------------- */
+.qgrid{ display:grid; gap:.7rem; grid-template-columns:repeat(auto-fill, minmax(8.75rem,1fr)); }
+.tile{
+  border:1px solid var(--rule-soft); border-radius:var(--r); background:var(--ink-2);
+  padding:.55rem; display:grid; gap:.5rem; align-content:start;
+}
+.tile-art{ position:relative; aspect-ratio:4/3; border-radius:2px; overflow:hidden; background:#0a222a; }
+.tile-art i{ position:absolute; inset:0; opacity:0; transition:opacity .5s ease; }
+.l1{ background:linear-gradient(135deg,#143d49,#1d5566 55%,#2a6a72); }
+.l2{ background:
+      radial-gradient(60% 70% at 30% 35%, rgba(230,165,60,.5), transparent 65%),
+      linear-gradient(135deg,#14414e,#22606f 60%,#2e7580); }
+.l3{ background:
+      radial-gradient(38% 46% at 32% 34%, rgba(255,214,150,.85), transparent 70%),
+      radial-gradient(52% 60% at 74% 76%, rgba(111,208,174,.55), transparent 70%),
+      linear-gradient(135deg,#123742,#1f5c6b 55%,#33808c); }
+.tile[data-stage="queued"] .l1{ opacity:1; }
+.tile[data-stage="preview"] .l2{ opacity:1; }
+.tile[data-stage="done"] .l3{ opacity:1; }
+.tile[data-stage="dead"] .tile-art{
+  background:repeating-linear-gradient(45deg, rgba(236,115,87,.12) 0 6px, transparent 6px 12px);
+  border:1px dashed rgba(236,115,87,.45);
+}
+.sweep{
+  position:absolute; inset:0; opacity:1;
+  background:linear-gradient(100deg, transparent 35%, rgba(255,255,255,.13) 50%, transparent 65%);
+  transform:translateX(-100%);
+}
+.tile[data-stage="queued"] .sweep{ animation:sweep 1.5s linear infinite; }
+@keyframes sweep{ to{ transform:translateX(100%); } }
+.tile:not([data-stage="queued"]) .sweep{ display:none; }
+.tile-meta{ display:flex; justify-content:space-between; align-items:baseline; gap:.4rem; font-family:var(--mono); font-size:.66rem; color:var(--paper-3); }
+.tile-state{ font-family:var(--mono); font-size:.66rem; letter-spacing:.06em; }
+.tile[data-stage="queued"] .tile-state{ color:var(--paper-3); }
+.tile[data-stage="preview"] .tile-state{ color:var(--brass); }
+.tile[data-stage="done"] .tile-state{ color:var(--mint); }
+.tile[data-stage="dead"] .tile-state{ color:var(--coral); }
+.tile[data-stage="dead"]{ border-color:rgba(236,115,87,.4); border-style:dashed; }
+
+/* ---------------- DEMO 2 · feed ---------------- */
+.feed{
+  height:16rem; overflow-y:auto; border:1px solid var(--rule-soft); border-radius:var(--r);
+  background:var(--ink); padding:.55rem; display:grid; gap:.2rem; align-content:start;
+  font-family:var(--mono); font-size:.72rem;
+}
+.ev{ display:grid; grid-template-columns:3.3rem 6.4rem minmax(0,1fr); gap:.55rem; color:var(--paper-2); }
+.ev .seq{ color:var(--paper-3); font-variant-numeric:tabular-nums; }
+.ev .ty{ color:var(--mint); }
+@media (max-width:520px){
+  .ev{ grid-template-columns:3.3rem minmax(0,1fr); }
+  .ev .tx{ grid-column:1 / -1; color:var(--paper-3); }
+}
+.gapmark{
+  border-top:1px dashed rgba(236,115,87,.55); border-bottom:1px dashed rgba(236,115,87,.55);
+  color:var(--coral); padding:.4rem .1rem; margin:.35rem 0; line-height:1.5;
+}
+.gapmark b{ color:var(--coral); font-weight:600; }
+
+/* ---------------- DEMO 3 · constellation ---------------- */
+.cnst{ display:block; width:100%; height:auto; }
+.edge{ stroke:var(--rule); stroke-width:1.4; fill:none; }
+.edge.lit{ stroke:var(--brass); stroke-width:2; }
+.cn{ cursor:pointer; }
+.cn .dot{ fill:var(--panel); stroke:var(--paper-3); stroke-width:1.5; }
+.cn .lb{ font-family:var(--mono); font-size:12px; fill:var(--paper-2); }
+.cn[data-kind="model"] .dot{ stroke:var(--mint); }
+.cn[data-kind="model"] .lb{ fill:var(--mint); }
+.cn--center .dot{ fill:var(--brass); stroke:var(--brass); }
+.cn--center .lb{ fill:var(--brass); font-weight:600; font-size:13px; }
+.cn .hit{ fill:transparent; }
+.cnst.sel-on .cn{ opacity:.3; transition:opacity .2s ease; }
+.cnst.sel-on .cn.sel, .cnst.sel-on .cn.adj{ opacity:1; }
+.cn.sel .dot{ stroke-width:2.5; }
+.cn:focus{ outline:none; }
+.cn:focus-visible .ring{ stroke:var(--brass); stroke-width:2; fill:none; }
+.ring{ stroke:none; fill:none; }
+@media (max-width:720px){ .cn .lb{ display:none; } }
+.inspector{
+  display:grid; gap:.15rem; margin-top:.7rem; padding:.6rem .7rem;
+  border:1px solid var(--rule-soft); border-radius:var(--r); background:var(--ink-2);
+  font-family:var(--mono); font-size:.72rem; color:var(--paper-3); line-height:1.55;
+}
+.inspector .who{ color:var(--paper); font-size:.8rem; }
+.inspector .who.is-model{ color:var(--mint); }
+.legend{ display:flex; flex-wrap:wrap; gap:.6rem 1.1rem; margin-top:.7rem; font-family:var(--mono); font-size:.66rem; color:var(--paper-3); }
+.legend i{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:.35rem; vertical-align:middle; border:1.5px solid var(--paper-3); }
+.legend .m i{ border-color:var(--mint); }
+.legend .c i{ background:var(--brass); border-color:var(--brass); }
+
+/* ---------------- DEMO 4 · workload ---------------- */
+.wl-top{ display:flex; align-items:baseline; justify-content:space-between; gap:.6rem; flex-wrap:wrap; font-family:var(--mono); font-size:.72rem; color:var(--paper-3); margin-bottom:.4rem; }
+.wl-top .num{ color:var(--paper); font-variant-numeric:tabular-nums; }
+.meter{
+  position:relative; height:16px; border:1px solid var(--rule); border-radius:2px;
+  background-color:var(--ink);
+  background-image:repeating-linear-gradient(to right, rgba(255,255,255,.07) 0 1px, transparent 1px 100%);
+  background-size:calc(100% / 26) 100%;
+  overflow:hidden;
+}
+.meter-fill{
+  position:absolute; inset:0; transform-origin:left center;
+  transform:scaleX(var(--fill,0)); background:var(--mint);
+  transition:transform .3s ease, background-color .2s linear;
+}
+.meter[data-state="warn"] .meter-fill{ background:var(--brass); }
+.meter[data-state="over"] .meter-fill{ background:var(--coral); }
+.meter.flash{ animation:flash .5s steps(1) 3; }
+@keyframes flash{ 50%{ border-color:var(--coral); } }
+.wl-grid{ display:grid; gap:1rem clamp(1rem,2.5vw,2rem); grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr)); margin-top:1rem; }
+.wl-h{ font-family:var(--mono); font-size:.63rem; letter-spacing:.14em; text-transform:uppercase; color:var(--plum); margin-bottom:.5rem; }
+.brk{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.32rem .8rem; font-family:var(--mono); font-size:.72rem; color:var(--paper-3); }
+.brk b{ color:var(--paper-2); font-weight:500; font-variant-numeric:tabular-nums; }
+.brk .tot{ color:var(--paper); border-top:1px solid var(--rule); padding-top:.35rem; }
+.bk{ display:flex; align-items:center; gap:.4rem; font-family:var(--mono); font-size:.72rem; color:var(--paper-2); border:1px solid var(--rule-soft); border-radius:var(--r); padding:.3rem .45rem; margin-bottom:.35rem; background:var(--ink-2); }
+.bk .t{ flex:1 1 auto; font-variant-numeric:tabular-nums; }
+
+/* ---------------- DEMO 5 · dev labels ---------------- */
+.mock{ border:1px solid var(--rule-soft); border-radius:var(--r); background:var(--ink); padding:.7rem; display:grid; gap:.5rem; }
+.mock-sec{ border:1px solid transparent; border-radius:2px; padding:.55rem .6rem; transition:border-color .18s, background-color .18s; }
+.mock-sec.tgt{ border-color:var(--brass-line); background:var(--brass-dim); }
+.dl{ font-family:var(--mono); font-size:.6rem; letter-spacing:.11em; text-transform:uppercase; padding:.08rem .4rem; border-radius:2px; display:inline-block; margin-bottom:.45rem; font-weight:600; }
+.dl-a{ background:var(--brass); color:#22160a; }
+.dl-b{ background:var(--mint); color:#062119; }
+.dl-c{ background:var(--coral); color:#2a0d06; }
+.labels-off .dl{ display:none; }
+.sk{ height:9px; border-radius:2px; background:rgba(255,255,255,.07); margin-bottom:.35rem; }
+.sk.w70{ width:70%; } .sk.w45{ width:45%; } .sk.w90{ width:90%; } .sk.w30{ width:30%; }
+.sk.hd{ height:14px; background:rgba(255,255,255,.13); }
+.mock-row{ display:flex; gap:.4rem; }
+.mock-row .sk{ flex:1; margin-bottom:0; }
+.quote{ border-left:2px solid var(--rule); padding-left:.85rem; margin-top:.95rem; color:var(--paper-2); font-size:.9rem; }
+.quote em{ color:var(--paper); font-style:italic; }
+.quote .who{ display:block; font-family:var(--mono); font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; color:var(--paper-3); margin-top:.4rem; }
+
+/* ---------------- SECTION 6 · token sheet ---------------- */
+.sheet{ display:grid; gap:clamp(1.25rem,3vw,2.5rem); grid-template-columns:minmax(0,4fr) minmax(0,6fr); align-items:start; }
+@media (max-width:900px){ .sheet{ grid-template-columns:1fr; } }
+.ctrls{ display:grid; gap:.85rem; }
+.ctrl{ display:grid; gap:.3rem; }
+.ctrl label{ font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; color:var(--paper-3); display:flex; justify-content:space-between; gap:.6rem; }
+.ctrl label b{ color:var(--brass); font-weight:500; font-variant-numeric:tabular-nums; }
+input[type="range"]{ width:100%; accent-color:var(--brass); height:26px; }
+select{
+  font-family:var(--mono); font-size:.73rem; padding:.4rem .5rem; min-height:36px;
+  background:var(--panel-2); color:var(--paper); border:1px solid var(--rule); border-radius:var(--r);
+}
+.readout{
+  font-family:var(--mono); font-size:.685rem; line-height:1.75; color:var(--paper-3);
+  background:var(--ink); border:1px solid var(--rule-soft); border-radius:var(--r);
+  padding:.65rem .75rem; margin-top:.9rem; overflow-x:auto; white-space:pre;
+}
+.readout b{ color:var(--brass); font-weight:400; }
+
+.spec{
+  --s-h:38; --s-accent:hsl(var(--s-h) 72% 55%);
+  --s-space:12px; --s-radius:4px; --s-elev:0px; --s-dur:180ms;
+  --s-ease:cubic-bezier(.4,0,.2,1);
+  --s-bg:#0a222a; --s-card:#0e2c35; --s-fg:#e9f2f0; --s-mut:#7d9a9b; --s-line:#1c4450;
+  background:var(--s-bg); border:1px solid var(--rule);
+  border-radius:var(--r); padding:clamp(1rem,2.4vw,1.6rem);
+}
+.spec[data-mode="light"]{ --s-bg:#eef3f2; --s-card:#ffffff; --s-fg:#0a1e23; --s-mut:#5b7379; --s-line:#ccdad8; }
+.card{
+  background:var(--s-card); color:var(--s-fg);
+  border:1px solid var(--s-line); border-radius:var(--s-radius);
+  padding:calc(var(--s-space) * 1.35);
+  box-shadow:0 var(--s-elev) calc(var(--s-elev) * 2.5) rgba(0,0,0,.38);
+  display:grid; gap:calc(var(--s-space) * 1.1);
+  transition:box-shadow var(--s-dur) var(--s-ease), border-radius var(--s-dur) var(--s-ease);
+}
+.card-hd{ display:flex; align-items:center; justify-content:space-between; gap:var(--s-space); flex-wrap:wrap; }
+.card-hd h4{ font-family:var(--display); font-size:1.02rem; font-weight:700; letter-spacing:-.02em; }
+.s-chip{
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase;
+  border:1px solid var(--s-accent); color:var(--s-accent);
+  border-radius:999px; padding:.16rem .5rem;
+}
+.stats{ display:grid; gap:var(--s-space); grid-template-columns:repeat(3,minmax(0,1fr)); }
+.stat{ border:1px solid var(--s-line); border-radius:var(--s-radius); padding:var(--s-space); transition:border-radius var(--s-dur) var(--s-ease); }
+.stat b{ display:block; font-family:var(--mono); font-size:1.08rem; color:var(--s-accent); font-variant-numeric:tabular-nums; }
+.stat span{ font-family:var(--mono); font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--s-mut); }
+.s-row{ display:flex; gap:calc(var(--s-space) * .7); flex-wrap:wrap; align-items:center; }
+.s-btn{
+  font-family:var(--mono); font-size:.73rem; cursor:pointer; min-height:36px;
+  padding:calc(var(--s-space) * .55) calc(var(--s-space) * 1.05);
+  border-radius:var(--s-radius); border:1px solid var(--s-line);
+  background:transparent; color:var(--s-fg);
+  transition:transform var(--s-dur) var(--s-ease), background-color var(--s-dur) var(--s-ease), border-radius var(--s-dur) var(--s-ease);
+}
+.s-btn--pri{ background:var(--s-accent); border-color:var(--s-accent); color:#151007; font-weight:600; }
+.s-btn:hover{ transform:translateY(-2px); }
+.s-note{ font-family:var(--mono); font-size:.66rem; color:var(--s-mut); }
+@media (max-width:420px){ .stats{ grid-template-columns:1fr; } }
+
+.aside{
+  border-left:3px solid var(--brass-line); background:var(--brass-dim);
+  padding:1rem 1.2rem; border-radius:var(--r); margin-top:1.6rem; font-size:.94rem; max-width:var(--prose);
+}
+.aside em{ font-style:normal; font-family:var(--mono); font-size:.7rem; color:var(--brass); display:block; margin-bottom:.35rem; letter-spacing:.09em; text-transform:uppercase; }
+.aside code{ font-family:var(--mono); font-size:.85em; color:var(--paper-2); background:rgba(255,255,255,.05); border-radius:2px; padding:.05em .3em; }
+
+/* ============================================================ OUTRO / FOOTER */
+.outro{ padding-block:clamp(3rem,6vw,5.5rem); }
+.links{ display:flex; flex-direction:column; gap:.6rem; max-width:26rem; margin-top:1.6rem; }
+.link{
+  display:flex; align-items:center; gap:.8rem; justify-content:space-between;
+  border:1px solid var(--rule); border-radius:var(--r);
+  padding:.85rem 1.1rem; background:var(--panel);
+  font-family:var(--mono); font-size:.85rem;
+  transition:border-color .18s, background .18s, transform .16s;
+}
+.link:hover{ border-color:var(--brass-line); background:var(--panel-2); transform:translateX(3px); }
+.link span:last-child{ color:var(--brass); }
+footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
+.foot{
+  display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;
+  font-family:var(--mono); font-size:.72rem; color:var(--paper-3); letter-spacing:.04em;
+}
+
+/* ============================================================ MOTION */
+.js .rev{ opacity:0; transform:translateY(14px); transition:opacity .55s ease, transform .55s ease; }
+.js .rev.on{ opacity:1; transform:none; }
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  .js .rev{ opacity:1; transform:none; transition:none; }
+  .link:hover,.s-btn:hover{ transform:none; }
+  .tile[data-stage="queued"] .sweep{ animation:none; }
+  .tile-art i, .meter-fill, .card, .stat, .s-btn, .mock-sec, .cnst.sel-on .cn{ transition:none !important; }
+  .meter.flash{ animation:none; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="pad"><div class="inner masthead-in">
+    <a class="sig" href="index.html">Keaton Van Patten<i>.</i></a>
+    <nav class="mast-nav" aria-label="Sections">
+      <a class="mast-hide" href="index.html#field">Field report</a>
+      <a class="mast-hide" href="index.html#systems">Systems</a>
+      <a class="mast-hide" href="index.html#graph">Graph</a>
+      <a href="ui.html" aria-current="page">Interface</a>
+      <a class="mast-hide" href="index.html#method">Method</a>
+      <a class="mast-cta" href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
+    </nav>
+  </div></div>
+</header>
+
+<main id="top">
+
+<!-- ============================ HERO ============================ -->
+<section class="band hero pad">
+  <div class="inner">
+    <p class="eyebrow">Interface &middot; operator surfaces</p>
+    <h1>
+      Five rules I build <em>operator tools</em> by.
+      <span class="against">Each one is here, running, next to the thing that taught it.</span>
+    </h1>
+    <p class="hero-lede">
+      The people who use my software are doing their job while they use it — booking a client,
+      cancelling a render, watching an agent run. <b>Every demo below is the real behaviour,
+      rebuilt small</b>, with the problem it came from and the decision it forced.
+    </p>
+    <p class="hero-note">
+      One file. No framework, no build step, <b>no dependencies</b> — hand-written HTML, CSS and
+      vanilla JavaScript, same as the rest of this site. Turn JavaScript off and every panel still
+      shows a real state.
+    </p>
+  </div>
+</section>
+
+<!-- ============================ 1 · QUEUE ============================ -->
+<section class="band band--alt sec pad" id="queue">
+  <div class="inner prin">
+
+    <div class="prin-copy rev">
+      <span class="kicker">Media queue &middot; local GPU box</span>
+      <h2>Nothing vanishes silently.</h2>
+      <p>
+        This is the job queue for a generation box on my desk. Operators would hit cancel and then
+        have no idea whether the click landed — the tile just sat there, or disappeared a beat
+        later with nothing said. So every state change got a <b>visible intermediate</b>: queued
+        shimmers, a rough preview resolves before the finished frame, and a cancelled job announces
+        its own death and holds its place for four seconds before it leaves. The grid never changes
+        under you without saying so.
+      </p>
+      <dl class="pcd">
+        <div><dt>Problem</dt><dd>A cancel with no feedback reads as a broken button, so it gets pressed again.</dd></div>
+        <div><dt>Constraint</dt><dd>The backend is authoritative and polls on a 2.5-second cycle. The UI cannot pretend to know sooner.</dd></div>
+        <div><dt>Decision</dt><dd>Optimistic <em>intent</em>, never optimistic <em>outcome</em>: show the state it is entering, and leave a tombstone when it ends.</dd></div>
+      </dl>
+    </div>
+
+    <div class="panel rev">
+      <div class="panel-head"><span>Demo &middot; generation queue</span><b>live in this page</b></div>
+      <div class="panel-body">
+        <div class="bar">
+          <button class="btn btn--go" type="button" data-q="add">Queue a job</button>
+          <button class="btn" type="button" data-q="reset">Reset</button>
+          <span class="spacer"></span>
+          <span class="chip" id="q-count">4 jobs</span>
+        </div>
+        <div class="qgrid" id="q-grid">
+          <div class="tile" data-stage="queued">
+            <div class="tile-art"><i class="l1"></i><i class="l2"></i><i class="l3"></i><span class="sweep"></span></div>
+            <div class="tile-meta"><span>job 004</span><span class="tile-state">queued</span></div>
+            <button class="btn btn--sm" type="button" data-q="cancel">Cancel</button>
+          </div>
+          <div class="tile" data-stage="preview">
+            <div class="tile-art"><i class="l1"></i><i class="l2"></i><i class="l3"></i><span class="sweep"></span></div>
+            <div class="tile-meta"><span>job 003</span><span class="tile-state">preview</span></div>
+            <button class="btn btn--sm" type="button" data-q="cancel">Cancel</button>
+          </div>
+          <div class="tile" data-stage="dead">
+            <div class="tile-art"><i class="l1"></i><i class="l2"></i><i class="l3"></i><span class="sweep"></span></div>
+            <div class="tile-meta"><span>job 002</span><span class="tile-state">cancelled</span></div>
+            <button class="btn btn--sm" type="button" disabled>Leaving in 4s</button>
+          </div>
+          <div class="tile" data-stage="done">
+            <div class="tile-art"><i class="l1"></i><i class="l2"></i><i class="l3"></i><span class="sweep"></span></div>
+            <div class="tile-meta"><span>job 001</span><span class="tile-state">done</span></div>
+            <button class="btn btn--sm" type="button" disabled>Keep</button>
+          </div>
+        </div>
+        <p class="say" id="q-say" role="status">Four states on screen at once: <b>queued, preview, cancelled, done</b>. Cancel a job and watch it leave.</p>
+      </div>
+      <noscript><p class="ns">JavaScript is off — this panel shows one fixed moment in the queue instead of running.</p></noscript>
+      <div class="panel-foot">
+        Rebuilt in vanilla JS for this page. The original is a Svelte tab over a single-queue
+        scheduler with cross-process cancellation, lease fencing, and a <b>four-second tombstone
+        hold</b> so a job that dies is seen dying.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================ 2 · FEED ============================ -->
+<section class="band sec pad" id="feed">
+  <div class="inner prin">
+
+    <div class="prin-copy rev">
+      <span class="kicker">Session cockpit &middot; event stream</span>
+      <h2>State admits what it doesn't know.</h2>
+      <p>
+        The cockpit that supervises my AI coding runs streams <b>21 typed event kinds</b>, each
+        carrying a monotonic sequence number. Drop the connection and the feed replays from the
+        last cursor it held — and a replay that <em>looks</em> continuous but isn't is worse than a
+        hole, because it turns a missing event into a wrong conclusion. So the hole gets drawn: how
+        many events were lost, and the sequence number the feed is complete from. A gap I can see
+        is a bug report.
+      </p>
+      <dl class="pcd">
+        <div><dt>Problem</dt><dd>Reconnect used to stitch the feed back together and quietly swallow whatever happened while it was away.</dd></div>
+        <div><dt>Constraint</dt><dd>The server keeps a bounded buffer. Some replays genuinely cannot be completed.</dd></div>
+        <div><dt>Decision</dt><dd>Render the gap with its size and its resume point. Never interpolate, never silently trim.</dd></div>
+      </dl>
+    </div>
+
+    <div class="panel rev">
+      <div class="panel-head"><span>Demo &middot; cursor replay</span><b>live in this page</b></div>
+      <div class="panel-body">
+        <div class="bar">
+          <button class="btn" type="button" data-f="drop">Drop connection</button>
+          <button class="btn btn--go" type="button" data-f="reconnect" disabled>Reconnect</button>
+          <button class="btn" type="button" data-f="step">Emit one event</button>
+          <span class="spacer"></span>
+          <span class="chip chip--ok" id="f-chip">connected</span>
+        </div>
+        <div class="feed" id="f-feed" role="log" aria-live="polite" aria-label="Event stream">
+          <div class="ev"><span class="seq">0021</span><span class="ty">run.started</span><span class="tx">worker picked up job</span></div>
+          <div class="ev"><span class="seq">0022</span><span class="ty">tool.call</span><span class="tx">read_file · server.py</span></div>
+          <div class="gapmark"><b>4 events lost.</b> Feed is complete from seq 0027 on.</div>
+          <div class="ev"><span class="seq">0027</span><span class="ty">patch.applied</span><span class="tx">3 hunks · 1 file</span></div>
+          <div class="ev"><span class="seq">0028</span><span class="ty">gate.opened</span><span class="tx">approval requested</span></div>
+          <div class="ev"><span class="seq">0029</span><span class="ty">cost.tick</span><span class="tx">usage row written</span></div>
+        </div>
+        <p class="say" id="f-say" role="status">Drop the connection, wait a few seconds, then reconnect — the feed will tell you exactly what it missed.</p>
+      </div>
+      <noscript><p class="ns">JavaScript is off — this panel shows a feed that has already been through one drop and reconnect.</p></noscript>
+      <div class="panel-foot">
+        Rebuilt in vanilla JS for this page. The original carries the same rule into storage:
+        secret-shaped payloads are <b>rejected at write time</b> rather than scrubbed, so a leak
+        fails loudly at the boundary instead of quietly downstream.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================ 3 · CONSTELLATION ============================ -->
+<section class="band band--alt sec pad" id="graph">
+  <div class="inner prin">
+
+    <div class="prin-copy rev">
+      <span class="kicker">Dependency catalog &middot; blast radius</span>
+      <h2>If the data is yours, draw it yourself.</h2>
+      <p>
+        This is a real answer out of the catalog of the AI estate on this machine — <b>364
+        entries, 1,306 edges</b>, rebuilt from source, queried by coding agents over MCP before
+        they change anything. At the centre is the orchestrator's <code>advance()</code> step and
+        the thirteen things that hold it. Placement is a golden-angle spiral, about forty lines of
+        arithmetic; there is no charting library on this page. When the data is mine and the shape
+        is this specific, a dependency costs more than the maths does.
+      </p>
+      <dl class="pcd">
+        <div><dt>Problem</dt><dd>"What breaks if I touch this?" was being answered from memory of the architecture.</dd></div>
+        <div><dt>Constraint</dt><dd>The graph is small, oddly shaped, and mine. A generic chart library would fight it.</dd></div>
+        <div><dt>Decision</dt><dd>Hand-rolled layout, real ids on screen, and a selection that dims everything it does not touch.</dd></div>
+      </dl>
+    </div>
+
+    <div class="panel rev">
+      <div class="panel-head"><span>Demo &middot; select a node</span><b>real graph · 2026-08-27</b></div>
+      <div class="panel-body">
+        <svg class="cnst" id="cn-svg" viewBox="0 0 900 600" role="group"
+             aria-label="Dependency constellation around the orchestrator advance step. Select a node to see its degree.">
+          <g id="cn-edges">
+            <path class="edge" data-a="c" data-b="n0" d="M470 310 L396 357"/>
+            <path class="edge" data-a="c" data-b="n1" d="M470 310 L483 205"/>
+            <path class="edge" data-a="c" data-b="n2" d="M470 310 L574 405"/>
+            <path class="edge" data-a="c" data-b="n3" d="M470 310 L286 287"/>
+            <path class="edge" data-a="c" data-b="n4" d="M470 310 L639 235"/>
+            <path class="edge" data-a="c" data-b="n5" d="M470 310 L415 453"/>
+            <path class="edge" data-a="c" data-b="n6" d="M470 310 L368 172"/>
+            <path class="edge" data-a="c" data-b="n7" d="M470 310 L688 366"/>
+            <path class="edge" data-a="c" data-b="n8" d="M470 310 L247 375"/>
+            <path class="edge" data-a="c" data-b="n9" d="M470 310 L576 152"/>
+            <path class="edge" data-a="c" data-b="n10" d="M470 310 L547 482"/>
+            <path class="edge" data-a="c" data-b="n11" d="M470 310 L240 217"/>
+            <path class="edge" data-a="c" data-b="n12" d="M470 310 L737 269"/>
+            <path class="edge" data-a="n11" data-b="n13" d="M240 217 L168 152"/>
+            <path class="edge" data-a="n13" data-b="n14" d="M168 152 L92 86"/>
+          </g>
+          <g id="cn-nodes">
+            <g class="cn" id="n14" data-kind="model" data-id="llm-llama32-3b" data-deg="19" data-adj="n13" tabindex="0" role="button" aria-label="llm-llama32-3b, local model, 19 edges">
+              <circle class="hit" cx="92" cy="86" r="32"/><circle class="ring" cx="92" cy="86" r="16"/>
+              <circle class="dot" cx="92" cy="86" r="10.6"/><text class="lb" x="108" y="90">llama3.2-3b · local</text>
+            </g>
+            <g class="cn" id="n13" data-kind="action" data-id="action-heartbeat-jobs-watch" data-deg="4" data-adj="n11 n14" tabindex="0" role="button" aria-label="action-heartbeat-jobs-watch, action, 4 edges">
+              <circle class="hit" cx="168" cy="152" r="32"/><circle class="ring" cx="168" cy="152" r="12"/>
+              <circle class="dot" cx="168" cy="152" r="5.4"/><text class="lb" x="182" y="156">jobs-watch</text>
+            </g>
+            <g class="cn" id="n11" data-kind="brain-component" data-id="brain-autonomy-guard" data-deg="5" data-adj="c n13" tabindex="0" role="button" aria-label="brain-autonomy-guard, component, 5 edges">
+              <circle class="hit" cx="240" cy="217" r="32"/><circle class="ring" cx="240" cy="217" r="12"/>
+              <circle class="dot" cx="240" cy="217" r="5.8"/><text class="lb" x="226" y="221" text-anchor="end">autonomy-guard</text>
+            </g>
+            <g class="cn" id="n3" data-kind="brain-component" data-id="brain-scheduler" data-deg="9" data-adj="c" tabindex="0" role="button" aria-label="brain-scheduler, component, 9 edges">
+              <circle class="hit" cx="286" cy="287" r="32"/><circle class="ring" cx="286" cy="287" r="14"/>
+              <circle class="dot" cx="286" cy="287" r="7.2"/><text class="lb" x="272" y="291" text-anchor="end">scheduler</text>
+            </g>
+            <g class="cn" id="n8" data-kind="brain-component" data-id="brain-triage" data-deg="4" data-adj="c" tabindex="0" role="button" aria-label="brain-triage, component, 4 edges">
+              <circle class="hit" cx="247" cy="375" r="32"/><circle class="ring" cx="247" cy="375" r="12"/>
+              <circle class="dot" cx="247" cy="375" r="5.4"/><text class="lb" x="233" y="379" text-anchor="end">triage</text>
+            </g>
+            <g class="cn" id="n0" data-kind="brain-component" data-id="brain-pulse" data-deg="12" data-adj="c" tabindex="0" role="button" aria-label="brain-pulse, component, 12 edges">
+              <circle class="hit" cx="396" cy="357" r="32"/><circle class="ring" cx="396" cy="357" r="15"/>
+              <circle class="dot" cx="396" cy="357" r="8.2"/><text class="lb" x="382" y="361" text-anchor="end">pulse</text>
+            </g>
+            <g class="cn" id="n5" data-kind="brain-component" data-id="brain-gate" data-deg="6" data-adj="c" tabindex="0" role="button" aria-label="brain-gate, component, 6 edges">
+              <circle class="hit" cx="415" cy="453" r="32"/><circle class="ring" cx="415" cy="453" r="13"/>
+              <circle class="dot" cx="415" cy="453" r="6.1"/><text class="lb" x="401" y="457" text-anchor="end">gate</text>
+            </g>
+            <g class="cn" id="n6" data-kind="model" data-id="llm-qwen3-14b" data-deg="16" data-adj="c" tabindex="0" role="button" aria-label="llm-qwen3-14b, local model, 16 edges">
+              <circle class="hit" cx="368" cy="172" r="32"/><circle class="ring" cx="368" cy="172" r="16"/>
+              <circle class="dot" cx="368" cy="172" r="9.6"/><text class="lb" x="354" y="176" text-anchor="end">qwen3-14b · local</text>
+            </g>
+            <g class="cn" id="n1" data-kind="brain-component" data-id="brain-path-charts" data-deg="12" data-adj="c" tabindex="0" role="button" aria-label="brain-path-charts, component, 12 edges">
+              <circle class="hit" cx="483" cy="205" r="32"/><circle class="ring" cx="483" cy="205" r="15"/>
+              <circle class="dot" cx="483" cy="205" r="8.2"/><text class="lb" x="497" y="209">path-charts</text>
+            </g>
+            <g class="cn" id="n9" data-kind="data-store" data-id="store-runs-proposals" data-deg="5" data-adj="c" tabindex="0" role="button" aria-label="store-runs-proposals, data store, 5 edges">
+              <circle class="hit" cx="576" cy="152" r="32"/><circle class="ring" cx="576" cy="152" r="12"/>
+              <circle class="dot" cx="576" cy="152" r="5.8"/><text class="lb" x="590" y="156">runs-proposals</text>
+            </g>
+            <g class="cn" id="n4" data-kind="brain-component" data-id="brain-event-bus" data-deg="8" data-adj="c" tabindex="0" role="button" aria-label="brain-event-bus, component, 8 edges">
+              <circle class="hit" cx="639" cy="235" r="32"/><circle class="ring" cx="639" cy="235" r="14"/>
+              <circle class="dot" cx="639" cy="235" r="6.8"/><text class="lb" x="653" y="239">event-bus</text>
+            </g>
+            <g class="cn" id="n12" data-kind="brain-component" data-id="brain-agent-worktree" data-deg="2" data-adj="c" tabindex="0" role="button" aria-label="brain-agent-worktree, component, 2 edges">
+              <circle class="hit" cx="737" cy="269" r="32"/><circle class="ring" cx="737" cy="269" r="11"/>
+              <circle class="dot" cx="737" cy="269" r="4.7"/><text class="lb" x="751" y="273">agent-worktree</text>
+            </g>
+            <g class="cn" id="n7" data-kind="brain-component" data-id="brain-governor" data-deg="4" data-adj="c" tabindex="0" role="button" aria-label="brain-governor, component, 4 edges">
+              <circle class="hit" cx="688" cy="366" r="32"/><circle class="ring" cx="688" cy="366" r="12"/>
+              <circle class="dot" cx="688" cy="366" r="5.4"/><text class="lb" x="702" y="370">governor</text>
+            </g>
+            <g class="cn" id="n2" data-kind="pipeline" data-id="pipeline-invoke-agent" data-deg="12" data-adj="c" tabindex="0" role="button" aria-label="pipeline-invoke-agent, pipeline, 12 edges">
+              <circle class="hit" cx="574" cy="405" r="32"/><circle class="ring" cx="574" cy="405" r="15"/>
+              <circle class="dot" cx="574" cy="405" r="8.2"/><text class="lb" x="588" y="409">invoke-agent</text>
+            </g>
+            <g class="cn" id="n10" data-kind="action" data-id="action-dispatch-classify" data-deg="5" data-adj="c" tabindex="0" role="button" aria-label="action-dispatch-classify, action, 5 edges">
+              <circle class="hit" cx="547" cy="482" r="32"/><circle class="ring" cx="547" cy="482" r="12"/>
+              <circle class="dot" cx="547" cy="482" r="5.8"/><text class="lb" x="561" y="486">dispatch-classify</text>
+            </g>
+            <g class="cn cn--center sel" id="c" data-kind="action" data-id="action-orchestrator-advance" data-deg="23"
+               data-adj="n0 n1 n2 n3 n4 n5 n6 n7 n8 n9 n10 n11 n12" tabindex="0" role="button"
+               aria-label="action-orchestrator-advance, the selected centre, 23 edges">
+              <circle class="hit" cx="470" cy="310" r="36"/><circle class="ring" cx="470" cy="310" r="20"/>
+              <circle class="dot" cx="470" cy="310" r="13"/>
+              <text class="lb" x="470" y="342" text-anchor="middle">advance()</text>
+            </g>
+          </g>
+        </svg>
+        <div class="inspector" id="cn-ins" role="status">
+          <span class="who">action-orchestrator-advance</span>
+          <span>action &middot; 23 edges &middot; 13 direct neighbours &middot; the most connected action in the catalog</span>
+        </div>
+        <div class="legend">
+          <span class="c"><i></i>selected</span>
+          <span class="m"><i></i>local model</span>
+          <span><i></i>component, action, store, pipeline</span>
+        </div>
+      </div>
+      <noscript><p class="ns">JavaScript is off — the constellation renders with its centre node already selected.</p></noscript>
+      <div class="panel-foot">
+        Every node, edge and degree here is read from the catalog snapshot of <b>2026-08-27</b>
+        (364 entries, 1,306 edges). Two nodes on this figure are models running on my own GPUs;
+        <code>jobs-watch</code> and <code>llama3.2-3b</code> sit one hop out, reached through the
+        autonomy guard.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================ 4 · WORKLOAD ============================ -->
+<section class="band sec pad" id="capacity">
+  <div class="inner prin">
+
+    <div class="prin-copy rev">
+      <span class="kicker">Scheduler &middot; capacity guardrail</span>
+      <h2>The interface enforces the invariant.</h2>
+      <p>
+        A scheduler that replaced a paper process at a pediatric therapy clinic. Capacity used to
+        live in one person's head, which meant it was argued about after the fact, once the day was
+        already too full. Now the workload model runs in the interface: every booking charges its
+        contact time <b>plus</b> the documentation, turnover and recovery it drags behind it, in
+        quarter-hour steps against a real day. Past the line the booking is refused, not flagged —
+        a warning you can click through is a rule nobody keeps.
+      </p>
+      <dl class="pcd">
+        <div><dt>Problem</dt><dd>The true cost of a booking was invisible at the moment somebody made it.</dd></div>
+        <div><dt>Constraint</dt><dd>Non-contact time is most of the overrun and none of it is on the calendar.</dd></div>
+        <div><dt>Decision</dt><dd>One model, computed in the UI, shown as it fills — and a hard block with the arithmetic attached.</dd></div>
+      </dl>
+    </div>
+
+    <div class="panel rev">
+      <div class="panel-head"><span>Demo &middot; one working day</span><b>generic model</b></div>
+      <div class="panel-body">
+        <div class="bar">
+          <button class="btn btn--go" type="button" data-w="add">Add a 60-minute booking</button>
+          <button class="btn" type="button" data-w="reset">Reset day</button>
+          <span class="spacer"></span>
+          <span class="chip chip--ok" id="w-chip">Within capacity</span>
+        </div>
+
+        <div class="wl-top">
+          <span>Day capacity 6h 30m &middot; 26 quarter-hour slots</span>
+          <span><span class="num" id="w-used">4h 55m</span> committed &middot; <span class="num" id="w-left">1h 35m</span> left</span>
+        </div>
+        <div class="meter" data-state="ok" id="w-meter" role="img" aria-label="Committed load: 76 percent of capacity. Within capacity.">
+          <span class="meter-fill" style="--fill:.756"></span>
+        </div>
+
+        <div class="wl-grid">
+          <div>
+            <h4 class="wl-h">Where the day goes</h4>
+            <div class="brk" id="w-brk">
+              <span>Contact time · 3 sessions</span><b>180m</b>
+              <span>Documentation · 15m each</span><b>45m</b>
+              <span>Turnover · 5m each</span><b>15m</b>
+              <span>Recovery buffer · 5m each</span><b>15m</b>
+              <span>Planning · once a day</span><b>10m</b>
+              <span>Reporting · once a day</span><b>15m</b>
+              <span>Team coordination · once a day</span><b>15m</b>
+              <span class="tot">Committed</span><b class="tot">295m</b>
+            </div>
+          </div>
+          <div>
+            <h4 class="wl-h">Bookings</h4>
+            <div id="w-list">
+              <div class="bk"><span class="t">09:00 &middot; 60m</span><button class="btn btn--sm" type="button" data-w="ext">+15m</button><button class="btn btn--sm" type="button" data-w="del">Remove</button></div>
+              <div class="bk"><span class="t">10:45 &middot; 60m</span><button class="btn btn--sm" type="button" data-w="ext">+15m</button><button class="btn btn--sm" type="button" data-w="del">Remove</button></div>
+              <div class="bk"><span class="t">12:30 &middot; 60m</span><button class="btn btn--sm" type="button" data-w="ext">+15m</button><button class="btn btn--sm" type="button" data-w="del">Remove</button></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="say" id="w-say" role="status">
+          Three bookings hold <b>295 of 390 minutes</b>. Keep adding — the fifth one will not fit,
+          and the interface will say so instead of taking it.
+        </p>
+      </div>
+      <noscript><p class="ns">JavaScript is off — this panel shows a day already loaded to 76% of capacity.</p></noscript>
+      <div class="panel-foot">
+        A genericized approximation of the shipped model, which carries more components and
+        per-case overrides. Same shape: quarter-hour resolution, additive non-contact time,
+        <b>near-limit at 90%</b>, and no path to saving a booking that goes over.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================ 5 · DEV LABELS ============================ -->
+<section class="band band--alt sec pad" id="labels">
+  <div class="inner prin">
+
+    <div class="prin-copy rev">
+      <span class="kicker">House convention &middot; every page, every tool</span>
+      <h2>Ambiguity is a bug in the conversation.</h2>
+      <p>
+        Every page in my tools carries a per-section dev label — A, B, C down the page. It costs
+        one div per section and it deleted a whole class of round-trips: <b>"fix section B"</b>
+        lands somewhere exact, whether it comes from a client, from me a month later, or from an AI
+        agent editing the file. Without them the same note arrives as "the middle bit under the
+        search thing," and finding out which bit that was takes two more messages and a screenshot.
+      </p>
+      <dl class="pcd">
+        <div><dt>Problem</dt><dd>Feedback pointed at regions of a screen that had no names.</dd></div>
+        <div><dt>Constraint</dt><dd>It had to cost nothing to apply and nothing to remember.</dd></div>
+        <div><dt>Decision</dt><dd>Letters restart per page, one tag per section, mandated for new UI — and shipped visible, not hidden behind a flag.</dd></div>
+      </dl>
+    </div>
+
+    <div class="panel rev">
+      <div class="panel-head"><span>Demo &middot; the same feedback, twice</span><b>toggle the labels</b></div>
+      <div class="panel-body">
+        <div class="bar">
+          <button class="btn" type="button" id="lb-toggle" aria-pressed="true">Dev labels: on</button>
+          <span class="spacer"></span>
+          <span class="chip chip--ok" id="lb-chip">1 message to fix it</span>
+        </div>
+
+        <div class="mock" id="lb-mock">
+          <div class="mock-sec" data-sec="a">
+            <span class="dl dl-a">A · Header</span>
+            <div class="sk hd w45"></div><div class="sk w30"></div>
+          </div>
+          <div class="mock-sec" data-sec="b">
+            <span class="dl dl-b">B · Results table</span>
+            <div class="mock-row"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+            <div class="sk w90" style="margin-top:.4rem"></div><div class="sk w70"></div>
+          </div>
+          <div class="mock-sec" data-sec="c">
+            <span class="dl dl-c">C · Filters</span>
+            <div class="sk w70"></div><div class="sk w45"></div>
+          </div>
+        </div>
+
+        <blockquote class="quote" id="lb-quote">
+          <em>"Fix section B — the empty state reads like an error."</em>
+          <span class="who">With labels · unambiguous, no screenshot needed</span>
+        </blockquote>
+      </div>
+      <noscript><p class="ns">JavaScript is off — this panel shows the labelled version, which is the shipped default.</p></noscript>
+      <div class="panel-foot">
+        Not a mockup convention: this is mandated in the project instructions for the platform I
+        run daily, so every new page ships with it and the AI agents editing that code read the
+        same letters a person does.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================ 6 · TOKENS ============================ -->
+<section class="band sec pad" id="tokens">
+  <div class="inner">
+    <div class="prose" style="margin-bottom:clamp(1.75rem,3vw,2.75rem)">
+      <span class="kicker">Underneath all five</span>
+      <h2>Every tool above runs on a sheet like this one.</h2>
+      <p style="color:var(--paper-2);margin-top:1rem">
+        Colour, spacing, radius, elevation and motion are custom properties, not values typed into
+        components. Retheming a tab is a token swap; a new surface inherits the whole system by
+        existing. Move the controls and the specimen on the right re-renders live — every property
+        below is read straight out of the sheet.
+      </p>
+    </div>
+
+    <div class="panel rev">
+      <div class="panel-head"><span>Demo &middot; live token sheet</span><b>editable</b></div>
+      <div class="panel-body">
+        <div class="sheet">
+          <div>
+            <div class="ctrls">
+              <div class="ctrl">
+                <label for="t-hue">Accent hue <b id="v-hue">38°</b></label>
+                <input id="t-hue" type="range" min="0" max="360" step="1" value="38" />
+              </div>
+              <div class="ctrl">
+                <label for="t-space">Spacing step <b id="v-space">12px</b></label>
+                <input id="t-space" type="range" min="4" max="28" step="4" value="12" />
+              </div>
+              <div class="ctrl">
+                <label for="t-radius">Corner radius <b id="v-radius">4px</b></label>
+                <input id="t-radius" type="range" min="0" max="18" step="1" value="4" />
+              </div>
+              <div class="ctrl">
+                <label for="t-elev">Elevation step <b id="v-elev">0px</b></label>
+                <input id="t-elev" type="range" min="0" max="12" step="2" value="0" />
+              </div>
+              <div class="ctrl">
+                <label for="t-dur">Motion duration <b id="v-dur">180ms</b></label>
+                <input id="t-dur" type="range" min="0" max="600" step="20" value="180" />
+              </div>
+              <div class="ctrl">
+                <label for="t-ease">Easing curve</label>
+                <select id="t-ease">
+                  <option value="cubic-bezier(.4,0,.2,1)">standard · cubic-bezier(.4,0,.2,1)</option>
+                  <option value="cubic-bezier(.2,0,0,1)">decelerate · cubic-bezier(.2,0,0,1)</option>
+                  <option value="cubic-bezier(.5,-.4,.5,1.4)">overshoot · cubic-bezier(.5,-.4,.5,1.4)</option>
+                  <option value="linear">linear</option>
+                </select>
+              </div>
+              <div class="bar" style="margin:.35rem 0 0">
+                <button class="btn" type="button" id="t-mode" aria-pressed="false">Light mode</button>
+                <button class="btn" type="button" id="t-reset">Reset tokens</button>
+              </div>
+            </div>
+            <pre class="readout" id="t-readout" aria-live="polite">--accent:  hsl(38 72% 55%)
+--space:   12px
+--radius:  4px
+--elev:    0px
+--dur:     180ms
+--ease:    cubic-bezier(.4,0,.2,1)
+--mode:    dark</pre>
+          </div>
+
+          <div class="spec" id="t-spec" data-mode="dark">
+            <div class="card">
+              <div class="card-hd">
+                <h4>Run supervisor</h4>
+                <span class="s-chip">healthy</span>
+              </div>
+              <div class="stats">
+                <div class="stat"><b>612</b><span>incidents</span></div>
+                <div class="stat"><b>72.9%</b><span>auto-resolved</span></div>
+                <div class="stat"><b>55s</b><span>mean time</span></div>
+              </div>
+              <div class="s-row">
+                <button class="s-btn s-btn--pri" type="button">Restart service</button>
+                <button class="s-btn" type="button">Open log</button>
+                <span class="s-note">every value here is a token away from a different product</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <noscript><p class="ns">JavaScript is off — the specimen renders at the sheet's default values and the controls are inert.</p></noscript>
+      <div class="panel-foot" id="t-foot">
+        The figures in the specimen card are real ones from the incident desk on the
+        <b>Systems</b> page. Reduced-motion preferences are honoured here: if your system asks for
+        less motion, the applied duration is 0ms whatever the slider says.
+      </div>
+    </div>
+
+    <div class="aside">
+      <em>One more token that earned its place</em>
+      The same sheet carries <code>--sa-t/--sa-b/--sa-l/--sa-r</code> from
+      <code>env(safe-area-inset-*)</code> and a <code>--kb</code> variable fed by a
+      <code>visualViewport</code> listener. On a phone, the on-screen keyboard used to sit on top
+      of the input you were typing into. That is one custom property, set in one place, and every
+      surface that reads it stopped having the bug.
+    </div>
+  </div>
+</section>
+
+<!-- ============================ OUTRO ============================ -->
+<section class="band band--alt outro pad" id="outro">
+  <div class="inner">
+    <div class="prose">
+      <span class="kicker">Where these come from</span>
+      <h2>The rules are the residue of the systems.</h2>
+      <p style="color:var(--paper-2);margin-top:1rem">
+        Each demo above is a small honest rebuild of something running: a generation queue, a
+        supervision cockpit, a dependency catalog, a clinic scheduler, and a convention that costs
+        one div. The systems themselves — what they do, what they measure, and where they fall
+        short — are on the main page.
+      </p>
+      <div class="links">
+        <a class="link" href="index.html#systems"><span>The systems in production</span><span>→</span></a>
+        <a class="link" href="index.html#corrections"><span>Things I got wrong</span><span>→</span></a>
+        <a class="link" href="mailto:keatonvp123@gmail.com"><span>keatonvp123@gmail.com</span><span>→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="band pad">
+  <div class="inner foot">
+    <span>© <span id="yr">2026</span> Keaton Van Patten</span>
+    <span>Hand-built. No dependencies.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var d = document;
+  d.documentElement.classList.add('js');
+  var yr = d.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
+
+  var RM = false;
+  try { RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+
+  /* ---------- reveal (IntersectionObserver only, no scroll listeners) ---------- */
+  var reveals = d.querySelectorAll('.rev');
+  if ('IntersectionObserver' in window && !RM) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } });
+    }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+    Array.prototype.forEach.call(reveals, function (el) { io.observe(el); });
+  } else {
+    Array.prototype.forEach.call(reveals, function (el) { el.classList.add('on'); });
+  }
+
+  /* visibility helper — pauses timers for off-screen demos */
+  function whenVisible(el, onIn, onOut) {
+    if (!('IntersectionObserver' in window)) { onIn(); return; }
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { e.isIntersecting ? onIn() : onOut(); });
+    }, { threshold: 0.15 }).observe(el);
+  }
+
+  /* ============================================================ 1 · QUEUE */
+  (function () {
+    var grid = d.getElementById('q-grid');
+    var say = d.getElementById('q-say');
+    var count = d.getElementById('q-count');
+    if (!grid) return;
+
+    var jobs = [], nextId = 1, timers = [];
+    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+    /* timings are content, not decoration — reduced motion stops the shimmer, not the lifecycle */
+    function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); return t; }
+
+    function tile(job) {
+      var el = d.createElement('div');
+      el.className = 'tile';
+      el.setAttribute('data-stage', job.stage);
+      var label = job.stage === 'dead' ? 'Leaving in 4s' : (job.stage === 'done' ? 'Keep' : 'Cancel');
+      var dis = (job.stage === 'dead' || job.stage === 'done') ? ' disabled' : '';
+      el.innerHTML =
+        '<div class="tile-art"><i class="l1"></i><i class="l2"></i><i class="l3"></i><span class="sweep"></span></div>' +
+        '<div class="tile-meta"><span>job ' + job.label + '</span><span class="tile-state">' + job.stage + '</span></div>' +
+        '<button class="btn btn--sm" type="button" data-q="cancel"' + dis + '>' + label + '</button>';
+      el.querySelector('[data-q="cancel"]').addEventListener('click', function () { cancel(job); });
+      job.el = el;
+      return el;
+    }
+
+    function setStage(job, stage) {
+      job.stage = stage;
+      if (!job.el) return;
+      job.el.setAttribute('data-stage', stage);
+      job.el.querySelector('.tile-state').textContent = stage === 'dead' ? 'cancelled' : stage;
+      var b = job.el.querySelector('button');
+      if (stage === 'done') { b.textContent = 'Keep'; b.disabled = true; }
+      if (stage === 'dead') { b.textContent = 'Leaving in 4s'; b.disabled = true; }
+    }
+
+    function lifecycle(job) {
+      later(function () { if (job.stage === 'queued') setStage(job, 'preview'); }, 1800);
+      later(function () { if (job.stage === 'preview') setStage(job, 'done'); }, 4200);
+    }
+
+    function cancel(job) {
+      if (job.stage === 'dead' || job.stage === 'done') return;
+      setStage(job, 'dead');
+      speak('Job ' + job.label + ' cancelled. <b>It keeps its place for four seconds</b> so the death is visible, then leaves.');
+      later(function () { remove(job); }, 4000);
+    }
+
+    function remove(job) {
+      var i = jobs.indexOf(job);
+      if (i > -1) jobs.splice(i, 1);
+      if (job.el && job.el.parentNode) job.el.parentNode.removeChild(job.el);
+      tally();
+    }
+
+    function speak(html) { if (say) say.innerHTML = html; }
+    function tally() { if (count) count.textContent = jobs.length + (jobs.length === 1 ? ' job' : ' jobs'); }
+
+    function add(stage) {
+      if (jobs.length >= 8) { speak('Queue is full at eight tiles. <b>Cancel one</b> to make room — nothing is dropped silently.'); return; }
+      var job = { id: nextId, label: ('00' + nextId).slice(-3), stage: stage || 'queued' };
+      nextId++;
+      jobs.push(job);
+      grid.insertBefore(tile(job), grid.firstChild);
+      if (job.stage === 'queued') lifecycle(job);
+      tally();
+      return job;
+    }
+
+    function reset() {
+      clearTimers();
+      jobs = []; nextId = 1; grid.innerHTML = '';
+      var a = add('done'); setStage(a, 'done');
+      var b = add('dead'); setStage(b, 'dead');
+      later(function () { remove(b); }, 4000);
+      var c = add('queued');                       /* mid-flight: already previewing */
+      setStage(c, 'preview');
+      later(function () { if (c.stage === 'preview') setStage(c, 'done'); }, 2600);
+      add('queued');
+      speak('Four states on screen at once: <b>queued, preview, cancelled, done</b>. Cancel a job and watch it leave.');
+      tally();
+    }
+
+    d.querySelector('[data-q="add"]').addEventListener('click', function () {
+      var j = add('queued');
+      if (j) speak('Job ' + j.label + ' queued. It will shimmer, resolve a rough preview, then finish — <b>no step is skipped</b>.');
+    });
+    d.querySelector('[data-q="reset"]').addEventListener('click', reset);
+
+    reset();
+  })();
+
+  /* ============================================================ 2 · FEED */
+  (function () {
+    var feed = d.getElementById('f-feed');
+    var chip = d.getElementById('f-chip');
+    var say = d.getElementById('f-say');
+    var bDrop = d.querySelector('[data-f="drop"]');
+    var bRec = d.querySelector('[data-f="reconnect"]');
+    var bStep = d.querySelector('[data-f="step"]');
+    if (!feed) return;
+
+    var KINDS = [
+      ['run.started', 'worker picked up job'],
+      ['tool.call', 'read_file · server.py'],
+      ['tool.result', '412 lines returned'],
+      ['patch.applied', '3 hunks · 1 file'],
+      ['test.run', '18 passed · 0 failed'],
+      ['gate.opened', 'approval requested'],
+      ['cost.tick', 'usage row written'],
+      ['run.progress', 'step 4 of 9'],
+      ['tool.call', 'grep · handler'],
+      ['run.done', 'exit 0']
+    ];
+    var seq = 20, connected = true, visible = false, tick = null, k = 0;
+
+    function pad(n) { return ('000' + n).slice(-4); }
+
+    function render(ev) {
+      var row = d.createElement('div');
+      row.className = 'ev';
+      row.innerHTML = '<span class="seq">' + pad(ev.seq) + '</span><span class="ty">' + ev.ty +
+                      '</span><span class="tx">' + ev.tx + '</span>';
+      feed.appendChild(row);
+      trim();
+      feed.scrollTop = feed.scrollHeight;
+    }
+    function trim() { while (feed.children.length > 40) feed.removeChild(feed.firstChild); }
+
+    function emit(silent) {
+      seq++;
+      var kind = KINDS[k % KINDS.length]; k++;
+      if (silent) return;
+      render({ seq: seq, ty: kind[0], tx: kind[1] });
+    }
+
+    function start() { if (tick || RM || !connected) return; tick = setInterval(function () { emit(false); }, 1900); }
+    function stop() { if (tick) { clearInterval(tick); tick = null; } }
+
+    function drop() {
+      connected = false; stop();
+      chip.className = 'chip chip--over'; chip.textContent = 'disconnected';
+      bDrop.disabled = true; bRec.disabled = false;
+      say.innerHTML = 'Connection dropped. The run <b>keeps going on the server</b> — this feed just cannot see it. Reconnect when you are ready.';
+      // events continue to happen while we are away
+      lost = 0;
+      awayTick = setInterval(function () { emit(true); lost++; }, RM ? 700 : 1200);
+    }
+    var awayTick = null, lost = 0;
+
+    function reconnect() {
+      if (awayTick) { clearInterval(awayTick); awayTick = null; }
+      connected = true;
+      chip.className = 'chip chip--ok'; chip.textContent = 'connected';
+      bDrop.disabled = false; bRec.disabled = true;
+      var from = seq + 1;
+      var mark = d.createElement('div');
+      mark.className = 'gapmark';
+      mark.innerHTML = lost === 0
+        ? '<b>0 events lost.</b> Feed is complete from seq ' + pad(from) + ' on.'
+        : '<b>' + lost + ' event' + (lost === 1 ? '' : 's') + ' lost.</b> Feed is complete from seq ' + pad(from) + ' on.';
+      feed.appendChild(mark);
+      trim();
+      feed.scrollTop = feed.scrollHeight;
+      say.innerHTML = lost === 0
+        ? 'Reconnected with nothing missed — and it still says so, because <b>"no gap" is a claim worth making explicitly</b>.'
+        : 'Reconnected. ' + lost + ' events happened while the socket was down and cannot be recovered, so the feed <b>draws the hole</b> and names the sequence number it is complete from.';
+      lost = 0;
+      emit(false);
+      if (visible) start();
+    }
+
+    bDrop.addEventListener('click', drop);
+    bRec.addEventListener('click', reconnect);
+    bStep.addEventListener('click', function () {
+      if (!connected) { say.innerHTML = 'Nothing arrives while the connection is down. <b>That is the honest state</b> — reconnect to find out what you missed.'; return; }
+      emit(false);
+    });
+
+    // fresh, connected feed replaces the pre-rendered static one
+    feed.innerHTML = '';
+    seq = 20;
+    for (var i = 0; i < 4; i++) emit(false);
+    say.innerHTML = 'Drop the connection, wait a few seconds, then reconnect — the feed will tell you exactly what it missed.';
+
+    whenVisible(feed, function () { visible = true; start(); }, function () { visible = false; stop(); });
+  })();
+
+  /* ============================================================ 3 · CONSTELLATION */
+  (function () {
+    var svg = d.getElementById('cn-svg');
+    var ins = d.getElementById('cn-ins');
+    if (!svg) return;
+    var nodes = svg.querySelectorAll('.cn');
+    var edges = svg.querySelectorAll('.edge');
+    var KIND = {
+      'action': 'action', 'model': 'local model', 'brain-component': 'component',
+      'data-store': 'data store', 'pipeline': 'pipeline'
+    };
+
+    function select(node) {
+      var id = node.id;
+      var adj = (node.getAttribute('data-adj') || '').split(/\s+/).filter(Boolean);
+      svg.classList.add('sel-on');
+      Array.prototype.forEach.call(nodes, function (n) {
+        n.classList.toggle('sel', n === node);
+        n.classList.toggle('adj', adj.indexOf(n.id) > -1);
+      });
+      Array.prototype.forEach.call(edges, function (e) {
+        var a = e.getAttribute('data-a'), b = e.getAttribute('data-b');
+        e.classList.toggle('lit', a === id || b === id);
+      });
+      var deg = node.getAttribute('data-deg');
+      var kind = KIND[node.getAttribute('data-kind')] || node.getAttribute('data-kind');
+      var isModel = node.getAttribute('data-kind') === 'model';
+      ins.innerHTML =
+        '<span class="who' + (isModel ? ' is-model' : '') + '">' + node.getAttribute('data-id') + '</span>' +
+        '<span>' + kind + ' &middot; ' + deg + ' edges in the catalog &middot; ' + adj.length +
+        ' shown on this figure' + (isModel ? ' &middot; runs on my own GPU' : '') + '</span>';
+    }
+
+    Array.prototype.forEach.call(nodes, function (n) {
+      n.addEventListener('click', function () { select(n); });
+      n.addEventListener('focus', function () { select(n); });
+      n.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); select(n); }
+      });
+    });
+    select(d.getElementById('c'));
+  })();
+
+  /* ============================================================ 4 · WORKLOAD */
+  (function () {
+    var meter = d.getElementById('w-meter');
+    if (!meter) return;
+    var fill = meter.querySelector('.meter-fill');
+    var chip = d.getElementById('w-chip');
+    var say = d.getElementById('w-say');
+    var brk = d.getElementById('w-brk');
+    var list = d.getElementById('w-list');
+    var elUsed = d.getElementById('w-used'), elLeft = d.getElementById('w-left');
+
+    var CAP = 390;              // 6h 30m, in minutes
+    var NOTES = 15, TURN = 5, REST = 5;
+    var FIXED = [['Planning · once a day', 10], ['Reporting · once a day', 15], ['Team coordination · once a day', 15]];
+    var FIXED_TOTAL = 40;
+    var bookings = [];
+
+    function seed() { bookings = [{ start: 540, mins: 60 }, { start: 645, mins: 60 }, { start: 750, mins: 60 }]; }
+
+    function hhmm(m) { var h = Math.floor(m / 60), r = m % 60; return (h < 10 ? '0' : '') + h + ':' + (r < 10 ? '0' : '') + r; }
+    function dur(m) { var h = Math.floor(m / 60), r = m % 60; return h ? (h + 'h' + (r ? ' ' + r + 'm' : '')) : (r + 'm'); }
+
+    function total(extra) {
+      var t = FIXED_TOTAL;
+      bookings.forEach(function (b) { t += b.mins + NOTES + TURN + REST; });
+      return t + (extra || 0);
+    }
+    function costOf(mins) { return mins + NOTES + TURN + REST; }
+
+    function state(used) {
+      var p = used / CAP;
+      if (p > 1) return 'over';
+      if (p >= 0.9) return 'warn';
+      return 'ok';
+    }
+
+    function paint(msg, bad) {
+      var used = total();
+      var st = state(used);
+      fill.style.setProperty('--fill', Math.min(1, used / CAP).toFixed(3));
+      meter.setAttribute('data-state', st);
+      var pct = Math.round((used / CAP) * 100);
+      var label = st === 'ok' ? 'Within capacity' : (st === 'warn' ? 'Near limit' : 'Over limit');
+      meter.setAttribute('aria-label', 'Committed load: ' + pct + ' percent of capacity. ' + label + '.');
+      chip.className = 'chip ' + (st === 'ok' ? 'chip--ok' : st === 'warn' ? 'chip--warn' : 'chip--over');
+      chip.textContent = label;
+      elUsed.textContent = dur(used);
+      elLeft.textContent = dur(Math.max(0, CAP - used));
+
+      var contact = bookings.reduce(function (a, b) { return a + b.mins; }, 0);
+      var n = bookings.length;
+      var rows = [
+        ['Contact time · ' + n + ' session' + (n === 1 ? '' : 's'), contact],
+        ['Documentation · 15m each', n * NOTES],
+        ['Turnover · 5m each', n * TURN],
+        ['Recovery buffer · 5m each', n * REST]
+      ].concat(FIXED);
+      var html = '';
+      rows.forEach(function (r) { html += '<span>' + r[0] + '</span><b>' + r[1] + 'm</b>'; });
+      html += '<span class="tot">Committed</span><b class="tot">' + used + 'm</b>';
+      brk.innerHTML = html;
+
+      var lh = '';
+      bookings.forEach(function (b, i) {
+        lh += '<div class="bk"><span class="t">' + hhmm(b.start) + ' &middot; ' + b.mins + 'm</span>' +
+              '<button class="btn btn--sm" type="button" data-w="ext" data-i="' + i + '">+15m</button>' +
+              '<button class="btn btn--sm" type="button" data-w="del" data-i="' + i + '">Remove</button></div>';
+      });
+      if (!bookings.length) lh = '<div class="bk"><span class="t">No bookings. The day still costs 40m of planning, reporting and coordination.</span></div>';
+      list.innerHTML = lh;
+
+      if (msg) say.innerHTML = msg;
+      say.className = bad ? 'say say--bad' : 'say';
+    }
+
+    function block(needed, remaining, what) {
+      say.className = 'say say--bad';
+      say.innerHTML = '<b>Blocked.</b> ' + what + ' needs ' + needed + ' minutes and only ' + remaining +
+        ' remain. The model charges contact time plus documentation, turnover and recovery — ' +
+        'so there is no version of this day where it fits, and no button that saves it anyway.';
+      if (!RM) { meter.classList.remove('flash'); void meter.offsetWidth; meter.classList.add('flash'); }
+    }
+
+    function nextStart() {
+      if (!bookings.length) return 540;
+      var last = bookings[bookings.length - 1];
+      return last.start + last.mins + 45;
+    }
+
+    d.querySelector('[data-w="add"]').addEventListener('click', function () {
+      var cost = costOf(60), used = total();
+      if (used + cost > CAP) { block(cost, CAP - used, 'A 60-minute booking'); return; }
+      bookings.push({ start: nextStart(), mins: 60 });
+      var after = total();
+      paint('Booked. That hour charged <b>' + cost + ' minutes</b> — 60 of contact and ' + (cost - 60) +
+        ' of documentation, turnover and recovery. Day is at ' + after + ' of ' + CAP + '.', false);
+    });
+
+    d.querySelector('[data-w="reset"]').addEventListener('click', function () {
+      seed();
+      paint('Day reset. Three bookings hold <b>295 of 390 minutes</b>. Keep adding — the fifth one will not fit, and the interface will say so instead of taking it.', false);
+    });
+
+    list.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('button') : null;
+      if (!b) return;
+      var i = +b.getAttribute('data-i');
+      if (isNaN(i) || !bookings[i]) return;
+      if (b.getAttribute('data-w') === 'del') {
+        bookings.splice(i, 1);
+        paint('Removed. The whole non-contact tail came off with it — <b>25 minutes</b> beyond the hour on the calendar.', false);
+      } else {
+        var used = total();
+        if (used + 15 > CAP) { block(15, CAP - used, 'Fifteen more minutes'); return; }
+        bookings[i].mins += 15;
+        paint('Extended to ' + bookings[i].mins + ' minutes. Contact time moves in <b>quarter-hour steps</b>; the documentation, turnover and recovery around it do not change.', false);
+      }
+    });
+
+    seed();
+    paint(null, false);
+  })();
+
+  /* ============================================================ 5 · DEV LABELS */
+  (function () {
+    var btn = d.getElementById('lb-toggle');
+    var mock = d.getElementById('lb-mock');
+    var quote = d.getElementById('lb-quote');
+    var chip = d.getElementById('lb-chip');
+    if (!btn) return;
+    var on = true;
+
+    function paint() {
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.textContent = on ? 'Dev labels: on' : 'Dev labels: off';
+      mock.classList.toggle('labels-off', !on);
+      var b = mock.querySelector('[data-sec="b"]');
+      b.classList.toggle('tgt', on);
+      chip.className = 'chip ' + (on ? 'chip--ok' : 'chip--warn');
+      chip.textContent = on ? '1 message to fix it' : '3 messages to find it';
+      quote.innerHTML = on
+        ? '<em>"Fix section B — the empty state reads like an error."</em>' +
+          '<span class="who">With labels · unambiguous, no screenshot needed</span>'
+        : '<em>"Fix the middle bit under the search thing — not the table, the part above it."</em>' +
+          '<span class="who">Without labels · which block is that? Two more messages to find out</span>';
+    }
+
+    btn.addEventListener('click', function () { on = !on; paint(); });
+    paint();
+  })();
+
+  /* ============================================================ 6 · TOKEN SHEET */
+  (function () {
+    var spec = d.getElementById('t-spec');
+    if (!spec) return;
+    var out = d.getElementById('t-readout');
+    var foot = d.getElementById('t-foot');
+    var D = { hue: 38, space: 12, radius: 4, elev: 0, dur: 180, ease: 'cubic-bezier(.4,0,.2,1)', mode: 'dark' };
+    var S = { hue: D.hue, space: D.space, radius: D.radius, elev: D.elev, dur: D.dur, ease: D.ease, mode: D.mode };
+
+    var ctl = {
+      hue: d.getElementById('t-hue'), space: d.getElementById('t-space'),
+      radius: d.getElementById('t-radius'), elev: d.getElementById('t-elev'),
+      dur: d.getElementById('t-dur'), ease: d.getElementById('t-ease')
+    };
+    var lab = {
+      hue: d.getElementById('v-hue'), space: d.getElementById('v-space'),
+      radius: d.getElementById('v-radius'), elev: d.getElementById('v-elev'),
+      dur: d.getElementById('v-dur')
+    };
+    var mode = d.getElementById('t-mode');
+
+    function apply() {
+      spec.style.setProperty('--s-h', S.hue);
+      spec.style.setProperty('--s-space', S.space + 'px');
+      spec.style.setProperty('--s-radius', S.radius + 'px');
+      spec.style.setProperty('--s-elev', S.elev + 'px');
+      spec.style.setProperty('--s-dur', (RM ? 0 : S.dur) + 'ms');
+      spec.style.setProperty('--s-ease', S.ease);
+      spec.setAttribute('data-mode', S.mode);
+
+      lab.hue.textContent = S.hue + '°';
+      lab.space.textContent = S.space + 'px';
+      lab.radius.textContent = S.radius + 'px';
+      lab.elev.textContent = S.elev + 'px';
+      lab.dur.textContent = S.dur + 'ms' + (RM ? ' → 0ms' : '');
+
+      out.textContent =
+        '--accent:  hsl(' + S.hue + ' 72% 55%)\n' +
+        '--space:   ' + S.space + 'px\n' +
+        '--radius:  ' + S.radius + 'px\n' +
+        '--elev:    ' + S.elev + 'px\n' +
+        '--dur:     ' + (RM ? '0ms  (reduced motion)' : S.dur + 'ms') + '\n' +
+        '--ease:    ' + S.ease + '\n' +
+        '--mode:    ' + S.mode;
+
+      mode.setAttribute('aria-pressed', S.mode === 'light' ? 'true' : 'false');
+      mode.textContent = S.mode === 'light' ? 'Dark mode' : 'Light mode';
+    }
+
+    ['hue', 'space', 'radius', 'elev', 'dur'].forEach(function (k) {
+      ctl[k].addEventListener('input', function () { S[k] = +ctl[k].value; apply(); });
+    });
+    ctl.ease.addEventListener('change', function () { S.ease = ctl.ease.value; apply(); });
+    mode.addEventListener('click', function () { S.mode = S.mode === 'light' ? 'dark' : 'light'; apply(); });
+    d.getElementById('t-reset').addEventListener('click', function () {
+      S.hue = D.hue; S.space = D.space; S.radius = D.radius; S.elev = D.elev; S.dur = D.dur; S.ease = D.ease; S.mode = D.mode;
+      ctl.hue.value = D.hue; ctl.space.value = D.space; ctl.radius.value = D.radius;
+      ctl.elev.value = D.elev; ctl.dur.value = D.dur; ctl.ease.value = D.ease;
+      apply();
+    });
+
+    if (RM && foot) {
+      foot.innerHTML = 'The figures in the specimen card are real ones from the incident desk on the ' +
+        '<b>Systems</b> page. Your system asks for reduced motion, so the applied duration is ' +
+        '<b>0ms</b> whatever the slider says — the token still reads what you set it to.';
+    }
+    apply();
+  })();
+})();
+</script>
+</body>
+</html>
