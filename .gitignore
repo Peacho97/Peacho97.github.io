@@ -1,4 +1,6 @@
 .gstack/
-_*
+_graph-data-catalog-*.json
+_PLAN-*.md
+_CV_AND_LINKEDIN_UPDATE.md
 .DS_Store
 Thumbs.db
