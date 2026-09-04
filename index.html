@@ -106,7 +106,33 @@ body::before{
   padding:.4rem .75rem; border-radius:var(--r);
 }
 .mast-cta:hover{ background:var(--brass-dim); }
-@media (max-width:600px){ .mast-hide{ display:none; } }
+
+/* small-screen jump menu */
+.mast-menu{ display:none; position:relative; }
+.mast-menu>summary{
+  list-style:none; cursor:pointer;
+  font-family:var(--mono); font-size:.775rem; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--brass); border:1px solid var(--brass-line); border-radius:var(--r);
+  padding:.4rem .75rem;
+}
+.mast-menu>summary::-webkit-details-marker{ display:none; }
+.mast-menu>summary::after{ content:" ▾"; }
+.mast-menu[open]>summary::after{ content:" ▴"; }
+.mast-menu-panel{
+  position:absolute; right:0; top:calc(100% + .55rem); z-index:70;
+  display:flex; flex-direction:column; min-width:13rem;
+  background:#08191d; border:1px solid var(--rule);
+  border-radius:var(--r); padding:.4rem; box-shadow:0 18px 40px rgba(0,0,0,.45);
+}
+.mast-menu-panel a{
+  font-family:var(--mono); font-size:.8rem; letter-spacing:.03em;
+  color:var(--paper-2); padding:.55rem .6rem; border-radius:2px;
+}
+.mast-menu-panel a:hover{ color:var(--paper); background:rgba(255,255,255,.05); }
+@media (max-width:600px){
+  .mast-nav{ display:none; }
+  .mast-menu{ display:block; }
+}
 
 /* ============================================================ HERO */
 .hero{ padding-block:clamp(3rem, 7vw, 6.5rem) clamp(3rem, 6vw, 5.5rem); }
@@ -443,8 +469,22 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <a href="ui.html">Interface</a>
       <a class="mast-hide" href="#corrections">Corrections</a>
       <a class="mast-hide" href="#method">Method</a>
+      <a class="mast-hide" href="#contact">Contact</a>
       <a class="mast-cta" href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
     </nav>
+    <details class="mast-menu" id="mastMenu">
+      <summary aria-label="Section menu">Menu</summary>
+      <div class="mast-menu-panel">
+        <a href="#field">Field report</a>
+        <a href="#systems">Systems</a>
+        <a href="#graph">Graph</a>
+        <a href="ui.html">Interface</a>
+        <a href="#corrections">Corrections</a>
+        <a href="#method">Method</a>
+        <a href="#contact">Contact</a>
+        <a href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
+      </div>
+    </details>
   </div></div>
 </header>
 
@@ -697,18 +737,24 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       </article>
 
       <!-- CRM -->
-      <article class="sys rev">
+      <article class="sys sys--wide rev">
+        <div class="sys-body">
+          <div>
         <div class="sys-top">
           <h3>Compliance-first CRM</h3>
           <span class="sys-kind">Prototype</span>
         </div>
         <p class="sys-lede">A relationship CRM where the regulatory research came first and then decided the schema.</p>
+        <div class="tags" style="margin-top:1rem"><span class="tag">FastAPI</span><span class="tag">SQLite</span><span class="tag">Compliance research</span></div>
+          </div>
+          <div style="display:grid;gap:1rem">
         <ul class="facts">
           <li>Backend: <span class="num">21</span> endpoints, 9 tables, 10 passing tests, optimistic concurrency, and an explicit distinction between meaningful and automated contact.</li>
           <li>The real artifact is <b>~660 lines of AI compliance research</b> — bot-disclosure law, consumer-protection and anti-spam rules, fair-housing and fair-employment constraints — resolved into architecture: human-in-the-loop send, never fine-tune on client data, provenance-linked transcription, rank but never filter, and regulated identifiers excluded from the schema entirely.</li>
         </ul>
         <p class="caveat"><b>Scope</b> — backend prototype only. The frontend is a mockup and has never called the API. Designed and prototyped, not shipped.</p>
-        <div class="tags"><span class="tag">FastAPI</span><span class="tag">SQLite</span><span class="tag">Compliance research</span></div>
+          </div>
+        </div>
       </article>
 
     </div>
@@ -833,31 +879,31 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     <figure class="graphfig rev" style="margin-top:2.6rem">
       <svg viewBox="0 0 900 240" role="img" aria-label="Cost-tiered provider chain: requests try local models first, then discounted API models, then frontier models, with real per-million-token rates">
         <g font-family="IBM Plex Mono, monospace" font-size="12">
-          <rect x="20" y="95" width="120" height="50" rx="3" fill="#0e2a32" stroke="#1c4450"/>
-          <text x="80" y="116" text-anchor="middle" fill="#b6ccca">request</text>
-          <text x="80" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">any surface</text>
-          <path d="M140 120 H190" stroke="#7d9a9b"/>
-          <rect x="190" y="95" width="150" height="50" rx="3" fill="#0e2a32" stroke="#e6a53c" stroke-opacity=".6"/>
-          <text x="265" y="116" text-anchor="middle" fill="#e6a53c">provider chain</text>
-          <text x="265" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">cheapest rung first</text>
-          <path d="M340 120 H390" stroke="#7d9a9b"/>
-          <rect x="390" y="30" width="150" height="52" rx="3" fill="#0e2a32" stroke="#6fd0ae"/>
-          <text x="465" y="51" text-anchor="middle" fill="#6fd0ae">local · qwen3 / llama</text>
-          <text x="465" y="69" text-anchor="middle" fill="#6fd0ae" font-size="10">$0 / M tokens · own GPUs</text>
-          <rect x="390" y="94" width="150" height="52" rx="3" fill="#0e2a32" stroke="#7d9a9b"/>
-          <text x="465" y="115" text-anchor="middle" fill="#b6ccca">discount API · flash</text>
-          <text x="465" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">$0.22 / M in · off-peak</text>
-          <rect x="390" y="158" width="150" height="52" rx="3" fill="#0e2a32" stroke="#7d9a9b"/>
-          <text x="465" y="179" text-anchor="middle" fill="#b6ccca">discount API · pro</text>
-          <text x="465" y="197" text-anchor="middle" fill="#7d9a9b" font-size="10">$0.66 / M in · off-peak</text>
-          <path d="M540 56 H600 M540 120 H600 M540 184 H600" stroke="#7d9a9b" stroke-dasharray="4 4"/>
-          <rect x="600" y="94" width="150" height="52" rx="3" fill="#0e2a32" stroke="#ec7357" stroke-opacity=".7"/>
-          <text x="675" y="115" text-anchor="middle" fill="#ec7357">frontier · last resort</text>
-          <text x="675" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">reserved for judgment</text>
-          <path d="M750 120 H800" stroke="#7d9a9b"/>
-          <rect x="800" y="95" width="80" height="50" rx="3" fill="#0e2a32" stroke="#1c4450"/>
-          <text x="840" y="116" text-anchor="middle" fill="#b6ccca">ledger</text>
-          <text x="840" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">USD-exact</text>
+          <rect x="8" y="95" width="104" height="50" rx="3" fill="#0e2a32" stroke="#1c4450"/>
+          <text x="60" y="116" text-anchor="middle" fill="#b6ccca">request</text>
+          <text x="60" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">any surface</text>
+          <path d="M112 120 H150" stroke="#7d9a9b"/>
+          <rect x="150" y="95" width="152" height="50" rx="3" fill="#0e2a32" stroke="#e6a53c" stroke-opacity=".6"/>
+          <text x="226" y="116" text-anchor="middle" fill="#e6a53c">provider chain</text>
+          <text x="226" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">cheapest rung first</text>
+          <path d="M302 120 H332" stroke="#7d9a9b"/>
+          <rect x="332" y="30" width="196" height="52" rx="3" fill="#0e2a32" stroke="#6fd0ae"/>
+          <text x="430" y="51" text-anchor="middle" fill="#6fd0ae">local · qwen3 / llama</text>
+          <text x="430" y="69" text-anchor="middle" fill="#6fd0ae" font-size="10">$0 / M tokens · own GPUs</text>
+          <rect x="332" y="94" width="196" height="52" rx="3" fill="#0e2a32" stroke="#7d9a9b"/>
+          <text x="430" y="115" text-anchor="middle" fill="#b6ccca">discount API · flash</text>
+          <text x="430" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">$0.22 / M in · off-peak</text>
+          <rect x="332" y="158" width="196" height="52" rx="3" fill="#0e2a32" stroke="#7d9a9b"/>
+          <text x="430" y="179" text-anchor="middle" fill="#b6ccca">discount API · pro</text>
+          <text x="430" y="197" text-anchor="middle" fill="#7d9a9b" font-size="10">$0.66 / M in · off-peak</text>
+          <path d="M528 56 H568 M528 120 H568 M528 184 H568" stroke="#7d9a9b" stroke-dasharray="4 4"/>
+          <rect x="568" y="94" width="196" height="52" rx="3" fill="#0e2a32" stroke="#ec7357" stroke-opacity=".7"/>
+          <text x="666" y="115" text-anchor="middle" fill="#ec7357">frontier · last resort</text>
+          <text x="666" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">reserved for judgment</text>
+          <path d="M764 120 H794" stroke="#7d9a9b"/>
+          <rect x="794" y="95" width="98" height="50" rx="3" fill="#0e2a32" stroke="#1c4450"/>
+          <text x="843" y="116" text-anchor="middle" fill="#b6ccca">ledger</text>
+          <text x="843" y="133" text-anchor="middle" fill="#7d9a9b" font-size="10">USD-exact</text>
         </g>
       </svg>
       <figcaption>
@@ -1051,13 +1097,22 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
 <footer class="band pad">
   <div class="inner foot">
     <span>© <span id="yr">2026</span> Keaton Van Patten</span>
-    <span>Hand-built. Last updated August 2026.</span>
+    <span>Hand-built. Last updated <span id="upd">2026</span>.</span>
   </div>
 </footer>
 
 <script>
   document.documentElement.classList.add('js');
-  document.getElementById('yr').textContent = new Date().getFullYear();
+  var thisYear = new Date().getFullYear();
+  document.getElementById('yr').textContent = thisYear;
+  var updEl = document.getElementById('upd');
+  if (updEl) { updEl.textContent = thisYear; }
+  var mastMenu = document.getElementById('mastMenu');
+  if (mastMenu) {
+    mastMenu.addEventListener('click', function (e) {
+      if (e.target && e.target.tagName === 'A') { mastMenu.removeAttribute('open'); }
+    });
+  }
   var reveals = document.querySelectorAll('.rev');
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {

@@ -106,7 +106,33 @@ body::before{
   padding:.4rem .75rem; border-radius:var(--r);
 }
 .mast-cta:hover{ background:var(--brass-dim); }
-@media (max-width:600px){ .mast-hide{ display:none; } }
+
+/* small-screen jump menu */
+.mast-menu{ display:none; position:relative; }
+.mast-menu>summary{
+  list-style:none; cursor:pointer;
+  font-family:var(--mono); font-size:.775rem; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--brass); border:1px solid var(--brass-line); border-radius:var(--r);
+  padding:.4rem .75rem;
+}
+.mast-menu>summary::-webkit-details-marker{ display:none; }
+.mast-menu>summary::after{ content:" ▾"; }
+.mast-menu[open]>summary::after{ content:" ▴"; }
+.mast-menu-panel{
+  position:absolute; right:0; top:calc(100% + .55rem); z-index:70;
+  display:flex; flex-direction:column; min-width:13rem;
+  background:#08191d; border:1px solid var(--rule);
+  border-radius:var(--r); padding:.4rem; box-shadow:0 18px 40px rgba(0,0,0,.45);
+}
+.mast-menu-panel a{
+  font-family:var(--mono); font-size:.8rem; letter-spacing:.03em;
+  color:var(--paper-2); padding:.55rem .6rem; border-radius:2px;
+}
+.mast-menu-panel a:hover{ color:var(--paper); background:rgba(255,255,255,.05); }
+@media (max-width:600px){
+  .mast-nav{ display:none; }
+  .mast-menu{ display:block; }
+}
 
 /* ============================================================ HERO */
 .hero{ padding-block:clamp(3rem, 7vw, 5.5rem) clamp(2.25rem, 5vw, 4rem); }
@@ -455,8 +481,21 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <a class="mast-hide" href="index.html#graph">Graph</a>
       <a href="ui.html" aria-current="page">Interface</a>
       <a class="mast-hide" href="index.html#method">Method</a>
+      <a class="mast-hide" href="index.html#contact">Contact</a>
       <a class="mast-cta" href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
     </nav>
+    <details class="mast-menu" id="mastMenu">
+      <summary aria-label="Section menu">Menu</summary>
+      <div class="mast-menu-panel">
+        <a href="index.html#field">Field report</a>
+        <a href="index.html#systems">Systems</a>
+        <a href="index.html#graph">Graph</a>
+        <a href="ui.html">Interface</a>
+        <a href="index.html#method">Method</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
+      </div>
+    </details>
   </div></div>
 </header>
 
@@ -1018,6 +1057,12 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
   var d = document;
   d.documentElement.classList.add('js');
   var yr = d.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
+  var mastMenu = d.getElementById('mastMenu');
+  if (mastMenu) {
+    mastMenu.addEventListener('click', function (e) {
+      if (e.target && e.target.tagName === 'A') { mastMenu.removeAttribute('open'); }
+    });
+  }
 
   var RM = false;
   try { RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
