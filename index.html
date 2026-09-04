@@ -160,6 +160,13 @@ h1 em{ font-style:normal; color:var(--brass); }
 h1 .against{ color:var(--paper-2); display:block; font-size:.5em; line-height:1.14; letter-spacing:-.02em; margin-top:.55rem; font-weight:700; }
 .hero-lede{ color:var(--paper-2); margin-top:1.6rem; font-size:clamp(1.02rem,.98rem + .3vw,1.2rem); max-width:56ch; }
 .hero-lede b{ color:var(--paper); font-weight:600; }
+.hero-avail{
+  margin-top:1.1rem; max-width:56ch; font-size:.95rem; line-height:1.6; color:var(--paper-2);
+  border-left:2px solid var(--brass-line); padding-left:.9rem;
+}
+.hero-avail b{ color:var(--paper); font-weight:600; }
+.hero-avail a{ color:var(--brass); text-decoration:none; border-bottom:1px solid var(--brass-line); }
+.hero-avail a:hover{ border-bottom-color:var(--brass); }
 
 .actions{ display:flex; flex-wrap:wrap; gap:.7rem; margin-top:2rem; }
 .act{
@@ -301,6 +308,46 @@ h2{
 .sys-kind--live{ color:var(--mint); border-color:rgba(111,208,174,.3); }
 .sys-lede{ color:var(--paper-2); font-size:.95rem; margin-top:.55rem; }
 .sys-lede b{ color:var(--paper); font-weight:600; }
+
+/* lead grid: two roomy columns so no row is ever left half-empty */
+.systems--pair{ grid-template-columns:repeat(auto-fit, minmax(min(100%, 34rem), 1fr)); }
+
+.sys-why{
+  position:relative; margin-top:.6rem; padding-left:1.5rem;
+  color:var(--brass); font-size:.92rem; line-height:1.5; max-width:62ch;
+}
+/* the corner arrow, drawn rather than typed so no font can tofu it */
+.sys-why::before{
+  content:""; position:absolute; left:.15rem; top:.16rem; width:.48rem; height:.5rem;
+  border-left:1.5px solid currentColor; border-bottom:1.5px solid currentColor;
+  border-bottom-left-radius:2px; opacity:.75;
+}
+.sys-why::after{
+  content:""; position:absolute; left:.5rem; top:.5rem; width:.3rem; height:.3rem;
+  border-top:1.5px solid currentColor; border-right:1.5px solid currentColor;
+  transform:rotate(45deg); opacity:.75;
+}
+.sys-meta{
+  margin-top:.45rem; font-family:var(--mono); font-size:.68rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--paper-3);
+}
+.sys-why + .sys-meta + .sys-lede{ margin-top:.9rem; }
+
+.more-fold{ margin-top:clamp(1.25rem,2vw,2rem); border-top:1px solid var(--rule); padding-top:1.25rem; }
+.more-fold > summary{
+  cursor:pointer; list-style:none; display:flex; align-items:baseline; gap:.9rem; flex-wrap:wrap;
+  font-family:var(--mono); font-size:.76rem; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--paper-2); transition:color .2s;
+}
+.more-fold > summary::-webkit-details-marker{ display:none; }
+.more-fold > summary::before{
+  content:"+"; display:inline-block; width:1.35rem; height:1.35rem; line-height:1.2rem;
+  text-align:center; border:1px solid var(--rule); border-radius:2px; color:var(--brass);
+  font-size:.85rem;
+}
+.more-fold[open] > summary::before{ content:"–"; }
+.more-fold > summary:hover{ color:var(--brass); }
+.more-hint{ font-size:.7rem; letter-spacing:.06em; text-transform:none; color:var(--paper-3); }
 
 .facts{ list-style:none; display:grid; gap:.6rem; }
 .facts li{ position:relative; padding-left:1.1rem; font-size:.9rem; color:var(--paper-3); line-height:1.55; }
@@ -505,6 +552,11 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
         <b>resolves 72.9% of its own outages in 55 seconds</b>. I design them, ship them, run
         them, and fix them when they break.
       </p>
+      <p class="hero-avail">
+        I'm looking for a <b>Forward Deployed or Applied AI engineering role</b> — remote, or the
+        Sacramento area. The résumé is in the nav; <a href="#contact">everything else is at the
+        bottom of this page</a>.
+      </p>
       <div class="actions">
         <a class="act act--solid" href="#systems">Read the systems →</a>
         <a class="act act--ghost" href="mailto:keatonvp123@gmail.com">keatonvp123@gmail.com</a>
@@ -514,7 +566,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     <div class="ledger rev">
       <div class="ledger-head">
         <span>Headline figures</span>
-        <b>eight systems · three in daily production</b>
+        <b>nine systems · four live in production</b>
       </div>
       <div class="row"><span class="fig">&lt; 48 h</span><span class="lab">from first commit to a production failover service, built during a live client outage</span><span class="src">mailer</span></div>
       <div class="row"><span class="fig">86.4 → 100%</span><span class="lab">retrieval eval accuracy, gated in CI — a release under 90% does not ship</span><span class="src">librarian</span></div>
@@ -597,11 +649,47 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
   <div class="inner">
     <div class="sec-head prose">
       <span class="kicker">Systems in production</span>
-      <h2>Eight systems I built — and what each one is today.</h2>
-      <p class="sec-sub">What each one does, how it's put together, and where it falls short.</p>
+      <h2>Nine systems I built — and what each one is today.</h2>
+      <p class="sec-sub">Four I would open in an interview, first. What each one does, how it's put together, and where it falls short.</p>
     </div>
 
-    <div class="systems">
+    <div class="systems systems--pair">
+
+      <!-- Clinic scheduling + failover mailer -->
+      <article class="sys sys--wide rev">
+        <div class="sys-body">
+          <div>
+            <div class="sys-top">
+              <h3>Clinic scheduling — and the failover the outage forced</h3>
+              <span class="sys-kind sys-kind--live">Live in production</span>
+            </div>
+            <p class="sys-why">A pediatric therapy clinic ran its schedule on paper, then on this; the mid-day outage that followed is what rewrote my deploy rules.</p>
+            <p class="sys-meta">2026 &middot; ~35,000 lines &middot; live since August 2026</p>
+            <p class="sys-lede">
+              What I was handed was a <b>100% paper scheduling process</b> in a pediatric therapy
+              clinic — and, once the app was live, <b>thirty minutes of it being unreachable
+              mid-day</b> with staff holding no second copy of the day. What I shipped was a
+              workload-based scheduling web app, and then the operational failover layer that
+              outage proved it needed.
+            </p>
+            <div class="tags" style="margin-top:1rem">
+              <span class="tag">PHP 8.3</span><span class="tag">SQLite</span><span class="tag">Vanilla-JS PWA</span>
+              <span class="tag">Node</span><span class="tag">SMTP</span><span class="tag">Fly.io</span>
+              <span class="tag">Security audit</span>
+            </div>
+          </div>
+          <div style="display:grid;gap:1rem">
+            <ul class="facts">
+              <li><span class="num">30</span> REST endpoints and <span class="num">15</span> role-gated pages, with <b>zero frameworks and zero npm dependencies</b>. <span class="num">116</span> commits in 38 days, single author.</li>
+              <li>Real use, not a demo: <span class="num">573</span> audit rows over 18 days, <span class="num">29</span> sessions, <span class="num">14</span> in-app feedback notes from two staff users, <span class="num">16</span> nightly production backups, database growth 143&nbsp;KB → 938&nbsp;KB.</li>
+              <li>An eight-component quarter-hour workload model with hard over-capacity blocking, a filter-and-rank substitute-therapist selector, and a conflict engine that behaves identically for saved and unsaved bookings. <span class="num">368</span> JavaScript and <span class="num">430</span> PHP integration assertions, no third-party test framework.</li>
+              <li>I commissioned a security audit of my own app before launch: <b>two launch-blocking criticals</b> found and closed. After an unapproved CI push reached production I removed auto-deploy, revoked the credential, and moved to manually authorized releases with post-deploy health assertions.</li>
+              <li><b>The failover mailer:</b> a zero-dependency Node service, <span class="num">first commit to production in under 48 hours</span>, built in answer to the outage. Outbound only — no public IP, no inbound listener. Server-side data minimization, hand-rolled SMTP client and spreadsheet writer, <span class="num">157</span> tests including both 2026 daylight-saving transitions. Reports render by executing the production app's own recurrence code in a sandboxed VM, so <b>the spreadsheet cannot disagree with the screen</b>.</li>
+            </ul>
+            <p class="caveat"><b>Scope</b> — first real end-to-end send delivered; recipient rollout still points at a test address. The full story is in <a href="#field" style="color:inherit">the field report above</a>.</p>
+          </div>
+        </div>
+      </article>
 
       <!-- Librarian -->
       <article class="sys sys--wide rev">
@@ -611,6 +699,8 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
               <h3>The Librarian — retrieval over an entire machine</h3>
               <span class="sys-kind sys-kind--live">Running now</span>
             </div>
+            <p class="sys-why">It is the system that taught me to trust a measured number over a demo: the eval gate dragged accuracy 86.4% &rarr; 100% and can still block a release.</p>
+            <p class="sys-meta">3,190 files indexed &middot; 18,094 vectors &middot; running now, in-process</p>
             <p class="sys-lede">
               Grounded question-answering over everything on this workstation, served to AI coding
               agents as an <b>8-tool MCP server</b>. Hybrid retrieval, graceful degradation, and an
@@ -642,6 +732,8 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
           <h3>Incident desk — a deflection ladder</h3>
           <span class="sys-kind sys-kind--live">Running now</span>
         </div>
+        <p class="sys-why">It is the argument for spending a model only as a last resort: of 612 incidents, 0.33% ever needed a person.</p>
+        <p class="sys-meta">53 days measured &middot; 15 production backends, 419,000 probes &middot; live 8+ days continuous</p>
         <p class="sys-lede">A self-healing monitor over <b>15 production backends</b> on a 15-second probe loop. The architecture is a cost ladder: cheap things try first, and a model is the last resort before a human.</p>
         <ul class="facts">
           <li>53 days: <span class="num">612</span> incidents, <span class="num">72.9%</span> auto-resolved, mean time to resolution <span class="num">55 seconds</span>, <span class="num">0.33%</span> escalated to a human.</li>
@@ -659,6 +751,8 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
           <h3>LLM cost governance</h3>
           <span class="sys-kind">FinOps</span>
         </div>
+        <p class="sys-why">Every routing decision I make is defensible because the meter exists: cost per call fell 71% while volume grew 51%.</p>
+        <p class="sys-meta">61 days &middot; 2,129 calls, 21 models, 8 providers &middot; $58.27 metered to the call</p>
         <p class="sys-lede">A USD-exact per-call ledger, built because I could not answer "what is this feature costing me?" from any vendor dashboard. Then a control plane on top of it.</p>
         <ul class="facts">
           <li>Ledger: <span class="num">2,129</span> calls over 61 days, <span class="num">21</span> models, <span class="num">8</span> providers, <span class="num">38</span> use-case surfaces, <span class="num">41M</span> tokens, <span class="num">64%</span> input-cache hit rate. <b>100% of rows carry both surface and cost.</b></li>
@@ -672,12 +766,20 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
         <div class="tags"><span class="tag">PostgreSQL 17</span><span class="tag">LiteLLM</span><span class="tag">Cost modeling</span><span class="tag">Budgets</span></div>
       </article>
 
+    </div>
+
+    <details class="more-fold rev">
+      <summary><span class="more-title">More systems (5)</span><span class="more-hint">the platform, the gate, the metal, the cockpit, the prototype</span></summary>
+      <div class="systems systems--pair" style="margin-top:1.5rem">
+
       <!-- Agent platform -->
       <article class="sys rev">
         <div class="sys-top">
           <h3>Agent platform — 122 tools, three-layer authorization</h3>
           <span class="sys-kind sys-kind--live">Daily driver</span>
         </div>
+        <p class="sys-why">122 tools are only safe because authorization fails closed — the gate is the engineering, not the tool count.</p>
+        <p class="sys-meta">June–August 2026 &middot; 202K lines Python, 74K Svelte &middot; daily driver</p>
         <p class="sys-lede">The desktop platform the rest of this page runs inside: <b>678 HTTP endpoints</b>, 202K lines of Python and 74K of Svelte, 2,948 test functions, 6 self-built MCP servers, 19 local services. Roughly three months of work.</p>
         <ul class="facts">
           <li><span class="num">122</span> agent tools (counted two independent ways) across filesystem, shell, calendar, health and messaging, on a vendor-neutral protocol that runs the same loop against local and hosted models.</li>
@@ -690,12 +792,31 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
         <div class="tags"><span class="tag">FastAPI</span><span class="tag">Svelte 5</span><span class="tag">Electron</span><span class="tag">MCP</span><span class="tag">SSE</span></div>
       </article>
 
+      <!-- Security desk -->
+      <article class="sys rev">
+        <div class="sys-top">
+          <h3>Security review desk</h3>
+          <span class="sys-kind">Gate</span>
+        </div>
+        <p class="sys-why">Review stopped being something I remembered to do the day it became a gate — and the triage model was picked for refusing an injected verdict.</p>
+        <p class="sys-meta">110 consultations across 22 projects &middot; 548 checklist items, 1,202 audit events &middot; enforced as a plan-approval gate</p>
+        <p class="sys-lede">A cost-tiered review pipeline wired in as a <b>plan-approval gate</b>, so security review became mandatory rather than something I remembered to do.</p>
+        <ul class="facts">
+          <li><span class="num">110</span> consultations across 22 projects, <span class="num">165</span> specialist reviews, <span class="num">548</span> checklist items, <span class="num">1,202</span> audit events.</li>
+          <li>Cascade: free local triage closes <span class="num">20%</span> as not-needed at zero cost, then three parallel reviewers, then an aggregator.</li>
+          <li><b>The triage model was chosen adversarially:</b> zero unsafe misses and it resisted 6 of 6 prompt injections. A candidate model was rejected for obeying an injected "already reviewed" verdict.</li>
+        </ul>
+        <div class="tags"><span class="tag">Prompt injection testing</span><span class="tag">MCP</span><span class="tag">Policy gates</span></div>
+      </article>
+
       <!-- Local infra -->
       <article class="sys rev">
         <div class="sys-top">
           <h3>Local dual-GPU infrastructure</h3>
           <span class="sys-kind">Bare metal</span>
         </div>
+        <p class="sys-why">Everything else on this page shares two cards without stepping on each other: 363 samples of live-fire failover, zero concurrency violations.</p>
+        <p class="sys-meta">2 GPUs, 64&nbsp;GB RAM &middot; 734 lines of concurrency tests &middot; bare metal</p>
         <p class="sys-lede">One RTX 2080 (8&nbsp;GB, CUDA) and one RX 9060 XT (16&nbsp;GB, ROCm) with 64&nbsp;GB of RAM, shared by a dozen processes that all want the whole card.</p>
         <ul class="facts">
           <li><b>GPU lease broker:</b> three priority classes with age promotion for a no-starvation bound, exclusive and byte-budgeted lease modes, <span class="num">33</span> automatic reclaims, and three-tier degradation from broker to file lock to unguarded. <span class="num">734</span> lines of concurrency tests; priority aging captured firing live.</li>
@@ -706,27 +827,14 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
         <div class="tags"><span class="tag">CUDA</span><span class="tag">ROCm</span><span class="tag">Concurrency</span><span class="tag">Leader election</span><span class="tag">Profiling</span></div>
       </article>
 
-      <!-- Security desk -->
-      <article class="sys rev">
-        <div class="sys-top">
-          <h3>Security review desk</h3>
-          <span class="sys-kind">Gate</span>
-        </div>
-        <p class="sys-lede">A cost-tiered review pipeline wired in as a <b>plan-approval gate</b>, so security review became mandatory rather than something I remembered to do.</p>
-        <ul class="facts">
-          <li><span class="num">110</span> consultations across 22 projects, <span class="num">165</span> specialist reviews, <span class="num">548</span> checklist items, <span class="num">1,202</span> audit events.</li>
-          <li>Cascade: free local triage closes <span class="num">20%</span> as not-needed at zero cost, then three parallel reviewers, then an aggregator.</li>
-          <li><b>The triage model was chosen adversarially:</b> zero unsafe misses and it resisted 6 of 6 prompt injections. A candidate model was rejected for obeying an injected "already reviewed" verdict.</li>
-        </ul>
-        <div class="tags"><span class="tag">Prompt injection testing</span><span class="tag">MCP</span><span class="tag">Policy gates</span></div>
-      </article>
-
       <!-- Cockpit -->
       <article class="sys rev">
         <div class="sys-top">
           <h3>Session cockpit — observability for AI coding runs</h3>
           <span class="sys-kind">Internal tool</span>
         </div>
+        <p class="sys-why">Running the real services found 6 defects that all had green tests beforehand — that is where my distrust of a passing suite comes from.</p>
+        <p class="sys-meta">227 routes &middot; 53K lines, 778 passing tests &middot; a month of daily use across 5 projects</p>
         <p class="sys-lede">A desktop cockpit supervising concurrent AI coding sessions: <b>227 routes</b>, 53K lines, <b>778 passing tests</b>, 9 agent runtimes, a month of daily use across 5 projects.</p>
         <ul class="facts">
           <li>A typed <span class="num">21</span>-event observability stream with monotonic sequence numbers and cursor replay that <b>reports gaps instead of hiding them</b>.</li>
@@ -744,6 +852,8 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
           <h3>Compliance-first CRM</h3>
           <span class="sys-kind">Prototype</span>
         </div>
+        <p class="sys-why">~660 lines of regulatory research decided the schema before any code was written; the research is the artifact, not the endpoints.</p>
+        <p class="sys-meta">21 endpoints, 9 tables &middot; ~660 lines of compliance research &middot; backend prototype, frontend never wired</p>
         <p class="sys-lede">A relationship CRM where the regulatory research came first and then decided the schema.</p>
         <div class="tags" style="margin-top:1rem"><span class="tag">FastAPI</span><span class="tag">SQLite</span><span class="tag">Compliance research</span></div>
           </div>
@@ -757,7 +867,8 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
         </div>
       </article>
 
-    </div>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -1051,10 +1162,10 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
           <p>Built an internal operations hub with a <b>15-system registry that stores credential pointers, never secrets</b>, and a hand-rolled agentic tool-use loop — 8 typed tools, a 12-round-trip budget, mutation tracking — so a non-technical executive can operate it in plain English. The agentic backend is complete and demonstrated via API; the UI was never wired up.</p>
         </div>
         <div class="job rev">
-          <div class="job-role">Independent engagements</div>
-          <div class="job-org">Small care-side and services organizations</div>
+          <div class="job-role">Independent engagement</div>
+          <div class="job-org">A pediatric therapy clinic &#8212; reference engagement</div>
           <div class="job-when">2025 – Present</div>
-          <p>Production client work: requirements discovery with non-technical operators, build, security audit, launch, and the operational layer afterward. The clinic scheduler above is the reference engagement.</p>
+          <p>The clinic scheduler above, end to end: requirements discovery with non-technical operators, build, commissioned security audit, launch, and the operational failover layer afterward. One engagement, carried from paper process to running production.</p>
         </div>
         <div class="job rev">
           <div class="job-role">Utility Technician</div>
@@ -1111,6 +1222,14 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
   if (mastMenu) {
     mastMenu.addEventListener('click', function (e) {
       if (e.target && e.target.tagName === 'A') { mastMenu.removeAttribute('open'); }
+    });
+  }
+  var moreFold = document.querySelector('.more-fold');
+  if (moreFold) {
+    moreFold.addEventListener('toggle', function () {
+      if (moreFold.open) {
+        moreFold.querySelectorAll('.rev').forEach(function (el) { el.classList.add('on'); });
+      }
     });
   }
   var reveals = document.querySelectorAll('.rev');
