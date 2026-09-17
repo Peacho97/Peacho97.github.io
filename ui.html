@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Interface — Keaton Van Patten</title>
+<title>Interface - Keaton Van Patten</title>
 <meta name="description" content="Five rules I build operator interfaces by, each one proven by a working demo rebuilt from the tool that taught it: a job queue, an event feed with a visible replay gap, a dependency constellation, a capacity meter that refuses, and per-section dev labels." />
 <meta name="theme-color" content="#08191d" />
-<meta property="og:title" content="Interface — Keaton Van Patten" />
+<meta property="og:title" content="Interface - Keaton Van Patten" />
 <meta property="og:description" content="Five rules for operator surfaces, each proven by a live demo rebuilt in vanilla JS from real shipped work." />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
-   TOKENS — same sheet as index.html
+   TOKENS - same sheet as index.html
    ============================================================ */
 :root{
   --ink:        #08191d;
@@ -107,32 +107,6 @@ body::before{
 }
 .mast-cta:hover{ background:var(--brass-dim); }
 
-/* small-screen jump menu */
-.mast-menu{ display:none; position:relative; }
-.mast-menu>summary{
-  list-style:none; cursor:pointer;
-  font-family:var(--mono); font-size:.775rem; letter-spacing:.06em; text-transform:uppercase;
-  color:var(--brass); border:1px solid var(--brass-line); border-radius:var(--r);
-  padding:.4rem .75rem;
-}
-.mast-menu>summary::-webkit-details-marker{ display:none; }
-.mast-menu>summary::after{ content:" ▾"; }
-.mast-menu[open]>summary::after{ content:" ▴"; }
-.mast-menu-panel{
-  position:absolute; right:0; top:calc(100% + .55rem); z-index:70;
-  display:flex; flex-direction:column; min-width:13rem;
-  background:#08191d; border:1px solid var(--rule);
-  border-radius:var(--r); padding:.4rem; box-shadow:0 18px 40px rgba(0,0,0,.45);
-}
-.mast-menu-panel a{
-  font-family:var(--mono); font-size:.8rem; letter-spacing:.03em;
-  color:var(--paper-2); padding:.55rem .6rem; border-radius:2px;
-}
-.mast-menu-panel a:hover{ color:var(--paper); background:rgba(255,255,255,.05); }
-@media (max-width:600px){
-  .mast-nav{ display:none; }
-  .mast-menu{ display:block; }
-}
 
 /* ============================================================ HERO */
 .hero{ padding-block:clamp(3rem, 7vw, 5.5rem) clamp(2.25rem, 5vw, 4rem); }
@@ -315,6 +289,17 @@ code{ font-family:var(--mono); font-size:.86em; color:var(--paper-2); background
 .cn:focus-visible .ring{ stroke:var(--brass); stroke-width:2; fill:none; }
 .ring{ stroke:none; fill:none; }
 @media (max-width:720px){ .cn .lb{ display:none; } }
+.cn-stage{ transform-origin:470px 310px; transition:opacity .15s ease, transform .15s ease; }
+.cn-stage.is-out{ opacity:0; transform:scale(.90); }
+.cn-stage.is-in{ opacity:0; transform:scale(1.10); }
+.cn-back{
+  display:none; margin-top:.7rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.02em;
+  color:var(--brass); background:transparent; border:1px solid var(--rule);
+  border-radius:var(--r); padding:.34rem .62rem; cursor:pointer;
+}
+.cn-back.on{ display:inline-block; }
+.cn-back:hover{ border-color:var(--brass); }
+.cn-back:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; }
 .inspector{
   display:grid; gap:.15rem; margin-top:.7rem; padding:.6rem .7rem;
   border:1px solid var(--rule-soft); border-radius:var(--r); background:var(--ink-2);
@@ -465,7 +450,8 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
   .js .rev{ opacity:1; transform:none; transition:none; }
   .link:hover,.s-btn:hover{ transform:none; }
   .tile[data-stage="queued"] .sweep{ animation:none; }
-  .tile-art i, .meter-fill, .card, .stat, .s-btn, .mock-sec, .cnst.sel-on .cn{ transition:none !important; }
+  .tile-art i, .meter-fill, .card, .stat, .s-btn, .mock-sec, .cnst.sel-on .cn,
+  .cn-stage{ transition:none !important; }
   .meter.flash{ animation:none; }
 }
 </style>
@@ -475,27 +461,11 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
 <header class="masthead">
   <div class="pad"><div class="inner masthead-in">
     <a class="sig" href="index.html">Keaton Van Patten<i>.</i></a>
-    <nav class="mast-nav" aria-label="Sections">
-      <a class="mast-hide" href="index.html#field">Field report</a>
-      <a class="mast-hide" href="index.html#systems">Systems</a>
-      <a class="mast-hide" href="index.html#graph">Graph</a>
-      <a href="ui.html" aria-current="page">Interface</a>
-      <a class="mast-hide" href="index.html#method">Method</a>
-      <a class="mast-hide" href="index.html#contact">Contact</a>
-      <a class="mast-cta" href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
+    <nav class="mast-nav" aria-label="Pages">
+      <a href="index.html">Home</a>
+      <a href="ui.html" aria-current="page">Give it a try</a>
+      <a class="mast-cta" href="Keaton-Van-Patten-Resume.pdf">Resume ↓</a>
     </nav>
-    <details class="mast-menu" id="mastMenu">
-      <summary aria-label="Section menu">Menu</summary>
-      <div class="mast-menu-panel">
-        <a href="index.html#field">Field report</a>
-        <a href="index.html#systems">Systems</a>
-        <a href="index.html#graph">Graph</a>
-        <a href="ui.html">Interface</a>
-        <a href="index.html#method">Method</a>
-        <a href="index.html#contact">Contact</a>
-        <a href="Keaton-Van-Patten-Resume.pdf">Résumé ↓</a>
-      </div>
-    </details>
   </div></div>
 </header>
 
@@ -510,12 +480,12 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <span class="against">Each one is here, running, next to the thing that taught it.</span>
     </h1>
     <p class="hero-lede">
-      The people who use my software are doing their job while they use it — booking a client,
+      The people who use my software are doing their job while they use it - booking a client,
       cancelling a render, watching an agent run. <b>Every demo below is the real behaviour,
       rebuilt small</b>, with the problem it came from and the decision it forced.
     </p>
     <p class="hero-note">
-      One file. No framework, no build step, <b>no dependencies</b> — hand-written HTML, CSS and
+      One file. No framework, no build step, <b>no dependencies</b> - hand-written HTML, CSS and
       vanilla JavaScript, same as the rest of this site. Turn JavaScript off and every panel still
       shows a real state.
     </p>
@@ -531,7 +501,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <h2>Nothing vanishes silently.</h2>
       <p>
         This is the job queue for a generation box on my desk. Operators would hit cancel and then
-        have no idea whether the click landed — the tile just sat there, or disappeared a beat
+        have no idea whether the click landed - the tile just sat there, or disappeared a beat
         later with nothing said. So every state change got a <b>visible intermediate</b>: queued
         shimmers, a rough preview resolves before the finished frame, and a cancelled job announces
         its own death and holds its place for four seconds before it leaves. The grid never changes
@@ -577,7 +547,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
         </div>
         <p class="say" id="q-say" role="status">Four states on screen at once: <b>queued, preview, cancelled, done</b>. Cancel a job and watch it leave.</p>
       </div>
-      <noscript><p class="ns">JavaScript is off — this panel shows one fixed moment in the queue instead of running.</p></noscript>
+      <noscript><p class="ns">JavaScript is off - this panel shows one fixed moment in the queue instead of running.</p></noscript>
       <div class="panel-foot">
         Rebuilt in vanilla JS for this page. The original is a Svelte tab over a single-queue
         scheduler with cross-process cancellation, lease fencing, and a <b>four-second tombstone
@@ -598,7 +568,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <p>
         The cockpit that supervises my AI coding runs streams <b>21 typed event kinds</b>, each
         carrying a monotonic sequence number. Drop the connection and the feed replays from the
-        last cursor it held — and a replay that <em>looks</em> continuous but isn't is worse than a
+        last cursor it held - and a replay that <em>looks</em> continuous but isn't is worse than a
         hole, because it turns a missing event into a wrong conclusion. So the hole gets drawn: how
         many events were lost, and the sequence number the feed is complete from. A gap I can see
         is a bug report.
@@ -628,9 +598,9 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
           <div class="ev"><span class="seq">0028</span><span class="ty">gate.opened</span><span class="tx">approval requested</span></div>
           <div class="ev"><span class="seq">0029</span><span class="ty">cost.tick</span><span class="tx">usage row written</span></div>
         </div>
-        <p class="say" id="f-say" role="status">Drop the connection, wait a few seconds, then reconnect — the feed will tell you exactly what it missed.</p>
+        <p class="say" id="f-say" role="status">Drop the connection, wait a few seconds, then reconnect - the feed will tell you exactly what it missed.</p>
       </div>
-      <noscript><p class="ns">JavaScript is off — this panel shows a feed that has already been through one drop and reconnect.</p></noscript>
+      <noscript><p class="ns">JavaScript is off - this panel shows a feed that has already been through one drop and reconnect.</p></noscript>
       <div class="panel-foot">
         Rebuilt in vanilla JS for this page. The original carries the same rule into storage:
         secret-shaped payloads are <b>rejected at write time</b> rather than scrubbed, so a leak
@@ -649,7 +619,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <span class="kicker">Dependency catalog &middot; blast radius</span>
       <h2>If the data is yours, draw it yourself.</h2>
       <p>
-        This is a real answer out of the catalog of the AI estate on this machine — <b>364
+        This is a real answer out of the catalog of the AI estate on this machine - <b>364
         entries, 1,306 edges</b>, rebuilt from source, queried by coding agents over MCP before
         they change anything. At the centre is the orchestrator's <code>advance()</code> step and
         the thirteen things that hold it. Placement is a golden-angle spiral, about forty lines of
@@ -664,10 +634,11 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     </div>
 
     <div class="panel rev">
-      <div class="panel-head"><span>Demo &middot; select a node</span><b>real graph · 2026-08-27</b></div>
+      <div class="panel-head"><span>Demo &middot; select a node to re-centre</span><b>real graph · 2026-08-27</b></div>
       <div class="panel-body">
         <svg class="cnst" id="cn-svg" viewBox="0 0 900 600" role="group"
-             aria-label="Dependency constellation around the orchestrator advance step. Select a node to see its degree.">
+             aria-label="Dependency constellation around the orchestrator advance step. Select a node to re-centre the figure on it and read its degree.">
+          <g class="cn-stage" id="cn-stage">
           <g id="cn-edges">
             <path class="edge" data-a="c" data-b="n0" d="M470 310 L396 357"/>
             <path class="edge" data-a="c" data-b="n1" d="M470 310 L483 205"/>
@@ -682,19 +653,9 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
             <path class="edge" data-a="c" data-b="n10" d="M470 310 L547 482"/>
             <path class="edge" data-a="c" data-b="n11" d="M470 310 L240 217"/>
             <path class="edge" data-a="c" data-b="n12" d="M470 310 L737 269"/>
-            <path class="edge" data-a="n11" data-b="n13" d="M240 217 L168 152"/>
-            <path class="edge" data-a="n13" data-b="n14" d="M168 152 L92 86"/>
           </g>
           <g id="cn-nodes">
-            <g class="cn" id="n14" data-kind="model" data-id="llm-llama32-3b" data-deg="19" data-adj="n13" tabindex="0" role="button" aria-label="llm-llama32-3b, local model, 19 edges">
-              <circle class="hit" cx="92" cy="86" r="32"/><circle class="ring" cx="92" cy="86" r="16"/>
-              <circle class="dot" cx="92" cy="86" r="10.6"/><text class="lb" x="108" y="90">llama3.2-3b · local</text>
-            </g>
-            <g class="cn" id="n13" data-kind="action" data-id="action-heartbeat-jobs-watch" data-deg="4" data-adj="n11 n14" tabindex="0" role="button" aria-label="action-heartbeat-jobs-watch, action, 4 edges">
-              <circle class="hit" cx="168" cy="152" r="32"/><circle class="ring" cx="168" cy="152" r="12"/>
-              <circle class="dot" cx="168" cy="152" r="5.4"/><text class="lb" x="182" y="156">jobs-watch</text>
-            </g>
-            <g class="cn" id="n11" data-kind="brain-component" data-id="brain-autonomy-guard" data-deg="5" data-adj="c n13" tabindex="0" role="button" aria-label="brain-autonomy-guard, component, 5 edges">
+            <g class="cn" id="n11" data-kind="brain-component" data-id="brain-autonomy-guard" data-deg="5" data-adj="c" tabindex="0" role="button" aria-label="brain-autonomy-guard, component, 5 edges">
               <circle class="hit" cx="240" cy="217" r="32"/><circle class="ring" cx="240" cy="217" r="12"/>
               <circle class="dot" cx="240" cy="217" r="5.8"/><text class="lb" x="226" y="221" text-anchor="end">autonomy-guard</text>
             </g>
@@ -746,31 +707,34 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
               <circle class="hit" cx="547" cy="482" r="32"/><circle class="ring" cx="547" cy="482" r="12"/>
               <circle class="dot" cx="547" cy="482" r="5.8"/><text class="lb" x="561" y="486">dispatch-classify</text>
             </g>
-            <g class="cn cn--center sel" id="c" data-kind="action" data-id="action-orchestrator-advance" data-deg="23"
+            <g class="cn cn--center sel" id="c" data-kind="action" data-id="action-orchestrator-advance" data-deg="25"
                data-adj="n0 n1 n2 n3 n4 n5 n6 n7 n8 n9 n10 n11 n12" tabindex="0" role="button"
-               aria-label="action-orchestrator-advance, the selected centre, 23 edges">
+               aria-label="action-orchestrator-advance, the selected centre, 25 edges">
               <circle class="hit" cx="470" cy="310" r="36"/><circle class="ring" cx="470" cy="310" r="20"/>
               <circle class="dot" cx="470" cy="310" r="13"/>
               <text class="lb" x="470" y="342" text-anchor="middle">advance()</text>
             </g>
           </g>
+          </g>
         </svg>
         <div class="inspector" id="cn-ins" role="status">
           <span class="who">action-orchestrator-advance</span>
-          <span>action &middot; 23 edges &middot; 13 direct neighbours &middot; the most connected action in the catalog</span>
+          <span>action &middot; 25 edges &middot; 13 direct neighbours &middot; the most connected action in the catalog</span>
         </div>
+        <button type="button" class="cn-back" id="cn-back">&#8592; back to advance()</button>
         <div class="legend">
           <span class="c"><i></i>selected</span>
           <span class="m"><i></i>local model</span>
           <span><i></i>component, action, store, pipeline</span>
         </div>
+        <script type="application/json" id="cn-data">{"action-adventure-animate":[11,0],"action-adventure-bookkeeper":[6,0,["store-adventure-world","action-adventure-scene-image","action-adventure-narrator"]],"action-adventure-char-texts":[2,0],"action-adventure-director-framing":[8,0,["store-adventure-world","action-adventure-narrator","action-adventure-live-chat","action-adventure-director-reaction","action-adventure-director-synthesis","action-adventure-plan-next"]],"action-adventure-director-reaction":[5,0],"action-adventure-director-synthesis":[5,0],"action-adventure-live-chat":[6,0],"action-adventure-narrator":[9,0,["store-adventure-world","llm-qwen3-14b","action-adventure-scene-image","action-image-prompt-builder","action-adventure-director-framing","action-adventure-bookkeeper"]],"action-adventure-pair":[8,0],"action-adventure-plan-next":[4,0],"action-adventure-portrait":[5,0,["pipeline-image-gen","store-adventure-world","img-meinamix-sd15","action-image-prompt-builder"]],"action-adventure-scene-image":[12,0,["pipeline-image-gen","store-adventure-world","img-sdxl-pony","action-adventure-animate","img-meinamix-sd15","action-image-prompt-builder","action-adventure-narrator","action-adventure-bookkeeper","action-adventure-director-synthesis","model-lora"]],"action-brief-scout":[7,0,["llm-qwen3-14b","brain-path-charts","action-heartbeat-morning-brief","brain-auto-log"]],"action-ceremony-reflect":[3,0,["llm-qwen3-14b","brain-path-charts","brain-auto-log"]],"action-code-review":[1,0],"action-cover-letter":[2,0,["llm-deepseek","action-heartbeat-jobs-watch"]],"action-demo-generate":[9,0,["llm-claude-cli","pipeline-meeting","store-meeting","store-demos","action-demo-refine","llm-qwen25-coder"]],"action-demo-refine":[4,0],"action-dispatch-classify":[5,0,["action-orchestrator-advance","llm-qwen35-chat","pipeline-planning"]],"action-email-triage":[2,0],"action-extractor":[3,0],"action-followthrough":[2,0],"action-gooner-casting":[7,0,["llm-qwen3-14b","store-roleplay","action-gooner-chat","llm-dolphin-rp"]],"action-gooner-chat":[8,0,["llm-qwen3-14b","store-roleplay","action-gooner-casting","brain-gooner-regulars"]],"action-gooner-summons":[4,0,["llm-qwen3-14b","store-roleplay","brain-gooner-regulars"]],"action-heartbeat-activity-reports":[1,0],"action-heartbeat-agent-reports":[7,0,["llm-llama32-3b","brain-pulse","pipeline-plan-executor","brain-event-bus","action-morning-report","brain-spotter"]],"action-heartbeat-jobs-watch":[4,0,["llm-llama32-3b","brain-pulse","brain-autonomy-guard","action-cover-letter"]],"action-heartbeat-morning-brief":[9,0,["llm-llama32-3b","brain-path-charts","brain-pulse","brain-knowledge-taste","action-brief-scout","brain-profile"]],"action-heartbeat-nightly":[4,0],"action-heartbeat-observations":[2,0,["llm-llama32-3b","brain-pulse"]],"action-heartbeat-research-proposal":[3,0,["action-research-proposer","brain-auto-log","store-research"]],"action-heartbeat-task-pings":[2,0,["llm-llama32-3b","brain-pulse"]],"action-image-prompt-builder":[10,0,["pipeline-image-gen","store-adventure-world","llm-qwen3-14b","store-roleplay","action-adventure-scene-image","action-roleplay-image","img-sdxl-pony","img-meinamix-sd15","action-adventure-narrator","action-adventure-portrait"]],"action-meeting-extract":[6,0],"action-memory-consolidate":[10,0],"action-morning-report":[5,0,["brain-scheduler","action-heartbeat-agent-reports","store-runs-proposals"]],"action-orchestrator-advance":[25,0,["llm-qwen3-14b","brain-path-charts","brain-pulse","pipeline-invoke-agent","brain-scheduler","brain-event-bus","brain-gate","action-dispatch-classify","brain-autonomy-guard","store-runs-proposals","brain-governor","brain-triage","brain-agent-worktree"]],"action-profile-build":[2,0,["llm-qwen3-14b","brain-profile"]],"action-research-executor":[7,0,["llm-llama32-3b","store-memory","action-research-proposer","llm-claude-cli","store-research"]],"action-research-proposer":[12,0,["llm-llama32-3b","brain-path-charts","brain-auto-log","action-research-executor","action-worklog-summarize","store-claude-sessions","store-research","action-heartbeat-research-proposal"]],"action-roleplay-animate":[7,0,["pipeline-anim-gen","store-roleplay","action-roleplay-image","action-roleplay-chat","anim-wan-comfyui","anim-animatediff"]],"action-roleplay-chat":[11,0,["llm-qwen3-14b","store-memory","store-roleplay","action-roleplay-image","action-roleplay-animate","llm-dolphin-rp","store-arc-checkin"]],"action-roleplay-image":[12,0,["pipeline-image-gen","store-roleplay","img-sdxl-pony","action-roleplay-chat","img-meinamix-sd15","action-image-prompt-builder","action-roleplay-animate","model-lora","video-reel"]],"action-see-screen":[3,0,["llm-qwen35-chat","vision"]],"action-sleep-nudge":[2,0],"action-view-update":[8,0],"action-watch-mode":[3,0,["llm-qwen35-chat","vision"]],"action-watch-nightly":[8,0,["store-memory","llm-claude-cli","store-watch","store-paper"]],"action-worklog-summarize":[5,0,["brain-context-builder","llm-llama32-3b","action-research-proposer","store-claude-sessions"]],"anim-animatediff":[7,3],"anim-wan-comfyui":[11,3],"brain-agent-worktree":[2,1,["action-orchestrator-advance"]],"brain-auto-log":[8,1,["action-research-proposer","action-memory-consolidate","action-brief-scout","action-ceremony-reflect","action-heartbeat-research-proposal","action-heartbeat-activity-reports"]],"brain-autonomy-guard":[5,1,["action-orchestrator-advance","brain-scheduler","action-heartbeat-jobs-watch"]],"brain-brain-map":[1,1,["brain-pulse"]],"brain-coach-pillars":[4,1,["brain-context-builder","store-claude-sessions","action-followthrough"]],"brain-context-builder":[23,1,["llm-qwen35-chat","store-memory","brain-path-charts","brain-pulse","brain-knowledge-taste","brain-sleep-coach","brain-profile","action-worklog-summarize","brain-short-term","brain-view","store-claude-sessions","brain-coach-pillars","embed-nomic","store-conversation","store-short-term","brain-goals-legacy"]],"brain-event-bus":[8,1,["action-orchestrator-advance","brain-scheduler","pipeline-plan-executor","action-heartbeat-agent-reports","infra-mqtt-bus"]],"brain-gate":[6,1,["action-orchestrator-advance","pipeline-invoke-agent","brain-triage"]],"brain-goals-legacy":[1,1,["brain-context-builder"]],"brain-gooner-regulars":[4,1,["action-gooner-chat","action-gooner-summons"]],"brain-governor":[4,1,["action-orchestrator-advance","store-budget-cost"]],"brain-knowledge-taste":[8,1,["brain-context-builder","action-heartbeat-morning-brief","brain-profile","action-extractor","action-email-triage"]],"brain-path-charts":[12,1,["action-orchestrator-advance","brain-context-builder","action-research-proposer","brain-pulse","action-heartbeat-morning-brief","action-brief-scout","action-ceremony-reflect"]],"brain-profile":[6,1,["brain-context-builder","action-heartbeat-morning-brief","brain-knowledge-taste","action-profile-build"]],"brain-pulse":[12,1,["action-orchestrator-advance","brain-context-builder","llm-qwen35-chat","brain-path-charts","action-heartbeat-morning-brief","pipeline-plan-executor","action-heartbeat-agent-reports","action-heartbeat-jobs-watch","action-heartbeat-observations","action-heartbeat-task-pings","brain-brain-map"]],"brain-scheduler":[9,1,["action-orchestrator-advance","brain-event-bus","action-morning-report","brain-autonomy-guard","store-runs-proposals"]],"brain-short-term":[5,2,["brain-context-builder","action-memory-consolidate","action-view-update"]],"brain-sleep-coach":[7,1,["brain-context-builder","action-sleep-nudge","store-health","store-sleep-goal"]],"brain-spotter":[1,1,["action-heartbeat-agent-reports"]],"brain-triage":[4,1,["action-orchestrator-advance","brain-gate"]],"brain-view":[5,1,["brain-context-builder","action-view-update","action-heartbeat-nightly"]],"embed-nomic":[3,3,["brain-context-builder","store-memory"]],"img-meinamix-sd15":[11,3,["pipeline-image-gen","infra-cuda-worker","action-adventure-scene-image","action-roleplay-image","action-image-prompt-builder","infra-gpu-lock","anim-animatediff","action-adventure-portrait","model-lora"]],"img-sdxl-pony":[12,3,["pipeline-image-gen","infra-cuda-worker","action-adventure-scene-image","action-roleplay-image","infra-worker-endkeyframe","action-adventure-animate","anim-wan-comfyui","action-image-prompt-builder","action-adventure-pair","tool-prompt-expander","model-lora"]],"infra-cuda-worker":[14,4],"infra-dual-gpu":[6,1,["pipeline-image-gen","pipeline-anim-gen","infra-cuda-worker","llm-qwen35-chat","infra-gpu-lock","infra-ensure-worker"]],"infra-ensure-worker":[5,1],"infra-gpu-lock":[8,1,["pipeline-image-gen","pipeline-anim-gen","llm-qwen35-chat","img-meinamix-sd15","anim-animatediff","infra-dual-gpu","vision"]],"infra-media-root":[6,1],"infra-mqtt-bus":[1,1,["brain-event-bus"]],"infra-worker-endkeyframe":[12,4],"llm-claude-cli":[11,3,["llm-qwen35-chat","pipeline-invoke-agent","action-demo-generate","action-watch-nightly","action-research-executor","store-model-usage"]],"llm-deepseek":[6,3,["pipeline-invoke-agent","pipeline-planning","store-model-usage","action-cover-letter"]],"llm-dolphin-rp":[2,3,["action-roleplay-chat","action-gooner-casting"]],"llm-llama32-3b":[19,3,["action-research-proposer","action-memory-consolidate","action-heartbeat-morning-brief","action-view-update","action-heartbeat-agent-reports","action-research-executor","action-meeting-extract","action-worklog-summarize","action-heartbeat-jobs-watch","action-extractor","action-email-triage","action-heartbeat-observations","action-heartbeat-task-pings","action-code-review"]],"llm-qwen25-coder":[4,3,["pipeline-invoke-agent","action-demo-generate","pipeline-coder-proxy"]],"llm-qwen3-14b":[16,3,["action-orchestrator-advance","pipeline-invoke-agent","action-roleplay-chat","action-image-prompt-builder","action-adventure-narrator","action-gooner-chat","action-brief-scout","action-gooner-casting","action-gooner-summons","action-ceremony-reflect","action-profile-build"]],"llm-qwen35-chat":[13,3,["brain-context-builder","store-memory","brain-pulse","llm-claude-cli","infra-gpu-lock","infra-dual-gpu","action-dispatch-classify","store-model-usage","action-see-screen","action-watch-mode"]],"model-lora":[4,3],"pipeline-anim-gen":[15,4],"pipeline-coder-proxy":[2,4,["llm-qwen25-coder"]],"pipeline-image-gen":[20,4,["infra-cuda-worker","action-adventure-scene-image","action-roleplay-image","img-sdxl-pony","infra-worker-endkeyframe","img-meinamix-sd15","action-image-prompt-builder","infra-gpu-lock","infra-dual-gpu","infra-media-root","action-adventure-portrait","infra-ensure-worker"]],"pipeline-invoke-agent":[12,4,["action-orchestrator-advance","llm-qwen3-14b","llm-claude-cli","pipeline-plan-executor","brain-gate","llm-deepseek","llm-qwen25-coder"]],"pipeline-meeting":[6,4],"pipeline-plan-executor":[9,4,["brain-pulse","pipeline-invoke-agent","brain-event-bus","action-heartbeat-agent-reports","pipeline-planning","store-plan"]],"pipeline-planning":[6,4,["pipeline-plan-executor","llm-deepseek","action-dispatch-classify","store-plan"]],"store-adventure-world":[20,2,["action-adventure-scene-image","action-adventure-animate","action-image-prompt-builder","action-adventure-narrator","action-adventure-director-framing","action-adventure-pair","action-adventure-bookkeeper","action-adventure-live-chat","action-adventure-director-reaction","action-adventure-director-synthesis","action-adventure-portrait","action-adventure-plan-next","action-adventure-char-texts"]],"store-arc-checkin":[2,2,["action-roleplay-chat"]],"store-budget-cost":[2,2,["brain-governor"]],"store-claude-sessions":[5,2,["brain-context-builder","action-research-proposer","action-worklog-summarize","brain-coach-pillars"]],"store-conversation":[3,2,["brain-context-builder","action-memory-consolidate","action-view-update"]],"store-demos":[5,2],"store-health":[2,2],"store-meeting":[6,2],"store-memory":[13,2,["brain-context-builder","llm-qwen35-chat","action-roleplay-chat","action-memory-consolidate","action-view-update","action-watch-nightly","action-research-executor","action-heartbeat-nightly","action-extractor","embed-nomic"]],"store-model-usage":[4,2,["llm-qwen35-chat","llm-claude-cli","llm-deepseek"]],"store-paper":[2,2],"store-plan":[4,2,["pipeline-plan-executor","pipeline-planning"]],"store-research":[5,2,["action-research-proposer","action-research-executor","action-heartbeat-research-proposal"]],"store-roleplay":[13,2,["action-roleplay-image","action-roleplay-chat","action-image-prompt-builder","action-gooner-chat","action-gooner-casting","action-roleplay-animate","action-gooner-summons","video-reel"]],"store-runs-proposals":[5,2,["action-orchestrator-advance","brain-scheduler","action-morning-report"]],"store-short-term":[2,2,["brain-context-builder","action-memory-consolidate"]],"store-sleep-goal":[2,2],"store-watch":[3,2],"tool-prompt-expander":[5,0],"video-reel":[2,4],"vision":[5,4]}</script>
       </div>
-      <noscript><p class="ns">JavaScript is off — the constellation renders with its centre node already selected.</p></noscript>
+      <noscript><p class="ns">JavaScript is off - the constellation renders with its centre node already selected.</p></noscript>
       <div class="panel-foot">
         Every node, edge and degree here is read from the catalog snapshot of <b>2026-08-27</b>
-        (364 entries, 1,306 edges). Two nodes on this figure are models running on my own GPUs;
-        <code>jobs-watch</code> and <code>llama3.2-3b</code> sit one hop out, reached through the
-        autonomy guard.
+        (364 entries, 1,306 edges). <code>qwen3-14b</code> is a model running on my own GPU.
+        Select any node on the ring and the figure re-centres on it, drawing that node's own
+        neighbours out of the same snapshot; the centre node takes you back.
       </div>
     </div>
 
@@ -789,13 +753,13 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
         live in one person's head, which meant it was argued about after the fact, once the day was
         already too full. Now the workload model runs in the interface: every booking charges its
         contact time <b>plus</b> the documentation, turnover and recovery it drags behind it, in
-        quarter-hour steps against a real day. Past the line the booking is refused, not flagged —
+        quarter-hour steps against a real day. Past the line the booking is refused, not flagged -
         a warning you can click through is a rule nobody keeps.
       </p>
       <dl class="pcd">
         <div><dt>Problem</dt><dd>The true cost of a booking was invisible at the moment somebody made it.</dd></div>
         <div><dt>Constraint</dt><dd>Non-contact time is most of the overrun and none of it is on the calendar.</dd></div>
-        <div><dt>Decision</dt><dd>One model, computed in the UI, shown as it fills — and a hard block with the arithmetic attached.</dd></div>
+        <div><dt>Decision</dt><dd>One model, computed in the UI, shown as it fills - and a hard block with the arithmetic attached.</dd></div>
       </dl>
     </div>
 
@@ -842,11 +806,11 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
         </div>
 
         <p class="say" id="w-say" role="status">
-          Three bookings hold <b>295 of 390 minutes</b>. Keep adding — the fifth one will not fit,
+          Three bookings hold <b>295 of 390 minutes</b>. Keep adding - the fifth one will not fit,
           and the interface will say so instead of taking it.
         </p>
       </div>
-      <noscript><p class="ns">JavaScript is off — this panel shows a day already loaded to 76% of capacity.</p></noscript>
+      <noscript><p class="ns">JavaScript is off - this panel shows a day already loaded to 76% of capacity.</p></noscript>
       <div class="panel-foot">
         A genericized approximation of the shipped model, which carries more components and
         per-case overrides. Same shape: quarter-hour resolution, additive non-contact time,
@@ -865,7 +829,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <span class="kicker">House convention &middot; every page, every tool</span>
       <h2>Ambiguity is a bug in the conversation.</h2>
       <p>
-        Every page in my tools carries a per-section dev label — A, B, C down the page. It costs
+        Every page in my tools carries a per-section dev label - A, B, C down the page. It costs
         one div per section and it deleted a whole class of round-trips: <b>"fix section B"</b>
         lands somewhere exact, whether it comes from a client, from me a month later, or from an AI
         agent editing the file. Without them the same note arrives as "the middle bit under the
@@ -874,7 +838,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <dl class="pcd">
         <div><dt>Problem</dt><dd>Feedback pointed at regions of a screen that had no names.</dd></div>
         <div><dt>Constraint</dt><dd>It had to cost nothing to apply and nothing to remember.</dd></div>
-        <div><dt>Decision</dt><dd>Letters restart per page, one tag per section, mandated for new UI — and shipped visible, not hidden behind a flag.</dd></div>
+        <div><dt>Decision</dt><dd>Letters restart per page, one tag per section, mandated for new UI - and shipped visible, not hidden behind a flag.</dd></div>
       </dl>
     </div>
 
@@ -904,11 +868,11 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
         </div>
 
         <blockquote class="quote" id="lb-quote">
-          <em>"Fix section B — the empty state reads like an error."</em>
+          <em>"Fix section B - the empty state reads like an error."</em>
           <span class="who">With labels · unambiguous, no screenshot needed</span>
         </blockquote>
       </div>
-      <noscript><p class="ns">JavaScript is off — this panel shows the labelled version, which is the shipped default.</p></noscript>
+      <noscript><p class="ns">JavaScript is off - this panel shows the labelled version, which is the shipped default.</p></noscript>
       <div class="panel-foot">
         Not a mockup convention: this is mandated in the project instructions for the platform I
         run daily, so every new page ships with it and the AI agents editing that code read the
@@ -928,7 +892,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <p style="color:var(--paper-2);margin-top:1rem">
         Colour, spacing, radius, elevation and motion are custom properties, not values typed into
         components. Retheming a tab is a token swap; a new surface inherits the whole system by
-        existing. Move the controls and the specimen on the right re-renders live — every property
+        existing. Move the controls and the specimen on the right re-renders live - every property
         below is read straight out of the sheet.
       </p>
     </div>
@@ -1002,7 +966,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
           </div>
         </div>
       </div>
-      <noscript><p class="ns">JavaScript is off — the specimen renders at the sheet's default values and the controls are inert.</p></noscript>
+      <noscript><p class="ns">JavaScript is off - the specimen renders at the sheet's default values and the controls are inert.</p></noscript>
       <div class="panel-foot" id="t-foot">
         The figures in the specimen card are real ones from the incident desk on the
         <b>Systems</b> page. Reduced-motion preferences are honoured here: if your system asks for
@@ -1030,12 +994,11 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <p style="color:var(--paper-2);margin-top:1rem">
         Each demo above is a small honest rebuild of something running: a generation queue, a
         supervision cockpit, a dependency catalog, a clinic scheduler, and a convention that costs
-        one div. The systems themselves — what they do, what they measure, and where they fall
-        short — are on the main page.
+        one div. The systems themselves - what they do, what they measure, and where they fall
+        short - are on the main page.
       </p>
       <div class="links">
-        <a class="link" href="index.html#systems"><span>The systems in production</span><span>→</span></a>
-        <a class="link" href="index.html#corrections"><span>Things I got wrong</span><span>→</span></a>
+        <a class="link" href="index.html#systems"><span>← Back home · the systems in production</span><span>←</span></a>
         <a class="link" href="mailto:keatonvp123@gmail.com"><span>keatonvp123@gmail.com</span><span>→</span></a>
       </div>
     </div>
@@ -1057,12 +1020,6 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
   var d = document;
   d.documentElement.classList.add('js');
   var yr = d.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
-  var mastMenu = d.getElementById('mastMenu');
-  if (mastMenu) {
-    mastMenu.addEventListener('click', function (e) {
-      if (e.target && e.target.tagName === 'A') { mastMenu.removeAttribute('open'); }
-    });
-  }
 
   var RM = false;
   try { RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
@@ -1078,7 +1035,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     Array.prototype.forEach.call(reveals, function (el) { el.classList.add('on'); });
   }
 
-  /* visibility helper — pauses timers for off-screen demos */
+  /* visibility helper - pauses timers for off-screen demos */
   function whenVisible(el, onIn, onOut) {
     if (!('IntersectionObserver' in window)) { onIn(); return; }
     new IntersectionObserver(function (es) {
@@ -1095,7 +1052,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
 
     var jobs = [], nextId = 1, timers = [];
     function clearTimers() { timers.forEach(clearTimeout); timers = []; }
-    /* timings are content, not decoration — reduced motion stops the shimmer, not the lifecycle */
+    /* timings are content, not decoration - reduced motion stops the shimmer, not the lifecycle */
     function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); return t; }
 
     function tile(job) {
@@ -1146,7 +1103,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     function tally() { if (count) count.textContent = jobs.length + (jobs.length === 1 ? ' job' : ' jobs'); }
 
     function add(stage) {
-      if (jobs.length >= 8) { speak('Queue is full at eight tiles. <b>Cancel one</b> to make room — nothing is dropped silently.'); return; }
+      if (jobs.length >= 8) { speak('Queue is full at eight tiles. <b>Cancel one</b> to make room - nothing is dropped silently.'); return; }
       var job = { id: nextId, label: ('00' + nextId).slice(-3), stage: stage || 'queued' };
       nextId++;
       jobs.push(job);
@@ -1172,7 +1129,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
 
     d.querySelector('[data-q="add"]').addEventListener('click', function () {
       var j = add('queued');
-      if (j) speak('Job ' + j.label + ' queued. It will shimmer, resolve a rough preview, then finish — <b>no step is skipped</b>.');
+      if (j) speak('Job ' + j.label + ' queued. It will shimmer, resolve a rough preview, then finish - <b>no step is skipped</b>.');
     });
     d.querySelector('[data-q="reset"]').addEventListener('click', reset);
 
@@ -1230,7 +1187,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       connected = false; stop();
       chip.className = 'chip chip--over'; chip.textContent = 'disconnected';
       bDrop.disabled = true; bRec.disabled = false;
-      say.innerHTML = 'Connection dropped. The run <b>keeps going on the server</b> — this feed just cannot see it. Reconnect when you are ready.';
+      say.innerHTML = 'Connection dropped. The run <b>keeps going on the server</b> - this feed just cannot see it. Reconnect when you are ready.';
       // events continue to happen while we are away
       lost = 0;
       awayTick = setInterval(function () { emit(true); lost++; }, RM ? 700 : 1200);
@@ -1252,7 +1209,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       trim();
       feed.scrollTop = feed.scrollHeight;
       say.innerHTML = lost === 0
-        ? 'Reconnected with nothing missed — and it still says so, because <b>"no gap" is a claim worth making explicitly</b>.'
+        ? 'Reconnected with nothing missed - and it still says so, because <b>"no gap" is a claim worth making explicitly</b>.'
         : 'Reconnected. ' + lost + ' events happened while the socket was down and cannot be recovered, so the feed <b>draws the hole</b> and names the sequence number it is complete from.';
       lost = 0;
       emit(false);
@@ -1262,7 +1219,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     bDrop.addEventListener('click', drop);
     bRec.addEventListener('click', reconnect);
     bStep.addEventListener('click', function () {
-      if (!connected) { say.innerHTML = 'Nothing arrives while the connection is down. <b>That is the honest state</b> — reconnect to find out what you missed.'; return; }
+      if (!connected) { say.innerHTML = 'Nothing arrives while the connection is down. <b>That is the honest state</b> - reconnect to find out what you missed.'; return; }
       emit(false);
     });
 
@@ -1270,7 +1227,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     feed.innerHTML = '';
     seq = 20;
     for (var i = 0; i < 4; i++) emit(false);
-    say.innerHTML = 'Drop the connection, wait a few seconds, then reconnect — the feed will tell you exactly what it missed.';
+    say.innerHTML = 'Drop the connection, wait a few seconds, then reconnect - the feed will tell you exactly what it missed.';
 
     whenVisible(feed, function () { visible = true; start(); }, function () { visible = false; stop(); });
   })();
@@ -1280,14 +1237,32 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     var svg = d.getElementById('cn-svg');
     var ins = d.getElementById('cn-ins');
     if (!svg) return;
-    var nodes = svg.querySelectorAll('.cn');
-    var edges = svg.querySelectorAll('.edge');
+    var stage = d.getElementById('cn-stage');
+    var gN = d.getElementById('cn-nodes');
+    var gE = d.getElementById('cn-edges');
+    var back = d.getElementById('cn-back');
+    var ROOT = 'action-orchestrator-advance';
+    var KINDNAMES = ['action', 'brain-component', 'data-store', 'model', 'pipeline'];
     var KIND = {
       'action': 'action', 'model': 'local model', 'brain-component': 'component',
       'data-store': 'data store', 'pipeline': 'pipeline'
     };
+    var MAXRING = 14, CX = 470, CY = 310, GA = 2.39996323, R0 = 118, RSTEP = 13, YS = 0.68;
+    var G = {};
+    try { G = JSON.parse(d.getElementById('cn-data').textContent); } catch (e) { G = {}; }
+
+    var HOME_N = gN.innerHTML, HOME_E = gE.innerHTML;
+    var centreId = ROOT, note = '', nodes = [], edges = [];
+
+    function shortName(id) { return id.replace(/^(brain|action|store|pipeline|llm|infra)-/, ''); }
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+    function round1(n) { return Math.round(n * 10) / 10; }
+    function dotR(deg) { return round1(Math.max(4.5, Math.min(13, 3.9 + 0.4 * deg))); }
+    function rec(id) { return G[id] || [1, 0]; }
+    function kindOf(id) { return KINDNAMES[rec(id)[1]] || 'action'; }
 
     function select(node) {
+      if (!node) return;
       var id = node.id;
       var adj = (node.getAttribute('data-adj') || '').split(/\s+/).filter(Boolean);
       svg.classList.add('sel-on');
@@ -1302,19 +1277,122 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       var deg = node.getAttribute('data-deg');
       var kind = KIND[node.getAttribute('data-kind')] || node.getAttribute('data-kind');
       var isModel = node.getAttribute('data-kind') === 'model';
+      var isCentre = node.getAttribute('data-id') === centreId;
       ins.innerHTML =
-        '<span class="who' + (isModel ? ' is-model' : '') + '">' + node.getAttribute('data-id') + '</span>' +
+        '<span class="who' + (isModel ? ' is-model' : '') + '">' + esc(node.getAttribute('data-id')) + '</span>' +
         '<span>' + kind + ' &middot; ' + deg + ' edges in the catalog &middot; ' + adj.length +
-        ' shown on this figure' + (isModel ? ' &middot; runs on my own GPU' : '') + '</span>';
+        ' shown on this figure' + (isCentre ? note : '') + (isModel ? ' &middot; runs on my own GPU' : '') + '</span>';
     }
 
-    Array.prototype.forEach.call(nodes, function (n) {
-      n.addEventListener('click', function () { select(n); });
-      n.addEventListener('focus', function () { select(n); });
-      n.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); select(n); }
+    /* Build a ring view centred on cid, on the same golden-angle spiral as the default figure. */
+    function build(cid) {
+      var nbrs = rec(cid)[2] || [];
+      var shown = nbrs.slice(0, MAXRING);
+      note = nbrs.length > shown.length
+        ? ' &middot; +' + (nbrs.length - shown.length) + ' more not drawn'
+        : '';
+      var ids = [], nodeHtml = '', edgeHtml = '', i;
+      for (i = 0; i < shown.length; i++) {
+        var id = shown[i];
+        var wide = shown.length > 7;
+        var r = wide ? R0 + i * RSTEP : 152 + (i % 2) * 34;
+        var a = -Math.PI / 2 + (wide ? i * GA : i * 2 * Math.PI / shown.length);
+        var x = Math.round(CX + r * Math.cos(a)), y = Math.round(CY + YS * r * Math.sin(a));
+        var deg = rec(id)[0], kind = kindOf(id);
+        var nm = shortName(id) + (kind === 'model' ? ' · local' : '');
+        var dr = dotR(deg), rr = round1(dr + 6.5);
+        var right = x >= CX, wd = nm.length * 6.8;
+        if (right && x + 14 + wd > 892) right = false;
+        if (!right && x - 14 - wd < 8) right = true;
+        ids.push('z' + i);
+        edgeHtml += '<path class="edge" data-a="zc" data-b="z' + i + '" d="M' + CX + ' ' + CY + ' L' + x + ' ' + y + '"/>';
+        nodeHtml += '<g class="cn" id="z' + i + '" data-kind="' + kind + '" data-id="' + esc(id) +
+          '" data-deg="' + deg + '" data-adj="zc" tabindex="0" role="button" aria-label="' + esc(id) + ', ' +
+          (KIND[kind] || kind) + ', ' + deg + ' edges. Activate to re-centre the figure here.">' +
+          '<circle class="hit" cx="' + x + '" cy="' + y + '" r="32"/>' +
+          '<circle class="ring" cx="' + x + '" cy="' + y + '" r="' + rr + '"/>' +
+          '<circle class="dot" cx="' + x + '" cy="' + y + '" r="' + dr + '"/>' +
+          '<text class="lb" x="' + (right ? x + 14 : x - 14) + '" y="' + (y + 4) + '"' +
+          (right ? '' : ' text-anchor="end"') + '>' + esc(nm) + '</text></g>';
+      }
+      var cdeg = rec(cid)[0], ckind = kindOf(cid);
+      var cdr = dotR(cdeg), crr = round1(cdr + 7);
+      nodeHtml += '<g class="cn cn--center sel" id="zc" data-kind="' + ckind + '" data-id="' + esc(cid) +
+        '" data-deg="' + cdeg + '" data-adj="' + ids.join(' ') + '" tabindex="0" role="button" aria-label="' +
+        esc(cid) + ', the selected centre, ' + cdeg + ' edges. Activate to return to advance().">' +
+        '<circle class="hit" cx="' + CX + '" cy="' + CY + '" r="36"/>' +
+        '<circle class="ring" cx="' + CX + '" cy="' + CY + '" r="' + crr + '"/>' +
+        '<circle class="dot" cx="' + CX + '" cy="' + CY + '" r="' + cdr + '"/>' +
+        '<text class="lb" x="' + CX + '" y="' + (CY + 32) + '" text-anchor="middle">' +
+        esc(shortName(cid)) + '</text></g>';
+      return { n: nodeHtml, e: edgeHtml };
+    }
+
+    function centreEl() { return d.getElementById(centreId === ROOT ? 'c' : 'zc'); }
+
+    function render(cid) {
+      centreId = cid;
+      if (cid === ROOT) {
+        gN.innerHTML = HOME_N; gE.innerHTML = HOME_E; note = '';
+        back.classList.remove('on');
+      } else {
+        var m = build(cid);
+        gN.innerHTML = m.n; gE.innerHTML = m.e;
+        back.classList.add('on');
+      }
+      wire();
+      select(centreEl());
+    }
+
+    function zoomable(id) { var r = G[id]; return !!(r && r[2] && r[2].length); }
+
+    function go(cid) {
+      if (cid === centreId) return;
+      var keep = svg.contains(d.activeElement);
+      function done() {
+        render(cid);
+        if (keep) { var el = centreEl(); if (el && el.focus) el.focus(); }
+      }
+      if (RM) { done(); return; }
+      stage.classList.add('is-out');
+      window.setTimeout(function () {
+        done();
+        stage.classList.remove('is-out');
+        stage.classList.add('is-in');
+        void stage.getBoundingClientRect();
+        if (window.requestAnimationFrame) {
+          window.requestAnimationFrame(function () { stage.classList.remove('is-in'); });
+        } else { stage.classList.remove('is-in'); }
+      }, 160);
+    }
+
+    function activate(n) {
+      var id = n.getAttribute('data-id');
+      if (id === centreId) { if (centreId !== ROOT) go(ROOT); else select(n); return; }
+      if (zoomable(id)) { go(id); } else { select(n); }
+    }
+
+    function wire() {
+      nodes = svg.querySelectorAll('.cn');
+      edges = svg.querySelectorAll('.edge');
+      Array.prototype.forEach.call(nodes, function (n) {
+        n.addEventListener('click', function () { activate(n); });
+        n.addEventListener('focus', function () { select(n); });
+        n.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); activate(n); }
+          else if (e.key === 'Escape' || e.key === 'Esc') { e.preventDefault(); go(ROOT); }
+        });
       });
-    });
+    }
+
+    if (back) {
+      back.addEventListener('click', function () { go(ROOT); });
+      back.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') { e.preventDefault(); go(ROOT); }
+      });
+    }
+
+    wire();
     select(d.getElementById('c'));
   })();
 
@@ -1396,7 +1474,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     function block(needed, remaining, what) {
       say.className = 'say say--bad';
       say.innerHTML = '<b>Blocked.</b> ' + what + ' needs ' + needed + ' minutes and only ' + remaining +
-        ' remain. The model charges contact time plus documentation, turnover and recovery — ' +
+        ' remain. The model charges contact time plus documentation, turnover and recovery - ' +
         'so there is no version of this day where it fits, and no button that saves it anyway.';
       if (!RM) { meter.classList.remove('flash'); void meter.offsetWidth; meter.classList.add('flash'); }
     }
@@ -1412,13 +1490,13 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       if (used + cost > CAP) { block(cost, CAP - used, 'A 60-minute booking'); return; }
       bookings.push({ start: nextStart(), mins: 60 });
       var after = total();
-      paint('Booked. That hour charged <b>' + cost + ' minutes</b> — 60 of contact and ' + (cost - 60) +
+      paint('Booked. That hour charged <b>' + cost + ' minutes</b> - 60 of contact and ' + (cost - 60) +
         ' of documentation, turnover and recovery. Day is at ' + after + ' of ' + CAP + '.', false);
     });
 
     d.querySelector('[data-w="reset"]').addEventListener('click', function () {
       seed();
-      paint('Day reset. Three bookings hold <b>295 of 390 minutes</b>. Keep adding — the fifth one will not fit, and the interface will say so instead of taking it.', false);
+      paint('Day reset. Three bookings hold <b>295 of 390 minutes</b>. Keep adding - the fifth one will not fit, and the interface will say so instead of taking it.', false);
     });
 
     list.addEventListener('click', function (e) {
@@ -1428,7 +1506,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       if (isNaN(i) || !bookings[i]) return;
       if (b.getAttribute('data-w') === 'del') {
         bookings.splice(i, 1);
-        paint('Removed. The whole non-contact tail came off with it — <b>25 minutes</b> beyond the hour on the calendar.', false);
+        paint('Removed. The whole non-contact tail came off with it - <b>25 minutes</b> beyond the hour on the calendar.', false);
       } else {
         var used = total();
         if (used + 15 > CAP) { block(15, CAP - used, 'Fifteen more minutes'); return; }
@@ -1459,9 +1537,9 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       chip.className = 'chip ' + (on ? 'chip--ok' : 'chip--warn');
       chip.textContent = on ? '1 message to fix it' : '3 messages to find it';
       quote.innerHTML = on
-        ? '<em>"Fix section B — the empty state reads like an error."</em>' +
+        ? '<em>"Fix section B - the empty state reads like an error."</em>' +
           '<span class="who">With labels · unambiguous, no screenshot needed</span>'
-        : '<em>"Fix the middle bit under the search thing — not the table, the part above it."</em>' +
+        : '<em>"Fix the middle bit under the search thing - not the table, the part above it."</em>' +
           '<span class="who">Without labels · which block is that? Two more messages to find out</span>';
     }
 
@@ -1533,7 +1611,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     if (RM && foot) {
       foot.innerHTML = 'The figures in the specimen card are real ones from the incident desk on the ' +
         '<b>Systems</b> page. Your system asks for reduced motion, so the applied duration is ' +
-        '<b>0ms</b> whatever the slider says — the token still reads what you set it to.';
+        '<b>0ms</b> whatever the slider says - the token still reads what you set it to.';
     }
     apply();
   })();

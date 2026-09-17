@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<title>Keaton Van Patten — Resume</title>
+<title>Keaton Van Patten Resume</title>
 <style>
   @page { size: letter; margin: 0.36in 0.55in; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,18 +54,17 @@
   <div class="role">AI Systems Engineer</div>
   <div class="contact">
     Rancho Cordova, CA<span>·</span>remote or Sacramento area<span>·</span><a href="mailto:keatonvp123@gmail.com">keatonvp123@gmail.com</a><span>·</span><a href="https://github.com/Peacho97">github.com/Peacho97</a><span>·</span><a href="https://peacho97.github.io">peacho97.github.io</a>
-    <!-- LinkedIn URL unknown — restore this once confirmed:
-         <span>·</span><a href="https://linkedin.com/in/">linkedin.com/in/</a> -->
+    <span>·</span><a href="https://www.linkedin.com/in/keaton-van-patten-227640272">linkedin.com/in/keaton-van-patten-227640272</a>
   </div>
 </header>
 
 <section>
   <h2>Summary</h2>
   <div class="summary">
-    Builder-operator who ships production AI systems end to end and measures them honestly. Sole
-    developer of a 200K-line agentic platform (678 API endpoints, 122-tool agent, ~3,000 tests) and of
-    a live scheduling system serving a healthcare clinic. Every architecture decision traces to a
-    number measured on real hardware — including the ones that proved my own claims wrong.
+    Ships production AI systems end to end, then measures what they actually do. Sole developer of a
+    200K-line agentic platform (678 API endpoints, 122-tool agent, ~3,000 tests) and of a live
+    scheduling system a healthcare clinic uses every day. Architecture decisions here trace back to
+    numbers measured on real hardware, including the numbers that proved earlier claims wrong.
   </div>
 </section>
 
@@ -73,85 +72,90 @@
   <h2>Selected Production Systems</h2>
 
   <div class="proj">
-    <div class="proj-title">Clinic Scheduling System + Outage Failover <span class="proj-meta">— pediatric therapy clinic (live since Aug 2026)</span></div>
+    <div class="proj-title">Clinic Scheduling System + Outage Failover <span class="proj-meta">- pediatric therapy clinic (live since Aug 2026)</span></div>
     <ul>
-      <li>Sole developer of a production workload-based scheduling system replacing a fully paper process:
-        ~35K lines, 30 REST endpoints, 15 role-gated pages (PHP 8.3 / SQLite / zero-dependency JS PWA);
-        in daily use by clinic staff (573 audited actions in first 18 days).</li>
-      <li>Designed an 8-component weekly workload model computing therapist utilization to the
-        quarter-hour with hard over-capacity blocking, plus a filter-and-rank substitute selector for
-        absence coverage.</li>
-      <li>After discovering a real production outage, designed, built, and deployed a zero-dependency
-        Node failover mailer on Fly.io in under 48 hours — outbound-only (no public IP), server-side PHI
-        minimization so only de-identified case codes ever leave the host; 157 tests including both DST
-        transitions.</li>
-      <li>Commissioned a security audit of my own application pre-launch via my own security-review desk;
-        remediated two critical findings (install-takeover path, cross-role data exposure); shipped
+      <li>Sole developer of a workload-based scheduling system that replaced a fully paper process:
+        ~35K lines, 30 REST endpoints, 15 role-gated pages, written in PHP 8.3 with SQLite and a
+        zero-dependency JS PWA. Clinic staff use it daily, 573 audited actions in the first 18 days.</li>
+      <li>Designed an 8-component weekly workload model that computes therapist utilization to the
+        quarter-hour and hard-blocks anything over capacity. A filter-and-rank substitute selector
+        covers absences.</li>
+      <li>Found a real production outage, then built and deployed a zero-dependency Node failover
+        mailer on Fly.io in under 48 hours. It is outbound-only with no public IP, and it minimizes
+        PHI server-side so only de-identified case codes ever leave the host. 157 tests cover it,
+        including both DST transitions.</li>
+      <li>Put the application through an in-house security-review desk before launch and fixed the two
+        critical findings it returned, an install-takeover path and cross-role data exposure. Shipped
         Argon2id auth, email OTP 2FA, CSRF hardening, and a 14-action audit log. Wrote 800+ integration
         test assertions with no third-party test framework.</li>
     </ul>
   </div>
 
   <div class="proj">
-    <div class="proj-title">RAG Reference Service ("Librarian") <span class="proj-meta">— production retrieval over a 19K-document corpus</span></div>
+    <div class="proj-title">RAG Reference Service ("Librarian") <span class="proj-meta">- production retrieval over a 19K-document corpus</span></div>
     <ul>
-      <li>Built and operate a retrieval-augmented Q&amp;A service over 3,190 files / 14,534 code symbols /
-        18,094 embedding vectors: hybrid Okapi BM25 + dense-vector retrieval fused with Reciprocal Rank
-        Fusion, custom reranking, incremental content-hash embedding (21.8× measured batch speedup).</li>
-      <li>Served to AI agents as an 8-tool MCP server — 613 live queries in 30 days, 67%
-        machine-to-machine — through a 5-provider LLM fallback chain (~92% answered by the low-cost
-        primary).</li>
-      <li>Built a CI-gated evaluation harness (22 graded questions, release blocked under 90%,
-        deterministic questions must pass with every model provider offline); drove measured accuracy
-        from 86.4% to 100%.</li>
+      <li>Built and operate a retrieval-augmented Q&amp;A service over 3,190 files, 14,534 code symbols
+        and 18,094 embedding vectors. Okapi BM25 and dense-vector retrieval run side by side, get fused
+        with Reciprocal Rank Fusion, then reranked. Incremental content-hash embedding made batch runs
+        21.8× faster, measured.</li>
+      <li>Serves AI agents as an 8-tool MCP server, 613 live queries in 30 days with 67% of them
+        machine-to-machine, behind a 5-provider LLM fallback chain that answers ~92% of calls on the
+        low-cost primary.</li>
+      <li>Built a CI-gated evaluation harness of 22 graded questions. A release is blocked when graded
+        accuracy drops under 90%, and the deterministic questions have to pass with every
+        model provider offline. Measured accuracy went from 86.4% to 100%.</li>
     </ul>
   </div>
 
   <div class="proj">
-    <div class="proj-title">Autonomous Incident Desk <span class="proj-meta">— three-tier deflection ladder</span></div>
+    <div class="proj-title">Autonomous Incident Desk <span class="proj-meta">- three-tier deflection ladder</span></div>
     <ul>
-      <li>Built a self-healing service desk monitoring 15 production backends on a 15-second probe loop:
-        612 incidents in 53 days, 72.9% auto-resolved at a 55-second mean time-to-resolution, 0.33%
-        escalated to a human.</li>
-      <li>Architected cost-tiered deflection — deterministic playbooks first (75.6% first-line success),
-        LLM triage only when they fail (3.3% of tickets), diagnosis-only model contract, circuit
-        breakers and a kill-pattern validator bounding blast radius.</li>
-      <li>Scope: these are infrastructure incidents, not customer-support tickets — the transferable part
-        is the deflection architecture, not the domain.</li>
+      <li>Built a self-healing service desk that watches 15 production backends on a 15-second probe
+        loop. Over 53 days it took 612 incidents, auto-resolved 72.9% of them at a 55-second mean
+        time-to-resolution, and escalated 0.33% to a human.</li>
+      <li>Deflection is cost-tiered. Deterministic playbooks run first and settle 75.6% on the first
+        line, LLM triage only runs on the 3.3% of tickets they miss, and the model contract is
+        diagnosis-only. Circuit breakers and a kill-pattern validator bound the blast radius.</li>
+      <li>These are infrastructure incidents rather than customer-support tickets, so the deflection
+        architecture is the part that transfers, not the domain.</li>
     </ul>
   </div>
 
   <div class="proj">
-    <div class="proj-title">Multi-Provider LLM Platform <span class="proj-meta">— cost governance and orchestration</span></div>
+    <div class="proj-title">Multi-Provider LLM Platform <span class="proj-meta">- cost governance and orchestration</span></div>
     <ul>
-      <li>Operate a metered fleet spanning 21 models across 8 providers (Anthropic, DeepSeek, local
-        Ollama, more) under a USD-exact per-call ledger: 2,129 calls, 41M tokens, 38 attributed
-        use-case surfaces, 64% prompt-cache hit rate.</li>
-      <li>Cut cost per model call 71% while volume grew 51% by profiling provider pricing, latency, and
-        data-sensitivity, then re-routing background workloads to cheaper tiers and pinning
-        latency-critical and private-data paths to local GPUs.</li>
-      <li>Stood up a self-hosted LiteLLM control plane (PostgreSQL-backed) issuing per-use-case virtual
-        API keys with hard monthly budgets, with a raw-socket reachability probe driving automatic
-        gateway→direct fallback (852 calls served uninterrupted through the fallback path).</li>
+      <li>Operate a metered fleet of 21 models across 8 providers including Anthropic, DeepSeek and
+        local Ollama, with a USD-exact ledger entry for every call. So far that covers 2,129 calls,
+        41M tokens, 38 attributed use-case surfaces, and a 64% prompt-cache hit rate.</li>
+      <li>Cut cost per model call 71% while volume grew 51%. Profiled provider pricing, latency and
+        data sensitivity, moved background workloads onto cheaper tiers, and pinned latency-critical
+        and private-data paths to local GPUs.</li>
+      <li>Stood up a self-hosted LiteLLM control plane on PostgreSQL that issues per-use-case virtual
+        API keys with hard monthly budgets. A raw-socket reachability probe switches traffic from the
+        gateway to direct provider calls automatically, and 852 calls have been served uninterrupted
+        through that fallback path.</li>
     </ul>
   </div>
 
   <div class="proj">
-    <div class="proj-title">Personal AI Platform ("Companion Hub") <span class="proj-meta">— 122-tool production agent</span></div>
+    <div class="proj-title">Personal AI Platform ("Companion Hub") <span class="proj-meta">- 122-tool production agent</span></div>
     <ul>
-      <li>Built a local-first agentic platform (Python/FastAPI + Svelte/Electron; 678 HTTP endpoints,
-        ~3,000 tests) whose agent dispatches 122 real tools — filesystem, shell, calendar, health,
-        messaging — under a three-layer authorization model (fail-closed per-surface allowlists,
-        chokepoint denylists, credential-aware filesystem perimeter; 32 dedicated gate tests).</li>
-      <li>Designed a token-budgeted 5-zone prompt architecture holding the static prefix byte-identical
-        across turns for inference-cache hits; cut small-model tool-catalog overhead 5.3× (7.4K → 1.4K
-        tokens) with a curated subset plus scored tool search.</li>
-      <li>Built an AI security-review desk (110 consultations, 165 specialist reviews, 548 tracked
-        checklist items) with adversarially-benchmarked local triage — the selected model resisted 6/6
-        prompt injections; a candidate was rejected for obeying injected verdicts.</li>
-      <li>Run dual-GPU local inference infrastructure: a cross-process GPU lease broker (priority aging,
-        fencing tokens, 73-second measured failover), video generation on AMD ROCm at 87% VRAM
-        utilization, and a 744B-parameter MoE model tuned +86% on consumer hardware.</li>
+      <li>Built a local-first agentic platform in Python/FastAPI with a Svelte/Electron front end,
+        678 HTTP endpoints and ~3,000 tests. Its agent dispatches 122 real tools across filesystem,
+        shell, calendar, health and messaging, all behind a three-layer authorization model of
+        fail-closed per-surface allowlists, chokepoint denylists and a credential-aware filesystem
+        perimeter, with 32 dedicated gate tests.</li>
+      <li>Designed a token-budgeted 5-zone prompt architecture that keeps the static prefix
+        byte-identical across turns so the inference cache hits. A curated tool subset plus scored
+        tool search cut small-model tool-catalog overhead 5.3×, from 7.4K tokens to 1.4K.</li>
+      <li>Built an AI security-review desk with 110 consultations, 165 specialist reviews and 548
+        tracked checklist items. Local triage models were benchmarked adversarially before selection;
+        the one chosen resisted 6/6 prompt injections, and a candidate was rejected for obeying
+        injected verdicts.</li>
+      <li>Run dual-GPU local inference infrastructure. A cross-process GPU lease broker with priority
+        aging and fencing tokens fails over in a measured 73 seconds, video generation runs on AMD
+        ROCm at 87% VRAM utilization, and a 744B-parameter MoE model was tuned +86% on consumer
+        hardware.</li>
     </ul>
   </div>
 </section>
@@ -160,26 +164,26 @@
   <h2>Experience</h2>
   <div class="xp">
     <div class="xp-head">
-      <span class="xp-role">HRBC Inc. — Systems Manager &amp; Software Developer · Sacramento, CA</span>
+      <span class="xp-role">HRBC Inc. - Systems Manager &amp; Software Developer · Sacramento, CA</span>
       <span class="xp-date">Sept 2020 – Present</span>
     </div>
     <ul>
-      <li>Sole technical owner for a mortgage brokerage: systems administration, Microsoft 365 / Entra ID,
-        user access management, vendor systems (LOS, CRM, pricing engines), incident response, and
-        training for loan officers — 5 years of direct requirements discovery with non-technical
-        stakeholders.</li>
-      <li>Built an internal operations hub with an embedded AI assistant: hand-rolled agentic tool-use
-        loop on the Anthropic API (8 typed JSON-schema tools, bounded round-trips, mutation tracking)
-        over a 15-system vendor registry; security policy encoded in the prompt and tool schemas —
-        credential locations stored, never secrets. The agentic backend is complete and demonstrated via
-        API; the UI was never wired up.</li>
+      <li>Sole technical owner for a mortgage brokerage, covering systems administration, Microsoft 365
+        and Entra ID, user access management, vendor systems such as LOS, CRM and pricing engines,
+        incident response, and training for loan officers. Five years of requirements discovery done
+        directly with non-technical stakeholders.</li>
+      <li>Built an internal operations hub with an embedded AI assistant, running a hand-rolled agentic
+        tool-use loop on the Anthropic API with 8 typed JSON-schema tools, bounded round-trips and
+        mutation tracking over a 15-system vendor registry. Security policy lives in the prompt and the
+        tool schemas, and the registry stores where credentials are kept, never the secrets themselves.
+        The agentic backend is complete and demonstrated via API; the UI was never wired up.</li>
       <li>Originated loans and advised clients directly; trained and supervised loan officers and
         assistants.</li>
     </ul>
   </div>
   <div class="xp">
     <div class="xp-head">
-      <span class="xp-role">MP NexLevel — Utility Technician</span>
+      <span class="xp-role">MP NexLevel - Utility Technician</span>
       <span class="xp-date">2018 – 2020</span>
     </div>
     <div class="xp-note">Crew lead on utility infrastructure projects; equipment operation and maintenance.</div>
