@@ -460,6 +460,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
     <nav class="mast-nav" aria-label="Pages">
       <a href="index.html" aria-current="page">Home</a>
       <a href="ui.html">Give it a try</a>
+      <a href="https://github.com/Peacho97" target="_blank" rel="noopener">GitHub</a>
       <a class="mast-cta" href="Keaton-Van-Patten-Resume.pdf">Resume ↓</a>
     </nav>
   </div></div>
@@ -479,7 +480,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
       <p class="hero-lede">
         A scheduler that replaced a pediatric clinic's paper process. A retrieval engine that
         answers coding agents over an entire machine. An incident desk that
-        <b>resolves 72.9% of its own outages in 55 seconds</b>. I design them, ship them, run
+        <b>recovers 72.8% of its own outages without escalation, median 16 seconds</b>. I design them, ship them, run
         them, and fix them when they break.
       </p>
       <p class="hero-avail">
@@ -499,11 +500,19 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
         <b>nine systems · four live in production</b>
       </div>
       <div class="row"><span class="fig">&lt; 48 h</span><span class="lab">from first commit to a production failover service, built during a live client outage</span><span class="src">mailer</span></div>
-      <div class="row"><span class="fig">86.4 → 100%</span><span class="lab">retrieval eval accuracy, gated in CI - a release under 90% does not ship</span><span class="src">librarian</span></div>
+      <div class="row"><span class="fig">86.4 → 100%</span><span class="lab">retrieval eval accuracy; eval runner gated in CI at 90%; the 86.4 to 100% run was measured against the private engine</span><span class="src">librarian</span></div>
       <div class="row"><span class="fig">−71%</span><span class="lab">cost per LLM call while call volume grew +51%, across 21 models and 8 providers</span><span class="src">cost ledger</span></div>
-      <div class="row"><span class="fig">612</span><span class="lab">infrastructure incidents in 53 days; 0.33% ever reached a human</span><span class="src">incident desk</span></div>
+      <div class="row"><span class="fig">1,543</span><span class="lab">infrastructure incidents in 114 days; 72.8% recovered without escalation, 0.7% closed by a person (measured 2026-10-26 with scripts/stats.py in the it-desk repo)</span><span class="src">incident desk</span></div>
       <div class="row"><span class="fig">122</span><span class="lab">agent tools behind a three-layer authorization gate that fails closed</span><span class="src">agent platform</span></div>
       <div class="row"><span class="fig">2,948</span><span class="lab">test functions across 678 HTTP endpoints on the platform I run daily</span><span class="src">hub</span></div>
+    </div>
+    <div class="ledger rev" style="margin-top:1.5rem">
+      <div class="ledger-head"><span>Public code</span><b>five repos, github.com/Peacho97</b></div>
+      <div class="row"><span class="fig">winspawn</span><span class="lab">hidden-process spawning and audit helpers for Windows</span><span class="src"><a href="https://github.com/Peacho97/winspawn" target="_blank" rel="noopener">repo</a></span></div>
+      <div class="row"><span class="fig">librarian-mcp</span><span class="lab">retrieval MCP server and its CI-gated eval runner</span><span class="src"><a href="https://github.com/Peacho97/librarian-mcp" target="_blank" rel="noopener">repo</a></span></div>
+      <div class="row"><span class="fig">model-gateway</span><span class="lab">per-call LLM cost ledger and model routing</span><span class="src"><a href="https://github.com/Peacho97/model-gateway" target="_blank" rel="noopener">repo</a></span></div>
+      <div class="row"><span class="fig">fleet-orchestrator</span><span class="lab">agent fleet orchestration with gated authorization</span><span class="src"><a href="https://github.com/Peacho97/fleet-orchestrator" target="_blank" rel="noopener">repo</a></span></div>
+      <div class="row"><span class="fig">it-desk</span><span class="lab">self-healing incident desk and the stats.py behind its figures</span><span class="src"><a href="https://github.com/Peacho97/it-desk" target="_blank" rel="noopener">repo</a></span></div>
     </div>
   </div>
 </section>
@@ -629,14 +638,15 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
               <h3>The Librarian - retrieval over an entire machine</h3>
               <span class="sys-kind sys-kind--live">Running now</span>
             </div>
-            <p class="sys-why">It is the system that taught me to trust a measured number over a demo: the eval gate dragged accuracy 86.4% &rarr; 100% and can still block a release.</p>
+            <p class="sys-why">It is the system that taught me to trust a measured number over a demo: the eval runner is gated in CI at 90%, and the 86.4% &rarr; 100% run was measured against the private engine.</p>
             <p class="sys-meta">3,190 files indexed &middot; 18,094 vectors &middot; running now, in-process</p>
             <p class="sys-lede">
               Grounded question-answering over everything on this workstation, served to AI coding
               agents as an <b>8-tool MCP server</b>. Hybrid retrieval, graceful degradation, and an
               eval harness that can block a release.
             </p>
-            <div class="tags" style="margin-top:1rem">
+            <p class="sys-meta">Code: <a href="https://github.com/Peacho97/librarian-mcp" target="_blank" rel="noopener">github.com/Peacho97/librarian-mcp</a></p>
+        <div class="tags" style="margin-top:1rem">
               <span class="tag">Python</span><span class="tag">SQLite FTS5</span><span class="tag">BM25</span>
               <span class="tag">Dense vectors</span><span class="tag">RRF</span><span class="tag">MCP</span>
               <span class="tag">CI evals</span>
@@ -648,7 +658,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
               <li><b>Hybrid retrieval:</b> Okapi BM25 (k1=1.2, b=0.75) and a dense cosine arm fused by <b>reciprocal rank fusion</b> (k=60), then a custom rerank stage over heading-chunked prose.</li>
               <li>Content-hash incremental embedding: <span class="num">21.8×</span> batch speedup, 324&nbsp;ms → 14.9&nbsp;ms per text. Degrades cleanly to full-text-only when the embedding arm is unavailable.</li>
               <li><span class="num">613</span> live queries in 30 days, <span class="num">67%</span> machine-to-machine. Five-provider fallback chain; ~92% of answers served by the cheap primary.</li>
-              <li><b>CI-gated eval harness:</b> 22 graded questions, release blocked under 90%, and the deterministic subset must pass with <b>every LLM provider down</b>. Accuracy went <span class="num">86.4% → 100%</span>.</li>
+              <li><b>CI-gated eval runner:</b> 22 graded questions, gated in CI at 90%, and the deterministic subset must pass with <b>every LLM provider down</b>. Accuracy went <span class="num">86.4% → 100%</span> in a run against the private engine; the public repo ships the runner, not that engine.</li>
               <li>Admission control: a two-slot capacity line that returns <span class="num">{busy, position, ETA}</span> instead of queueing silently.</li>
             </ul>
             <p class="caveat"><b>Credit</b> - the BM25 and RRF constants were harvested from an Apache-2.0 project and are credited in the source. The integration, overlap gate, salience scoring, sensitivity filter, and cache fix are mine.</p>
@@ -662,16 +672,17 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
           <h3>Incident desk - a deflection ladder</h3>
           <span class="sys-kind sys-kind--live">Running now</span>
         </div>
-        <p class="sys-why">It is the argument for spending a model only as a last resort: of 612 incidents, 0.33% ever needed a person.</p>
-        <p class="sys-meta">53 days measured &middot; 15 production backends, 419,000 probes &middot; live 8+ days continuous</p>
+        <p class="sys-why">It is the argument for spending a model only as a last resort: of 1,543 incidents, 0.7% were closed by a person.</p>
+        <p class="sys-meta">114 days measured &middot; 15 production backends, 419,000 probes &middot; live 8+ days continuous</p>
         <p class="sys-lede">A self-healing monitor over <b>15 production backends</b> on a 15-second probe loop. The architecture is a cost ladder: cheap things try first, and a model is the last resort before a human.</p>
         <ul class="facts">
-          <li>53 days: <span class="num">612</span> incidents, <span class="num">72.9%</span> auto-resolved, mean time to resolution <span class="num">55 seconds</span>, <span class="num">0.33%</span> escalated to a human.</li>
+          <li>114 days: <span class="num">1,543</span> incidents, <span class="num">72.8%</span> recovered without escalation, median time to resolution <span class="num">16 seconds</span>, <span class="num">0.7%</span> closed by a person. Measured 2026-10-26 with scripts/stats.py in the it-desk repo.</li>
           <li><span class="num">419,000</span> health probes retained (~60K/day) with per-service 24-hour uptime objectives.</li>
           <li><b>Tier 1:</b> scripted restart playbooks, <span class="num">75.6%</span> first-line success. <b>Tier 2:</b> LLM triage - only <span class="num">3.3%</span> of tickets ever reach a paid model. <b>Tier 3:</b> a person. Triage diagnoses and never executes.</li>
           <li>Safety rails: a config validator that rejects catch-all kill patterns, a four-restart-per-hour circuit breaker, and an independent kill-witness auditor. 7 MCP tools, 30 routes, 75 tests.</li>
         </ul>
         <p class="caveat"><b>Scope</b> - these are infrastructure incidents, not customer support tickets. The transferable part is the deflection architecture, not the domain.</p>
+        <p class="sys-meta">Code: <a href="https://github.com/Peacho97/it-desk" target="_blank" rel="noopener">github.com/Peacho97/it-desk</a></p>
         <div class="tags"><span class="tag">FastAPI</span><span class="tag">MCP</span><span class="tag">SLOs</span><span class="tag">Circuit breakers</span></div>
       </article>
 
@@ -693,6 +704,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
           <li><b>Audited against the provider's own billing export</b> - which showed the ledger seeing <span class="num">8%</span> of real spend: subprocess-launched sessions bypassed it entirely. The meter moved to the process-spawn choke point the same day, with per-consumer surface tags. The gap was the lesson: <b>meter where the money leaves, not where it's convenient.</b></li>
         </ul>
         <p class="caveat"><b>Scope</b> - the −71% is a routing-policy outcome over time, not a controlled A/B. The proxy itself fronts two models from one provider; the eight-provider breadth lives in the ledger.</p>
+        <p class="sys-meta">Code: <a href="https://github.com/Peacho97/model-gateway" target="_blank" rel="noopener">github.com/Peacho97/model-gateway</a></p>
         <div class="tags"><span class="tag">PostgreSQL 17</span><span class="tag">LiteLLM</span><span class="tag">Cost modeling</span><span class="tag">Budgets</span></div>
       </article>
 
@@ -719,6 +731,7 @@ footer{ border-top:1px solid var(--rule-soft); padding-block:1.6rem; }
           <li>Manager orchestrator with a hierarchical delegate matrix and a budget governor; illegal plans are repaired rather than executed.</li>
         </ul>
         <p class="caveat"><b>Scope</b> - the orchestrator is designed and validated across 6 runs and 17 delegation events. It has not been run at scale.</p>
+        <p class="sys-meta">Code: <a href="https://github.com/Peacho97/fleet-orchestrator" target="_blank" rel="noopener">github.com/Peacho97/fleet-orchestrator</a></p>
         <div class="tags"><span class="tag">FastAPI</span><span class="tag">Svelte 5</span><span class="tag">Electron</span><span class="tag">MCP</span><span class="tag">SSE</span></div>
       </article>
 
